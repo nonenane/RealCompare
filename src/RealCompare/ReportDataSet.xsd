@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="ReportDataSet" targetNamespace="http://tempuri.org/ReportDataSet.xsd" xmlns:mstns="http://tempuri.org/ReportDataSet.xsd" xmlns="http://tempuri.org/ReportDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="ReportDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="ReportDataSet" msprop:Generator_DataSetName="ReportDataSet" msprop:EnableTableAdapterManager="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Data" msprop:Generator_UserTableName="Data" msprop:Generator_RowDeletedName="DataRowDeleted" msprop:Generator_RowChangedName="DataRowChanged" msprop:Generator_RowClassName="DataRow" msprop:Generator_RowChangingName="DataRowChanging" msprop:Generator_RowEvArgName="DataRowChangeEvent" msprop:Generator_RowEvHandlerName="DataRowChangeEventHandler" msprop:Generator_TableClassName="DataDataTable" msprop:Generator_TableVarName="tableData" msprop:Generator_RowDeletingName="DataRowDeleting" msprop:Generator_TablePropName="Data">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Col1" msprop:Generator_UserColumnName="Col1" msprop:Generator_ColumnPropNameInRow="Col1" msprop:Generator_ColumnVarNameInTable="columnCol1" msprop:Generator_ColumnPropNameInTable="Col1Column" type="xs:string" minOccurs="0" />
+              <xs:element name="Col2" msprop:Generator_UserColumnName="Col2" msprop:Generator_ColumnPropNameInRow="Col2" msprop:Generator_ColumnVarNameInTable="columnCol2" msprop:Generator_ColumnPropNameInTable="Col2Column" type="xs:string" minOccurs="0" />
+              <xs:element name="Col3" msprop:Generator_UserColumnName="Col3" msprop:Generator_ColumnPropNameInRow="Col3" msprop:Generator_ColumnVarNameInTable="columnCol3" msprop:Generator_ColumnPropNameInTable="Col3Column" type="xs:string" minOccurs="0" />
+              <xs:element name="Col4" msprop:Generator_UserColumnName="Col4" msprop:Generator_ColumnPropNameInRow="Col4" msprop:Generator_ColumnVarNameInTable="columnCol4" msprop:Generator_ColumnPropNameInTable="Col4Column" type="xs:string" minOccurs="0" />
+              <xs:element name="Col5" msprop:Generator_UserColumnName="Col5" msprop:Generator_ColumnPropNameInRow="Col5" msprop:Generator_ColumnVarNameInTable="columnCol5" msprop:Generator_ColumnPropNameInTable="Col5Column" type="xs:string" minOccurs="0" />
+              <xs:element name="Col6" msprop:Generator_UserColumnName="Col6" msprop:Generator_ColumnPropNameInRow="Col6" msprop:Generator_ColumnVarNameInTable="columnCol6" msprop:Generator_ColumnPropNameInTable="Col6Column" type="xs:string" minOccurs="0" />
+              <xs:element name="Col7" msprop:Generator_UserColumnName="Col7" msprop:Generator_ColumnPropNameInRow="Col7" msprop:Generator_ColumnVarNameInTable="columnCol7" msprop:Generator_ColumnPropNameInTable="Col7Column" type="xs:string" minOccurs="0" />
+              <xs:element name="Col8" msprop:Generator_UserColumnName="Col8" msprop:Generator_ColumnPropNameInRow="Col8" msprop:Generator_ColumnVarNameInTable="columnCol8" msprop:Generator_ColumnPropNameInTable="Col8Column" type="xs:string" minOccurs="0" />
+              <xs:element name="isPrint" msprop:Generator_UserColumnName="isPrint" msprop:Generator_ColumnVarNameInTable="columnisPrint" msprop:Generator_ColumnPropNameInRow="isPrint" msprop:Generator_ColumnPropNameInTable="isPrintColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
