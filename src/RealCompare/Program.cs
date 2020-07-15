@@ -23,6 +23,7 @@ namespace RealCompare
             if (args.Length > 0)
             {
                 Project.FillSettings(args);
+                //Application.Run(new frmCreateReport());
                 Application.Run(new Main());
             }
         }

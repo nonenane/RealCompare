@@ -14,6 +14,7 @@ using System.Data.OleDb;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Nwuram.Framework.ToExcel;
+using System.Threading.Tasks;
 
 namespace RealCompare
 { 
@@ -23,6 +24,11 @@ namespace RealCompare
         public Main()
         {
             InitializeComponent();
+            ToolTip tp = new ToolTip();
+            tp.SetToolTip(btAdd, "Добавить");
+            tp.SetToolTip(btEdit, "Редактировать");
+            tp.SetToolTip(btDel, "Удалить");
+            tp.SetToolTip(btViewRepair, "Просмотр заявки на ремонт");
         }
 
         private BindingSource bsGrdMain = new BindingSource();
@@ -201,7 +207,7 @@ namespace RealCompare
         /// </summary>
         private void EnableByGroups()
         {
-            if (rbDate.Checked)
+            if (rbDate.Checked || rbDateAndVVO.Checked)
             {
                 cbDeps.SelectedIndex = 0;
                 cbDeps.Enabled = false;
@@ -233,38 +239,17 @@ namespace RealCompare
                 cName.Visible = false;
                 cbTUGroups.Enabled = false;
             }
+
+
+
             dgvMain.DataSource = null;
             cbDeps.SelectedIndex = 0;
             cbTUGroups.SelectedIndex = 0;
         }
                
-
         private void tbEAN_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = (!Char.IsDigit(e.KeyChar) && e.KeyChar != Convert.ToChar(Keys.Back) && e.KeyChar != Convert.ToChar(Keys.Delete));
-        }
-
-        private void chkShah_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkShah.Checked)
-            {
-                if (rbDateAndDepAndGood.Checked)
-                {
-                    rbDateAndDep.Checked = true;
-                }
-                rbDateAndDepAndGood.Enabled = false;
-              
-                dgvMain.DataSource = null;
-                
-            }
-            else
-            {
-                rbDateAndDepAndGood.Enabled = true;
-                 
-                dgvMain.Refresh();
-            }
-            cDelta.Visible = tbTotalcDelta.Visible = tbTotalcDelta.Visible = chkKsSql.Checked && chkRealSql.Checked && !chkRealDbf.Checked && !chkRealSql2.Checked && !chkShah.Checked;
-            if (cDelta.Visible) cDelta.Width = 65;
         }
 
         private void chkKsSql_CheckedChanged(object sender, EventArgs e)
@@ -281,10 +266,11 @@ namespace RealCompare
                 tbTotalKsSql.Visible = false;
                 dgvMain.Invalidate();
             }
-            cDelta.Visible = tbTotalcDelta.Visible = tbTotalcDelta.Visible = chkKsSql.Checked && chkRealSql.Checked && !chkRealDbf.Checked && !chkRealSql2.Checked && !chkShah.Checked;
+
+            cDelta.Visible = tbTotalcDelta.Visible = tbTotalcDelta.Visible =  chkRealSql.Checked && !chkKsSql.Checked;
             if (cDelta.Visible) cDelta.Width = 65;
         }
-
+        
         private void chkRealSql_CheckedChanged(object sender, EventArgs e)
         {
             if (chkRealSql.Checked)
@@ -299,52 +285,15 @@ namespace RealCompare
                 tbTotalRealSql.Visible = false;
                 dgvMain.Refresh();
             }
-            cDelta.Visible = tbTotalcDelta.Visible = chkKsSql.Checked && chkRealSql.Checked && !chkRealDbf.Checked && !chkRealSql2.Checked && !chkShah.Checked;
+            cDelta.Visible = tbTotalcDelta.Visible = chkRealSql.Checked && !chkKsSql.Checked;
             if (cDelta.Visible) cDelta.Width = 65;
         }
-
-        private void chkRealSql2_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkRealSql2.Checked)
-            {
-                
-                
-                dgvMain.DataSource = null;
-            }
-            else
-            {
-               
-                dgvMain.Refresh();
-            }
-            cDelta.Visible = tbTotalcDelta.Visible = chkKsSql.Checked && chkRealSql.Checked && !chkRealDbf.Checked && !chkRealSql2.Checked && !chkShah.Checked;
-            if (cDelta.Visible) cDelta.Width = 65;
-        }
-
-        private void chkRealDbf_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkRealDbf.Checked)
-            {
-               
-
-                dgvMain.DataSource = null;
-            }
-            else
-            {
-                
-               
-                dgvMain.Refresh();
-                               
-            }
-            cDelta.Visible = tbTotalcDelta.Visible = chkKsSql.Checked && chkRealSql.Checked && !chkRealDbf.Checked && !chkRealSql2.Checked && !chkShah.Checked;
-            if (cDelta.Visible) cDelta.Width = 65;
-        }
-
+     
         private void dgvMain_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             if (dgvMain != null && dgvMain.Rows.Count != 0)
             {
-                btPrint.Enabled = true;
-                tsPrint.Enabled = true;
+                btPrint.Enabled = true;                
                 CountTotal();
             }
             else
@@ -360,8 +309,7 @@ namespace RealCompare
         {
             if (dgvMain.Rows.Count == 0)
             {
-                btPrint.Enabled = false;
-                tsPrint.Enabled = false;
+                btPrint.Enabled = false;                
                 tbTotalKsSql.Text =
                
                 tbTotalRealSql.Text =
@@ -384,11 +332,11 @@ namespace RealCompare
             }
 
             //Определение параметров для выгрузки данных
-            Parameters.isRealDbf = chkRealDbf.Checked;
-            Parameters.isShah = chkShah.Checked;
+            //Parameters.isRealDbf = chkRealDbf.Checked;
             Parameters.isKsSql = chkKsSql.Checked;
+            //Parameters.isKsSql = chkKsSql.Checked;
             Parameters.isRealSql = chkRealSql.Checked;
-            Parameters.isRealSql2 = chkRealSql2.Checked;
+            //Parameters.isRealSql2 = chkRealSql2.Checked;
             Parameters.dateStart = dtpStart.Value;
             Parameters.dateEnd = dtpEnd.Value;
             Parameters.idDep = int.Parse(cbDeps.SelectedValue.ToString());
@@ -397,30 +345,30 @@ namespace RealCompare
             //Формируем список сравниваемых колонок
             alDataColumns.Clear();
 
-            if(chkShah.Checked)
-            {
-                alDataColumns.Add("Shah");
-            }
-
-            if (chkKsSql.Checked)
+            if(chkKsSql.Checked)
             {
                 alDataColumns.Add("KsSql");
             }
+
+            //if (chkKsSql.Checked)
+            //{
+            //    alDataColumns.Add("KsSql");
+            //}
 
             if (chkRealSql.Checked)
             {
                 alDataColumns.Add("RealSql");
             }
 
-            if (chkRealSql2.Checked)
-            {
-                alDataColumns.Add("RealSql2");
-            }
+            //if (chkRealSql2.Checked)
+            //{
+            //    alDataColumns.Add("RealSql2");
+            //}
 
-            if (chkRealDbf.Checked)
-            {
-                alDataColumns.Add("RealDbf");
-            }
+            //if (chkRealDbf.Checked)
+            //{
+            //    alDataColumns.Add("RealDbf");
+            //}
 
             pbData.Visible = true;
             pbData.Value = 0;
@@ -476,13 +424,14 @@ namespace RealCompare
             DataTable dtJRealizVVO = Parameters.hConnectVVO.GetJRealizVVO(Parameters.dateStart, Parameters.dateEnd);
             DataTable dtJournal = Parameters.hConnectKass.GetKassRealizJournal(Parameters.dateStart, Parameters.dateEnd);
             DataTable dtJournalVVO = Parameters.hConnectVVOKass.GetKassRealizJournalVVO(Parameters.dateStart, Parameters.dateEnd);
-
+          
             dtJRealiz.Merge(dtJRealizVVO);
             dtJournal.Merge(dtJournalVVO);
 
             resultTable = (from g in dtGoodsUpdates.AsEnumerable()
                            join jreal in dtJRealiz.AsEnumerable() on new { Q = g.Field<string>("ean"), W =  g.Field<DateTime>("dreal") } equals  new { Q =  jreal.Field<string>("ean"), W = jreal.Field<DateTime>("dreal") }
                            join jour in dtJournal.AsEnumerable() on new { Q = g.Field<string>("ean"), W = g.Field<DateTime>("dreal") } equals new { Q = jour.Field<string>("ean"), W = jour.Field<DateTime>("dreal") }
+
                            select new
                            {
                                date = g.Field<DateTime>("dreal"),
@@ -540,7 +489,7 @@ namespace RealCompare
                                    isRealEquals = ((g.Sum(table=>(bool) table["isRealEquals"] ? 1 : 0))>0)
                                }).CopyToDataTable();
             }
-            if (rbDateAndDep.Checked)
+            else if (rbDateAndDep.Checked)
             {
                 resultTable = (from table in resultTable.AsEnumerable()
                                group table by new
@@ -563,241 +512,129 @@ namespace RealCompare
               
             }
 
+
+            if (chbMainKass.Checked)
+            {
+
+                if (rbDateAndVVO.Checked)
+                {
+                    DataTable dtTmpMain = (from table in resultTable.AsEnumerable().Where(r => r.Field<int>("id_dep") != 6)
+                                           group table by new
+                                           {
+                                               date = table["date"],
+                                           }
+                           into g
+
+                                           select new
+                                           {
+                                               date = g.Key.date,
+                                               KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
+                                               RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
+                                               delta = g.Sum(table => Decimal.Parse(table["delta"].ToString())),
+                                               isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) > 0),
+                                               isVVO = false
+                                           }).CopyToDataTable();
+
+                    DataTable dtTmpVVo = (from table in resultTable.AsEnumerable().Where(r => r.Field<int>("id_dep") == 6)
+                                          group table by new
+                                          {
+                                              date = table["date"],
+                                          }
+                           into g
+
+                                          select new
+                                          {
+                                              date = g.Key.date,
+                                              KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
+                                              RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
+                                              delta = g.Sum(table => Decimal.Parse(table["delta"].ToString())),
+                                              isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) > 0),
+                                              isVVO = true
+                                          }).CopyToDataTable();
+
+
+                    resultTable = dtTmpMain.Clone();
+                    resultTable = dtTmpMain.Copy(); 
+                    resultTable.Merge(dtTmpVVo);
+                }
+
+
+                Task<DataTable> task = Parameters.hConnect.getMainKassForListDate(Parameters.dateStart, Parameters.dateEnd);
+                task.Wait();
+                DataTable dtMainKass = task.Result;
+                if (dtMainKass != null && dtMainKass.Rows.Count > 0)
+                {
+                    if (rbDate.Checked)
+                    {
+                        DataTable dtTmp = new DataTable();
+
+                        dtTmp = (from table in dtMainKass.AsEnumerable()
+                                 group table by new
+                                 {
+                                     date = table["Data"]
+                                 }
+                                 into g
+
+                                 select new
+                                 {
+                                     date = g.Key.date,
+                                     MainKass = g.Sum(table => Decimal.Parse(table["MainKass"] == DBNull.Value ? "0" : table["MainKass"].ToString())),
+                                     ChessBoard = g.Sum(table => Decimal.Parse(table["ChessBoard"] == DBNull.Value ? "0" : table["ChessBoard"].ToString())),
+                                     RealSQL = g.Sum(table => Decimal.Parse(table["RealSQL"] == DBNull.Value ? "0" : table["RealSQL"].ToString()))
+                                 }
+
+                            ).CopyToDataTable();
+
+                    }
+                    else
+                        if (rbDateAndVVO.Checked)
+                    {
+
+                        resultTable.Columns.Add("MainKass", typeof(decimal));
+                        resultTable.Columns.Add("ChessBoard", typeof(decimal));
+                        resultTable.Columns.Add("RealSQL", typeof(decimal));
+                        resultTable.Columns.Add("DateEdit", typeof(DateTime));
+                        resultTable.Columns.Add("FIO", typeof(string));
+                        resultTable.Columns.Add("id", typeof(int));
+
+
+
+                        foreach (DataRow row in resultTable.Rows)
+                        {
+                            EnumerableRowCollection<DataRow> rowCollect = dtMainKass.AsEnumerable().Where(r => r.Field<DateTime>("Data").Date == ((DateTime)row["date"]).Date && r.Field<bool>("isVVO") == (bool)row["isVVO"]);
+                            if (rowCollect.Count() > 0)
+                            {
+                                row["MainKass"] = rowCollect.First()["MainKass"];
+                                row["ChessBoard"] = rowCollect.First()["ChessBoard"];
+                                row["RealSQL"] = rowCollect.First()["RealSQL"];
+                                row["DateEdit"] = rowCollect.First()["DateEdit"];
+                                row["FIO"] = rowCollect.First()["FIO"];
+                                row["id"] = rowCollect.First()["id"];
+
+                                rowCollect.First().Delete();
+                            }
+                            else
+                            {
+                                row["MainKass"] = DBNull.Value;
+                                row["ChessBoard"] = DBNull.Value;
+                                row["RealSQL"] = DBNull.Value;
+                                row["DateEdit"] = DBNull.Value;
+                                row["FIO"] = DBNull.Value;
+                                row["id"] = DBNull.Value;
+                            }
+                        }
+
+                        foreach (DataRow row in dtMainKass.Rows)
+                        { 
+                        
+                        }
+
+
+                    }
+                }
+            }
+
        
-            /*  //Реализация DBF
-              if (Parameters.isRealDbf)
-              {
-                  Parameters.dbfPath = Parameters.hConnect.GetPathToDbf(0);
-
-                  //Проверка наличия пути к файлу в основной бд
-                  if (Parameters.dbfPath.Length == 0)
-                  {
-                      MessageBox.Show("Не указан путь\nк файлу с касс.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                      chkRealDbf.Invoke(new Action<bool>((b) => chkRealDbf.Checked = b), false);
-                      return;
-                  }
-
-                  //Проверка существования каталога и файла
-                  FileInfo f = new FileInfo(Parameters.dbfPath);
-
-                  if (!f.Directory.Exists)
-                  {
-                      MessageBox.Show("Каталог " + Parameters.dbfPath + " не\nнайден", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                      chkRealDbf.Invoke(new Action<bool>((b) => chkRealDbf.Checked = b), false);
-                      return;
-                  }
-
-                  if (!f.Exists)
-                  {
-                      chkRealDbf.Invoke(new Action<bool>((b) => chkRealDbf.Checked = b), false);
-                      MessageBox.Show("В каталоге " + Parameters.dbfPath + " не\nнайден файл r_tovar.dbf", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                      return;
-                  }
-
-                  //Копирование файла
-                  string target = Application.StartupPath + "\\r_tovar.dbf";
-                  bool isExcep = false;
-                  try
-                  {
-                      f.CopyTo(target, true);
-                  }
-                  catch (IOException)
-                  {
-                      isExcep = true;
-                  }
-                  catch (System.Security.SecurityException)
-                  {
-                      isExcep = true;
-                  }
-                  catch (UnauthorizedAccessException)
-                  {
-                      isExcep = true;
-                  }
-
-                  if (isExcep)
-                  {
-                      MessageBox.Show("Не удалось скопировать файл r_tovars.dbf!", "Предупреждение.", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                      chkRealDbf.Invoke(new Action<bool>((b) => chkRealDbf.Checked = b), false);
-                      return;
-                  }
-                  bgwGetCompare.ReportProgress(60);
-
-                  Parameters.dbfPath = target;
-                  DBFWorker rTovarWorker = new DBFWorker(Parameters.dbfPath);
-                  DataTable dtrTovar = rTovarWorker.ExecuteCommand("Select * From r_tovar.dbf WHERE ONDATE >= {d'" + dtpStart.Value.ToString("yyyy-MM-dd") + "'} AND  ONDATE <= {d'" + dtpEnd.Value.ToString("yyyy-MM-dd") + "'}");
-
-                  //Группировка по дате
-                  if(Parameters.groupType == 1)
-                  {
-                      var grps = from table in dtrTovar.AsEnumerable()
-                             group table by new
-                             {
-                                 date = table["ondate"]                               
-                             } 
-                             into g
-                             select new { ean = "", id_dep = 0, g.Key.date, RealDbf = g.Sum(table => Decimal.Parse(table["summa"].ToString())) };
-
-                      dtRealDbf = CustomLINQtoDataSetMethods.CopyToDataTable(grps);
-                  }
-
-                  //Если нужно группировать по дате и отделу - добавляем отдел
-                  if(Parameters.groupType == 2)                            
-                  {
-                      dtrTovar.Columns.Add("id_dep", typeof(int));
-                      DataTable dtGoodInfo = Parameters.hConnectKass.GetGoodsData(Parameters.dateStart, Parameters.dateEnd);
-
-                      var dbfReal = from dbf in dtrTovar.AsEnumerable()
-                                    join gInf in dtGoodInfo.AsEnumerable()
-                                    on new {
-                                              ean = dbf.Field<string>("EAN").Trim(),
-                                              date = dbf.Field<DateTime>("ONDATE")
-                                           } 
-                                    equals 
-                                          new {
-                                                  ean = gInf.Field<string>("ean").Trim(),
-                                                  date = gInf.Field<DateTime>("dreal")
-                                              }
-                                    into joinedGoods
-                                    from res in joinedGoods.DefaultIfEmpty()
-                                    select new 
-                                    {                                       
-                                        id_dep = res == null ? 0 : res.Field<int>("id_dep"),
-                                        dreal = dbf.Field<DateTime>("ONDATE"),
-                                        summa =  dbf.Field<decimal>("SUMMA")
-                                    };
-
-                      var grps = from dbf in dbfReal
-                                  group dbf by new
-                                  {
-                                     date = dbf.dreal,
-                                     id_dep = dbf.id_dep,
-                                  } 
-                                  into g
-                                  select new { ean = "", id_dep = g.Key.id_dep, g.Key.date, RealDbf = g.Sum(dbf => dbf.summa) };
-
-                      dtRealDbf = CustomLINQtoDataSetMethods.CopyToDataTable(grps);
-                      dtGoodInfo.Dispose();
-                  }
-
-                  //Группировка по дате, отделу, товару (нужны только дата и товар)
-                  if(Parameters.groupType == 3)
-                  {
-                      var grps = from dbf in dtrTovar.AsEnumerable()
-                                  group dbf by new
-                                  {
-                                     ean = dbf.Field<string>("EAN"), 
-                                     date = dbf.Field<DateTime>("ONDATE"),
-
-                                  } 
-                                  into g
-                                  select new { g.Key.ean, id_dep = 0, g.Key.date, RealDbf = g.Sum(table => Decimal.Parse(table["summa"].ToString())) };
-
-                      dtRealDbf = CustomLINQtoDataSetMethods.CopyToDataTable(grps);
-                  }
-
-                  dtrTovar.Dispose();
-                  try
-                  {
-                      //Объединяем данный SQL и DBF
-                      var allData = from real in dtRealData.AsEnumerable()
-                                    join dbf in dtRealDbf.AsEnumerable()
-                                    on new
-                                    {
-                                        date = real.Field<DateTime>("date"),
-                                        id_dep = (Parameters.groupType == 2 ? real.Field<int>("id_dep") : 0),
-                                        ean = (Parameters.groupType == 3 ? real.Field<string>("ean").ToString().Trim() : "")
-                                    }
-                                    equals
-                                      new
-                                      {
-                                          date = dbf.Field<DateTime>("date"),
-                                          id_dep = (Parameters.groupType == 2 ? dbf.Field<int>("id_dep") : 0),
-                                          ean = (Parameters.groupType == 3 ? dbf.Field<string>("ean").ToString().Trim() : "")
-                                      }
-                                     into total
-                                    from res in total.DefaultIfEmpty()
-                                    select new
-                                    {
-                                        date = real.Field<DateTime>("date"),
-                                        id_dep = real.Field<int>("id_dep"),
-                                        depName = real.Field<string>("depName"),
-                                        ean = real.Field<string>("ean").Trim(),
-                                        goodsName = real.Field<string>("goodsName").Trim(),
-                                        KsSql = real.Field<decimal>("KsSql"),
-                                        RealSql = real.Field<decimal>("RealSql"),
-                                        RealSql2 = real.Field<decimal>("RealSql2"),
-                                        Shah = real.Field<decimal>("Shah"),
-                                        RealDbf = (res == null ? 0 : res.Field<decimal>("RealDbf")),
-                                        idTU = real.Field<int>("idTU")
-                                    };
-
-                      dtRealData = CustomLINQtoDataSetMethods.CopyToDataTable(allData);
-                  }
-                  catch (NullReferenceException)
-                  {
-                      MessageBox.Show("Во время получения данных произошла ошибка.\nОбратитесь в ОЭЭС", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                      dtRealData = null;
-                      return;                
-                  }
-              }
-
-              bgwGetCompare.ReportProgress(80);
-
-              dtRealData.DefaultView.Sort = Parameters.groupType == 1 ? "date" : Parameters.groupType == 2 ? "date, id_dep" : "date, id_dep, ean";
-
-              dtRealData.Columns.Add("isRealEquals", typeof(bool));
-
-              //Проставляем признак расхождения реализаций
-              decimal real1, real2;
-              foreach (DataRow drRow in dtRealData.Rows)
-              {
-                  foreach (string colNameComp in alDataColumns)
-                  {
-                      foreach (string colName in alDataColumns)
-                      {
-                          if (dtRealData.Columns.Contains(colNameComp)
-                               && dtRealData.Columns.Contains(colName)
-                               && drRow[colName] != null && drRow[colName] != DBNull.Value
-                               && drRow[colNameComp] != null && drRow[colNameComp] != DBNull.Value
-                               && decimal.TryParse(drRow[colName].ToString(), out real1)
-                               && decimal.TryParse(drRow[colNameComp].ToString(), out real2)
-                               && real1 == real2
-
-                            )
-                          {
-                              drRow["isRealEquals"] = true;
-                          }
-                          else
-                          {
-                              drRow["isRealEquals"] = false;
-                              break;
-                          }
-                      }
-
-                      if (drRow["isRealEquals"] is bool
-                          && !(bool)drRow["isRealEquals"])
-                      {
-                          break;
-                      }
-                  }
-              }
-
-
-
-              if (dtRealData!=null && dtRealData.Rows.Count>0 && cDelta.Visible)
-              {
-                  dtRealData.Columns.Add("delta", typeof(decimal));
-                  if ((decimal) dtRealData.Rows[0]["KsSql"]!=0 && (decimal) dtRealData.Rows[0]["RealSql"]!=0 )
-                  {
-                      foreach (DataRow dr in dtRealData.Rows)
-                      {
-                          dr["delta"] = (decimal)dr["KsSql"] - (decimal)dr["RealSql"];
-                      }
-                  }
-
-
-              }
-              */
             // bsGrdMain.DataSource = dtRealData;
 
             bsGrdMain.DataSource = resultTable;
@@ -946,9 +783,20 @@ namespace RealCompare
 
             if (rbDateAndDep.Checked)
                 bsGrdMain.Sort = "date, id_dep asc";
+            else
             if (rbDate.Checked)
                 bsGrdMain.Sort = "date";
-            dgvMain.DataSource = bsGrdMain;
+            else
+                bsGrdMain.Sort = "date";
+
+            try
+            {
+                dgvMain.DataSource = bsGrdMain;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
             
             
             //dgvMain.DataSource = resultTable;
@@ -977,7 +825,11 @@ namespace RealCompare
         /// </summary>
         private void dgvMain_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
         {
-            dgvMain.Rows[e.RowIndex].DefaultCellStyle.BackColor = (dgvMain.Rows[e.RowIndex].Cells["isRealEquals"].Value is bool && (bool)dgvMain.Rows[e.RowIndex].Cells["isRealEquals"].Value) ? Color.White : Color.FromArgb(235, 139, 115);
+            dgvMain.Rows[e.RowIndex].DefaultCellStyle.BackColor =
+                dgvMain.Rows[e.RowIndex].DefaultCellStyle.SelectionBackColor =
+                (dgvMain.Rows[e.RowIndex].Cells["isRealEquals"].Value is bool && (bool)dgvMain.Rows[e.RowIndex].Cells["isRealEquals"].Value) ? Color.White : panel1.BackColor;
+
+            dgvMain.Rows[e.RowIndex].DefaultCellStyle.SelectionForeColor = Color.Black;
         }
 
         ///// <summary>
@@ -1009,33 +861,33 @@ namespace RealCompare
         /// </summary>
         private void CountTotal()
         {
-            double sum;
-            for (int i = dgvMain.Columns.Count - 5; i < dgvMain.Columns.Count; i++)
-            {
-                sum = 0.00;
-                if (dgvMain.Columns[i].Visible)
-                {
-                    foreach (DataGridViewRow dr in dgvMain.Rows)
-                    {
-                        double dbl;
-                        if(Double.TryParse(dr.Cells[i].Value.ToString(), out dbl))
+            //double sum;
+            //for (int i = dgvMain.Columns.Count - 5; i < dgvMain.Columns.Count; i++)
+            //{
+            //    sum = 0.00;
+            //    if (dgvMain.Columns[i].Visible)
+            //    {
+            //        foreach (DataGridViewRow dr in dgvMain.Rows)
+            //        {
+            //            double dbl;
+            //            if(Double.TryParse(dr.Cells[i].Value.ToString(), out dbl))
 
-                        sum += dbl;
-                    }
+            //            sum += dbl;
+            //        }
                                         
-                    foreach (Control con in this.Controls)
-                    {
-                        TextBox tb = con as TextBox;
-                        if (tb != null)
-                        {
-                            if (con.Name == "tbTotal" + dgvMain.Columns[i].Name)
-                            {                                
-                                    tb.Text =  Math.Round(sum,2).ToString("0.00");
-                            }
-                        }
-                    }
-                }
-            }
+            //        foreach (Control con in this.Controls)
+            //        {
+            //            TextBox tb = con as TextBox;
+            //            if (tb != null)
+            //            {
+            //                if (con.Name == "tbTotal" + dgvMain.Columns[i].Name)
+            //                {                                
+            //                        tb.Text =  Math.Round(sum,2).ToString("0.00");
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         #region Фильтрация
@@ -1075,7 +927,7 @@ namespace RealCompare
                 filter += (filter.Length > 0 ? " AND " : "") + "isRealEquals = false";
             }
 
-            bsGrdMain.Filter = filter;
+            //bsGrdMain.Filter = filter;
         }
 
         private void tbEAN_TextChanged(object sender, EventArgs e)
@@ -1306,6 +1158,100 @@ namespace RealCompare
         private void tbTotalcDelta_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void chbMainKass_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chbMainKass.Checked)
+            {
+                rbDateAndVVO.Enabled = true;
+                rbDate.Enabled = true;
+                rbDateAndDep.Enabled = false;
+                rbDateAndDepAndGood.Enabled = false;
+                if (rbDateAndDep.Checked || rbDateAndDepAndGood.Checked) rbDate.Checked = true;
+                cMainKass.Visible = true;
+                label3.Visible = tbFio.Visible = label4.Visible = tbDateAdd.Visible = true;
+                btViewRepair.Visible = dgvRepaireRequest.Visible = btAdd.Visible = btEdit.Visible = btDel.Visible = true;
+            }
+            else
+            {
+                rbDateAndVVO.Enabled = false;
+                rbDateAndDep.Enabled = true;
+                rbDateAndDepAndGood.Enabled = true;
+                cMainKass.Visible = false;
+                label3.Visible = tbFio.Visible = label4.Visible = tbDateAdd.Visible = false;
+                btViewRepair.Visible = dgvRepaireRequest.Visible = btAdd.Visible = btEdit.Visible = btDel.Visible = false;
+                if (rbDateAndVVO.Checked) rbDate.Checked = true;
+            }
+
+
+        }
+
+        private void dgvMain_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && e.RowIndex != -1 && chbMainKass.Checked)
+            {
+                dgvMain.CurrentCell = dgvMain[e.ColumnIndex, e.RowIndex];
+                cmsMainGridContext.Show(MousePosition);
+            }
+        }
+
+        private void dgvMain_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            DataGridView dgv = sender as DataGridView;
+            //Рисуем рамку для выделеной строки
+            if (dgv.Rows[e.RowIndex].Selected)
+            {
+                int width = dgv.Width;
+                Rectangle r = dgv.GetRowDisplayRectangle(e.RowIndex, false);
+                Rectangle rect = new Rectangle(r.X, r.Y, width - 1, r.Height - 1);
+
+                ControlPaint.DrawBorder(e.Graphics, rect,
+                    SystemColors.Highlight, 2, ButtonBorderStyle.Solid,
+                    SystemColors.Highlight, 2, ButtonBorderStyle.Solid,
+                    SystemColors.Highlight, 2, ButtonBorderStyle.Solid,
+                    SystemColors.Highlight, 2, ButtonBorderStyle.Solid);
+            }
+        }
+
+        private void btAdd_Click(object sender, EventArgs e)
+        {
+            new frmAddRealizMainKass().ShowDialog();
+        }
+
+        private void btEdit_Click(object sender, EventArgs e)
+        {
+            new frmAddRealizMainKass() { date = DateTime.Now.AddDays(-1), isVVO = true,isEdit = true }.ShowDialog();
+        }
+
+        private void btDel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btViewRepair_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void установитьСверкуToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void снятьСверкуToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void создатьЗаявкуНаРемонтToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void rbDateAndVVO_CheckedChanged(object sender, EventArgs e)
+        {
+            EnableByGroups();
         }
     }
 

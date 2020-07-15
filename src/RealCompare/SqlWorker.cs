@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using Nwuram.Framework.Data;
+using Nwuram.Framework.Settings.User;
+using System.Threading.Tasks;
 
 namespace RealCompare
 {
@@ -252,8 +254,101 @@ namespace RealCompare
         }
 
 
-        #endregion 
+        #endregion
 
 
+        #region "Реализация главной кассы"
+    
+        /// <summary>
+        /// Запись\редактирование\удаление данных по главной кассе
+        /// </summary>
+        /// <param name="date">Дата выборки </param>
+        /// <returns></returns>
+        public async Task<DataTable> setMainKass(int id, DateTime date, decimal mainKass, bool isVVO, bool isDel, int result)
+        {
+            ap.Clear();
+            ap.Add(id);
+            ap.Add(date);
+            ap.Add(mainKass);
+            ap.Add(isVVO);
+            ap.Add(UserSettings.User.Id);
+            ap.Add(isDel);
+            ap.Add(result);
+
+            return executeProcedure("[RealCompare].[spg_setMainKass]",
+                new string[7] { "@id", "@date", "@MainKass", "@isVVO", "@id_user", "@isDel", "@result" },
+                new DbType[7] { DbType.Int32, DbType.DateTime, DbType.Decimal, DbType.Boolean, DbType.Int32, DbType.Boolean, DbType.Int32 }, ap);
+        }
+
+        /// <summary>
+        /// Получение данных по главной кассе
+        /// </summary>
+        /// <param name="date">Дата выборки </param>
+        /// <returns></returns>
+        public async Task<DataTable> getMainKass(DateTime date, bool isVVO)
+        {
+            ap.Clear();
+            ap.Add(date);
+            ap.Add(isVVO);
+
+            return executeProcedure("[RealCompare].[spg_getMainKass]",
+                new string[2] { "@date", "@isVVO"},
+                new DbType[2] { DbType.DateTime,DbType.Boolean}, ap);
+        }
+
+        /// <summary>
+        /// Получение данных по реализации на промежуток дат
+        /// </summary>
+        /// <param name="dateStart"></param>
+        /// <param name="dateEnd"></param>
+        /// <returns></returns>
+        public async Task<DataTable> GetRealizForReportMainKass(DateTime dateStart, DateTime dateEnd)
+        {
+            ap.Clear();
+            ap.Add(dateStart);
+            ap.Add(dateEnd);
+            return executeProcedure("[RealCompare].[GetRealizForReportMainKass]",
+               new string[2] { "@dateStart", "@dateEnd" },
+               new DbType[2] { DbType.DateTime, DbType.DateTime }, ap);
+        }
+
+
+        /// <summary>
+        /// Получение данных по реализации на промежуток дат
+        /// </summary>
+        /// <param name="dateStart"></param>
+        /// <param name="dateEnd"></param>
+        /// <returns></returns>
+        public async Task<DataTable> GetReportMainKass(DateTime dateStart, DateTime dateEnd, int type)
+        {
+            ap.Clear();
+            ap.Add(dateStart);
+            ap.Add(dateEnd);
+            ap.Add(type);
+
+            return executeProcedure("[RealCompare].[GetReportMainKass]",
+               new string[3] { "@dateStart", "@dateEnd", "@typeReport" },
+               new DbType[3] { DbType.DateTime, DbType.DateTime, DbType.Int32 }, ap);
+        }
+
+        /// <summary>
+        /// Получение данных по главной кассе за промежуток дат
+        /// </summary>
+        /// <param name="dateStart"></param>
+        /// <param name="dateEnd"></param>
+        /// <returns></returns>
+        public async Task<DataTable> getMainKassForListDate(DateTime dateStart, DateTime dateEnd)
+        {
+            ap.Clear();
+            ap.Add(dateStart);
+            ap.Add(dateEnd);
+            
+
+            return executeProcedure("[RealCompare].[spg_getMainKassForListDate]",
+               new string[2] { "@dateStart", "@dateEnd" },
+               new DbType[2] { DbType.DateTime, DbType.DateTime}, ap);
+        }
+
+        #endregion
     }
 }
