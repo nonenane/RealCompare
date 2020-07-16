@@ -30,7 +30,9 @@ where @dateStart <= mk.Data and mk.Data <= @dateEnd and mk.RealSQL is null
 
 ---Данные «Реал. SQL» отличаются от сохраненных» 
 select mk.MainKass,mk.Data,mk.isVVO from RealCompare.j_MainKass mk 
-where @dateStart <= mk.Data and mk.Data <= @dateEnd and mk.RealSQL is not null
+where @dateStart <= mk.Data and mk.Data <= @dateEnd and mk.RealSQL is not null 
 
 
 exec [RealCompare].[GetRealizForReportMainKass] '2020-01-01','2020-07-15'
+
+exec [RealCompare].[GetDataDBASE1] '2020-01-01','2020-07-15'

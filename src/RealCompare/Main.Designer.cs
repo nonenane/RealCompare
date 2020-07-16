@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.grpSearch = new System.Windows.Forms.GroupBox();
             this.lbName = new System.Windows.Forms.Label();
             this.tbName = new System.Windows.Forms.TextBox();
@@ -81,11 +81,6 @@
             this.tbTotalRealSql = new System.Windows.Forms.TextBox();
             this.lbTotal = new System.Windows.Forms.Label();
             this.ttButtons = new System.Windows.Forms.ToolTip(this.components);
-            this.btViewRepair = new System.Windows.Forms.Button();
-            this.btCheckExisting = new System.Windows.Forms.Button();
-            this.btExit = new System.Windows.Forms.Button();
-            this.btPrint = new System.Windows.Forms.Button();
-            this.btRefresh = new System.Windows.Forms.Button();
             this.bgwGetCompare = new System.ComponentModel.BackgroundWorker();
             this.panel1 = new System.Windows.Forms.Panel();
             this.chkShowOnlyRash = new System.Windows.Forms.CheckBox();
@@ -100,20 +95,29 @@
             this.cRequestInfo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cRequestConfirm = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cRequestStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btEdit = new System.Windows.Forms.Button();
-            this.btDel = new System.Windows.Forms.Button();
-            this.btAdd = new System.Windows.Forms.Button();
-            this.bsMain = new System.Windows.Forms.BindingSource(this.components);
             this.tbFio = new System.Windows.Forms.TextBox();
             this.tbDateAdd = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tbTotalcMainKass = new System.Windows.Forms.TextBox();
+            this.btReportMainKass = new System.Windows.Forms.Button();
+            this.btDel = new System.Windows.Forms.Button();
+            this.btEdit = new System.Windows.Forms.Button();
+            this.btAdd = new System.Windows.Forms.Button();
+            this.btViewRepair = new System.Windows.Forms.Button();
+            this.btCheckExisting = new System.Windows.Forms.Button();
+            this.btExit = new System.Windows.Forms.Button();
+            this.btPrint = new System.Windows.Forms.Button();
+            this.btRefresh = new System.Windows.Forms.Button();
+            this.bsMain = new System.Windows.Forms.BindingSource(this.components);
             this.grpSearch.SuspendLayout();
             this.grpGroups.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
             this.cmsMainGridContext.SuspendLayout();
             this.grpSources.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRepaireRequest)).BeginInit();
+            this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bsMain)).BeginInit();
             this.SuspendLayout();
             // 
@@ -317,14 +321,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvMain.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvMain.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvMain.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle19.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle19.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle19.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle19.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle19.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle19.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvMain.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle19;
             this.dgvMain.ColumnHeadersHeight = 40;
             this.dgvMain.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvMain.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -350,14 +354,15 @@
             this.dgvMain.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.dgvMain_RowPrePaint);
             this.dgvMain.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgvMain_RowsAdded);
             this.dgvMain.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgvMain_RowsRemoved);
+            this.dgvMain.SelectionChanged += new System.EventHandler(this.dgvMain_SelectionChanged);
             // 
             // DateReal
             // 
             this.DateReal.DataPropertyName = "date";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.Format = "d";
-            dataGridViewCellStyle2.NullValue = null;
-            this.DateReal.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle20.Format = "d";
+            dataGridViewCellStyle20.NullValue = null;
+            this.DateReal.DefaultCellStyle = dataGridViewCellStyle20;
             this.DateReal.FillWeight = 50F;
             this.DateReal.HeaderText = "Дата реал.";
             this.DateReal.MinimumWidth = 20;
@@ -366,8 +371,8 @@
             // Department
             // 
             this.Department.DataPropertyName = "depName";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.Department.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.Department.DefaultCellStyle = dataGridViewCellStyle21;
             this.Department.FillWeight = 50F;
             this.Department.HeaderText = "Отдел";
             this.Department.MinimumWidth = 20;
@@ -376,8 +381,8 @@
             // EAN
             // 
             this.EAN.DataPropertyName = "ean";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.EAN.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.EAN.DefaultCellStyle = dataGridViewCellStyle22;
             this.EAN.FillWeight = 60F;
             this.EAN.HeaderText = "EAN";
             this.EAN.MinimumWidth = 20;
@@ -386,8 +391,8 @@
             // cName
             // 
             this.cName.DataPropertyName = "goodsName";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.cName.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.cName.DefaultCellStyle = dataGridViewCellStyle23;
             this.cName.FillWeight = 190F;
             this.cName.HeaderText = "Наименование товара";
             this.cName.MinimumWidth = 20;
@@ -395,6 +400,7 @@
             // 
             // cMainKass
             // 
+            this.cMainKass.DataPropertyName = "MainKass";
             this.cMainKass.HeaderText = "Главная касса";
             this.cMainKass.Name = "cMainKass";
             this.cMainKass.ReadOnly = true;
@@ -403,9 +409,9 @@
             // KsSql
             // 
             this.KsSql.DataPropertyName = "KsSql";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle6.Format = "N2";
-            this.KsSql.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle24.Format = "N2";
+            this.KsSql.DefaultCellStyle = dataGridViewCellStyle24;
             this.KsSql.FillWeight = 50F;
             this.KsSql.HeaderText = "Шахматка";
             this.KsSql.MinimumWidth = 20;
@@ -414,9 +420,9 @@
             // RealSql
             // 
             this.RealSql.DataPropertyName = "RealSql";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle7.Format = "N2";
-            this.RealSql.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle25.Format = "N2";
+            this.RealSql.DefaultCellStyle = dataGridViewCellStyle25;
             this.RealSql.FillWeight = 50F;
             this.RealSql.HeaderText = "Реал. SQL";
             this.RealSql.MinimumWidth = 20;
@@ -425,8 +431,8 @@
             // cDelta
             // 
             this.cDelta.DataPropertyName = "delta";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.cDelta.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.cDelta.DefaultCellStyle = dataGridViewCellStyle26;
             this.cDelta.HeaderText = "Дельта";
             this.cDelta.Name = "cDelta";
             this.cDelta.Visible = false;
@@ -446,6 +452,7 @@
             this.создатьЗаявкуНаРемонтToolStripMenuItem});
             this.cmsMainGridContext.Name = "cmsMainContext";
             this.cmsMainGridContext.Size = new System.Drawing.Size(210, 70);
+            this.cmsMainGridContext.Opening += new System.ComponentModel.CancelEventHandler(this.cmsMainGridContext_Opening);
             // 
             // установитьСверкуToolStripMenuItem
             // 
@@ -565,24 +572,292 @@
             // 
             this.lbTotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lbTotal.AutoSize = true;
-            this.lbTotal.Location = new System.Drawing.Point(615, 413);
+            this.lbTotal.Location = new System.Drawing.Point(522, 413);
             this.lbTotal.Name = "lbTotal";
             this.lbTotal.Size = new System.Drawing.Size(40, 13);
             this.lbTotal.TabIndex = 20;
             this.lbTotal.Text = "Итоги:";
+            // 
+            // bgwGetCompare
+            // 
+            this.bgwGetCompare.WorkerReportsProgress = true;
+            this.bgwGetCompare.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwGetCompare_DoWork);
+            this.bgwGetCompare.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwGetCompare_ProgressChanged);
+            this.bgwGetCompare.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwGetCompare_RunWorkerCompleted);
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(139)))), ((int)(((byte)(115)))));
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.panel1.Location = new System.Drawing.Point(12, 409);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(20, 20);
+            this.panel1.TabIndex = 21;
+            // 
+            // chkShowOnlyRash
+            // 
+            this.chkShowOnlyRash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkShowOnlyRash.AutoSize = true;
+            this.chkShowOnlyRash.Location = new System.Drawing.Point(12, 438);
+            this.chkShowOnlyRash.Name = "chkShowOnlyRash";
+            this.chkShowOnlyRash.Size = new System.Drawing.Size(183, 17);
+            this.chkShowOnlyRash.TabIndex = 22;
+            this.chkShowOnlyRash.Text = "Показать только расхождения";
+            this.chkShowOnlyRash.UseVisualStyleBackColor = true;
+            this.chkShowOnlyRash.CheckedChanged += new System.EventHandler(this.chkShowOnlyRash_CheckedChanged);
+            // 
+            // tbTotalcDelta
+            // 
+            this.tbTotalcDelta.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.tbTotalcDelta.BackColor = System.Drawing.Color.White;
+            this.tbTotalcDelta.Location = new System.Drawing.Point(919, 409);
+            this.tbTotalcDelta.Name = "tbTotalcDelta";
+            this.tbTotalcDelta.ReadOnly = true;
+            this.tbTotalcDelta.Size = new System.Drawing.Size(87, 20);
+            this.tbTotalcDelta.TabIndex = 24;
+            this.tbTotalcDelta.Visible = false;
+            this.tbTotalcDelta.TextChanged += new System.EventHandler(this.tbTotalcDelta_TextChanged);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(43, 14);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(86, 13);
+            this.label1.TabIndex = 17;
+            this.label1.Text = "Ошибка сверки";
+            // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(11)))));
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.panel2.Location = new System.Drawing.Point(17, 10);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(20, 20);
+            this.panel2.TabIndex = 21;
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(184, 14);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(50, 13);
+            this.label2.TabIndex = 17;
+            this.label2.Text = "Сверено";
+            // 
+            // panel3
+            // 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(255)))), ((int)(((byte)(153)))));
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.panel3.Location = new System.Drawing.Point(158, 10);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(20, 20);
+            this.panel3.TabIndex = 21;
+            // 
+            // dgvRepaireRequest
+            // 
+            this.dgvRepaireRequest.AllowUserToAddRows = false;
+            this.dgvRepaireRequest.AllowUserToDeleteRows = false;
+            this.dgvRepaireRequest.AllowUserToResizeRows = false;
+            this.dgvRepaireRequest.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvRepaireRequest.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle27.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle27.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle27.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle27.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle27.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle27.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRepaireRequest.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle27;
+            this.dgvRepaireRequest.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvRepaireRequest.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.cNumRequest,
+            this.cDateRequest,
+            this.cRequestInfo,
+            this.cRequestConfirm,
+            this.cRequestStatus});
+            this.dgvRepaireRequest.Location = new System.Drawing.Point(17, 36);
+            this.dgvRepaireRequest.MultiSelect = false;
+            this.dgvRepaireRequest.Name = "dgvRepaireRequest";
+            this.dgvRepaireRequest.ReadOnly = true;
+            this.dgvRepaireRequest.RowHeadersVisible = false;
+            this.dgvRepaireRequest.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.dgvRepaireRequest.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvRepaireRequest.Size = new System.Drawing.Size(613, 85);
+            this.dgvRepaireRequest.TabIndex = 25;
+            // 
+            // cNumRequest
+            // 
+            this.cNumRequest.HeaderText = "№ заявки";
+            this.cNumRequest.Name = "cNumRequest";
+            this.cNumRequest.ReadOnly = true;
+            // 
+            // cDateRequest
+            // 
+            this.cDateRequest.HeaderText = "Дата";
+            this.cDateRequest.Name = "cDateRequest";
+            this.cDateRequest.ReadOnly = true;
+            // 
+            // cRequestInfo
+            // 
+            this.cRequestInfo.HeaderText = "Описание неисправности";
+            this.cRequestInfo.Name = "cRequestInfo";
+            this.cRequestInfo.ReadOnly = true;
+            // 
+            // cRequestConfirm
+            // 
+            this.cRequestConfirm.HeaderText = "Дата подтверждения";
+            this.cRequestConfirm.Name = "cRequestConfirm";
+            this.cRequestConfirm.ReadOnly = true;
+            // 
+            // cRequestStatus
+            // 
+            this.cRequestStatus.HeaderText = "Статус";
+            this.cRequestStatus.Name = "cRequestStatus";
+            this.cRequestStatus.ReadOnly = true;
+            // 
+            // tbFio
+            // 
+            this.tbFio.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.tbFio.BackColor = System.Drawing.Color.White;
+            this.tbFio.Location = new System.Drawing.Point(306, 10);
+            this.tbFio.Name = "tbFio";
+            this.tbFio.ReadOnly = true;
+            this.tbFio.Size = new System.Drawing.Size(227, 20);
+            this.tbFio.TabIndex = 27;
+            // 
+            // tbDateAdd
+            // 
+            this.tbDateAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.tbDateAdd.BackColor = System.Drawing.Color.White;
+            this.tbDateAdd.Location = new System.Drawing.Point(634, 10);
+            this.tbDateAdd.Name = "tbDateAdd";
+            this.tbDateAdd.ReadOnly = true;
+            this.tbDateAdd.Size = new System.Drawing.Size(119, 20);
+            this.tbDateAdd.TabIndex = 27;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(248, 14);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(52, 13);
+            this.label3.TabIndex = 17;
+            this.label3.Text = "Добавил";
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(539, 14);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(96, 13);
+            this.label4.TabIndex = 17;
+            this.label4.Text = "Дата добавления";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.dgvRepaireRequest);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.tbDateAdd);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.tbFio);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.btDel);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.btEdit);
+            this.groupBox1.Controls.Add(this.panel2);
+            this.groupBox1.Controls.Add(this.btAdd);
+            this.groupBox1.Controls.Add(this.panel3);
+            this.groupBox1.Controls.Add(this.btViewRepair);
+            this.groupBox1.Location = new System.Drawing.Point(196, 432);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(759, 126);
+            this.groupBox1.TabIndex = 28;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Visible = false;
+            // 
+            // tbTotalcMainKass
+            // 
+            this.tbTotalcMainKass.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.tbTotalcMainKass.BackColor = System.Drawing.Color.White;
+            this.tbTotalcMainKass.Location = new System.Drawing.Point(568, 409);
+            this.tbTotalcMainKass.Name = "tbTotalcMainKass";
+            this.tbTotalcMainKass.ReadOnly = true;
+            this.tbTotalcMainKass.Size = new System.Drawing.Size(87, 20);
+            this.tbTotalcMainKass.TabIndex = 29;
+            this.tbTotalcMainKass.Visible = false;
+            // 
+            // btReportMainKass
+            // 
+            this.btReportMainKass.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btReportMainKass.BackgroundImage = global::RealCompare.Properties.Resources.print1;
+            this.btReportMainKass.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btReportMainKass.Location = new System.Drawing.Point(961, 465);
+            this.btReportMainKass.Name = "btReportMainKass";
+            this.btReportMainKass.Size = new System.Drawing.Size(35, 35);
+            this.btReportMainKass.TabIndex = 30;
+            this.ttButtons.SetToolTip(this.btReportMainKass, "Проверка наличия чеков");
+            this.btReportMainKass.UseVisualStyleBackColor = true;
+            this.btReportMainKass.Click += new System.EventHandler(this.btReportMainKass_Click);
+            // 
+            // btDel
+            // 
+            this.btDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btDel.Image = global::RealCompare.Properties.Resources.Trash;
+            this.btDel.Location = new System.Drawing.Point(718, 34);
+            this.btDel.Name = "btDel";
+            this.btDel.Size = new System.Drawing.Size(35, 35);
+            this.btDel.TabIndex = 26;
+            this.btDel.UseVisualStyleBackColor = true;
+            this.btDel.Click += new System.EventHandler(this.btDel_Click);
+            // 
+            // btEdit
+            // 
+            this.btEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btEdit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btEdit.Image = global::RealCompare.Properties.Resources.Edit;
+            this.btEdit.Location = new System.Drawing.Point(677, 34);
+            this.btEdit.Name = "btEdit";
+            this.btEdit.Size = new System.Drawing.Size(35, 35);
+            this.btEdit.TabIndex = 26;
+            this.btEdit.UseVisualStyleBackColor = true;
+            this.btEdit.Click += new System.EventHandler(this.btEdit_Click);
+            // 
+            // btAdd
+            // 
+            this.btAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btAdd.Image = global::RealCompare.Properties.Resources.Add;
+            this.btAdd.Location = new System.Drawing.Point(636, 34);
+            this.btAdd.Name = "btAdd";
+            this.btAdd.Size = new System.Drawing.Size(35, 35);
+            this.btAdd.TabIndex = 26;
+            this.btAdd.UseVisualStyleBackColor = true;
+            this.btAdd.Click += new System.EventHandler(this.btAdd_Click);
             // 
             // btViewRepair
             // 
             this.btViewRepair.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btViewRepair.BackgroundImage = global::RealCompare.Properties.Resources.old_edit_find;
             this.btViewRepair.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btViewRepair.Location = new System.Drawing.Point(875, 514);
+            this.btViewRepair.Location = new System.Drawing.Point(677, 86);
             this.btViewRepair.Name = "btViewRepair";
             this.btViewRepair.Size = new System.Drawing.Size(35, 35);
             this.btViewRepair.TabIndex = 26;
             this.ttButtons.SetToolTip(this.btViewRepair, "Проверка наличия чеков");
             this.btViewRepair.UseVisualStyleBackColor = true;
-            this.btViewRepair.Visible = false;
             this.btViewRepair.Click += new System.EventHandler(this.btViewRepair_Click);
             // 
             // btCheckExisting
@@ -637,262 +912,21 @@
             this.btRefresh.UseVisualStyleBackColor = true;
             this.btRefresh.Click += new System.EventHandler(this.btRefresh_Click);
             // 
-            // bgwGetCompare
-            // 
-            this.bgwGetCompare.WorkerReportsProgress = true;
-            this.bgwGetCompare.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgwGetCompare_DoWork);
-            this.bgwGetCompare.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bgwGetCompare_ProgressChanged);
-            this.bgwGetCompare.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bgwGetCompare_RunWorkerCompleted);
-            // 
-            // panel1
-            // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(139)))), ((int)(((byte)(115)))));
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.panel1.Location = new System.Drawing.Point(12, 409);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(20, 20);
-            this.panel1.TabIndex = 21;
-            // 
-            // chkShowOnlyRash
-            // 
-            this.chkShowOnlyRash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chkShowOnlyRash.AutoSize = true;
-            this.chkShowOnlyRash.Location = new System.Drawing.Point(12, 438);
-            this.chkShowOnlyRash.Name = "chkShowOnlyRash";
-            this.chkShowOnlyRash.Size = new System.Drawing.Size(183, 17);
-            this.chkShowOnlyRash.TabIndex = 22;
-            this.chkShowOnlyRash.Text = "Показать только расхождения";
-            this.chkShowOnlyRash.UseVisualStyleBackColor = true;
-            this.chkShowOnlyRash.CheckedChanged += new System.EventHandler(this.chkShowOnlyRash_CheckedChanged);
-            // 
-            // tbTotalcDelta
-            // 
-            this.tbTotalcDelta.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.tbTotalcDelta.BackColor = System.Drawing.Color.White;
-            this.tbTotalcDelta.Location = new System.Drawing.Point(919, 409);
-            this.tbTotalcDelta.Name = "tbTotalcDelta";
-            this.tbTotalcDelta.ReadOnly = true;
-            this.tbTotalcDelta.Size = new System.Drawing.Size(87, 20);
-            this.tbTotalcDelta.TabIndex = 24;
-            this.tbTotalcDelta.Visible = false;
-            this.tbTotalcDelta.TextChanged += new System.EventHandler(this.tbTotalcDelta_TextChanged);
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(227, 440);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(86, 13);
-            this.label1.TabIndex = 17;
-            this.label1.Text = "Ошибка сверки";
-            // 
-            // panel2
-            // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(11)))));
-            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.panel2.Location = new System.Drawing.Point(201, 436);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(20, 20);
-            this.panel2.TabIndex = 21;
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(368, 440);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(50, 13);
-            this.label2.TabIndex = 17;
-            this.label2.Text = "Сверено";
-            // 
-            // panel3
-            // 
-            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(255)))), ((int)(((byte)(153)))));
-            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.panel3.Location = new System.Drawing.Point(342, 436);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(20, 20);
-            this.panel3.TabIndex = 21;
-            // 
-            // dgvRepaireRequest
-            // 
-            this.dgvRepaireRequest.AllowUserToAddRows = false;
-            this.dgvRepaireRequest.AllowUserToDeleteRows = false;
-            this.dgvRepaireRequest.AllowUserToResizeRows = false;
-            this.dgvRepaireRequest.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvRepaireRequest.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRepaireRequest.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
-            this.dgvRepaireRequest.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvRepaireRequest.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.cNumRequest,
-            this.cDateRequest,
-            this.cRequestInfo,
-            this.cRequestConfirm,
-            this.cRequestStatus});
-            this.dgvRepaireRequest.Location = new System.Drawing.Point(201, 464);
-            this.dgvRepaireRequest.MultiSelect = false;
-            this.dgvRepaireRequest.Name = "dgvRepaireRequest";
-            this.dgvRepaireRequest.ReadOnly = true;
-            this.dgvRepaireRequest.RowHeadersVisible = false;
-            this.dgvRepaireRequest.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.dgvRepaireRequest.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvRepaireRequest.Size = new System.Drawing.Size(668, 93);
-            this.dgvRepaireRequest.TabIndex = 25;
-            this.dgvRepaireRequest.Visible = false;
-            // 
-            // cNumRequest
-            // 
-            this.cNumRequest.HeaderText = "№ заявки";
-            this.cNumRequest.Name = "cNumRequest";
-            this.cNumRequest.ReadOnly = true;
-            // 
-            // cDateRequest
-            // 
-            this.cDateRequest.HeaderText = "Дата";
-            this.cDateRequest.Name = "cDateRequest";
-            this.cDateRequest.ReadOnly = true;
-            // 
-            // cRequestInfo
-            // 
-            this.cRequestInfo.HeaderText = "Описание неисправности";
-            this.cRequestInfo.Name = "cRequestInfo";
-            this.cRequestInfo.ReadOnly = true;
-            // 
-            // cRequestConfirm
-            // 
-            this.cRequestConfirm.HeaderText = "Дата подтверждения";
-            this.cRequestConfirm.Name = "cRequestConfirm";
-            this.cRequestConfirm.ReadOnly = true;
-            // 
-            // cRequestStatus
-            // 
-            this.cRequestStatus.HeaderText = "Статус";
-            this.cRequestStatus.Name = "cRequestStatus";
-            this.cRequestStatus.ReadOnly = true;
-            // 
-            // btEdit
-            // 
-            this.btEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btEdit.BackgroundImage = global::RealCompare.Properties.Resources.Edit;
-            this.btEdit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btEdit.Location = new System.Drawing.Point(916, 461);
-            this.btEdit.Name = "btEdit";
-            this.btEdit.Size = new System.Drawing.Size(35, 35);
-            this.btEdit.TabIndex = 26;
-            this.btEdit.UseVisualStyleBackColor = true;
-            this.btEdit.Visible = false;
-            this.btEdit.Click += new System.EventHandler(this.btEdit_Click);
-            // 
-            // btDel
-            // 
-            this.btDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btDel.BackgroundImage = global::RealCompare.Properties.Resources.Trash;
-            this.btDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btDel.Location = new System.Drawing.Point(957, 461);
-            this.btDel.Name = "btDel";
-            this.btDel.Size = new System.Drawing.Size(35, 35);
-            this.btDel.TabIndex = 26;
-            this.btDel.UseVisualStyleBackColor = true;
-            this.btDel.Visible = false;
-            this.btDel.Click += new System.EventHandler(this.btDel_Click);
-            // 
-            // btAdd
-            // 
-            this.btAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btAdd.BackgroundImage = global::RealCompare.Properties.Resources.Add;
-            this.btAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btAdd.Location = new System.Drawing.Point(875, 461);
-            this.btAdd.Name = "btAdd";
-            this.btAdd.Size = new System.Drawing.Size(35, 35);
-            this.btAdd.TabIndex = 26;
-            this.btAdd.UseVisualStyleBackColor = true;
-            this.btAdd.Visible = false;
-            this.btAdd.Click += new System.EventHandler(this.btAdd_Click);
-            // 
-            // tbFio
-            // 
-            this.tbFio.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.tbFio.BackColor = System.Drawing.Color.White;
-            this.tbFio.Location = new System.Drawing.Point(568, 436);
-            this.tbFio.Name = "tbFio";
-            this.tbFio.ReadOnly = true;
-            this.tbFio.Size = new System.Drawing.Size(229, 20);
-            this.tbFio.TabIndex = 27;
-            this.tbFio.Visible = false;
-            // 
-            // tbDateAdd
-            // 
-            this.tbDateAdd.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.tbDateAdd.BackColor = System.Drawing.Color.White;
-            this.tbDateAdd.Location = new System.Drawing.Point(905, 436);
-            this.tbDateAdd.Name = "tbDateAdd";
-            this.tbDateAdd.ReadOnly = true;
-            this.tbDateAdd.Size = new System.Drawing.Size(119, 20);
-            this.tbDateAdd.TabIndex = 27;
-            this.tbDateAdd.Visible = false;
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(512, 440);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(52, 13);
-            this.label3.TabIndex = 17;
-            this.label3.Text = "Добавил";
-            this.label3.Visible = false;
-            // 
-            // label4
-            // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(803, 440);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(96, 13);
-            this.label4.TabIndex = 17;
-            this.label4.Text = "Дата добавления";
-            this.label4.Visible = false;
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1131, 596);
-            this.Controls.Add(this.tbDateAdd);
-            this.Controls.Add(this.tbFio);
-            this.Controls.Add(this.btDel);
-            this.Controls.Add(this.btEdit);
-            this.Controls.Add(this.btAdd);
-            this.Controls.Add(this.btViewRepair);
-            this.Controls.Add(this.dgvRepaireRequest);
+            this.Controls.Add(this.btReportMainKass);
+            this.Controls.Add(this.tbTotalcMainKass);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.tbTotalcDelta);
             this.Controls.Add(this.btCheckExisting);
             this.Controls.Add(this.chkShowOnlyRash);
             this.Controls.Add(this.lbTotal);
             this.Controls.Add(this.tbTotalRealSql);
             this.Controls.Add(this.tbTotalKsSql);
-            this.Controls.Add(this.panel3);
-            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.ldRashExists);
             this.Controls.Add(this.btExit);
             this.Controls.Add(this.btPrint);
@@ -926,6 +960,8 @@
             this.grpSources.ResumeLayout(false);
             this.grpSources.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRepaireRequest)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bsMain)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1003,6 +1039,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn RealSql;
         private System.Windows.Forms.DataGridViewTextBoxColumn cDelta;
         private System.Windows.Forms.DataGridViewTextBoxColumn isRealEquals;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.TextBox tbTotalcMainKass;
+        private System.Windows.Forms.Button btReportMainKass;
     }
 }
 

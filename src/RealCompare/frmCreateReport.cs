@@ -291,5 +291,10 @@ namespace RealCompare
 
             }
         }
+
+        private void btClose_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+        }
     }
 }

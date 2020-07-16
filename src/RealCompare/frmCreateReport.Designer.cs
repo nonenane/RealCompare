@@ -50,6 +50,7 @@
             this.btClose.Size = new System.Drawing.Size(32, 32);
             this.btClose.TabIndex = 5;
             this.btClose.UseVisualStyleBackColor = true;
+            this.btClose.Click += new System.EventHandler(this.btClose_Click);
             // 
             // btPrint
             // 
@@ -137,7 +138,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(338, 162);
+            this.ClientSize = new System.Drawing.Size(334, 158);
             this.ControlBox = false;
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label2);

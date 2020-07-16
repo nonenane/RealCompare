@@ -349,6 +349,24 @@ namespace RealCompare
                new DbType[2] { DbType.DateTime, DbType.DateTime}, ap);
         }
 
+        /// <summary>
+        /// Запись\редактирование\удаление данных по главной кассе
+        /// </summary>
+        /// <param name="date">Дата выборки </param>
+        /// <returns></returns>
+        public async Task<DataTable> setValidateMainKass(int id, decimal? RealSQL,decimal? ChessBoard)
+        {
+            ap.Clear();
+            ap.Add(id);
+            ap.Add(RealSQL);
+            ap.Add(ChessBoard);
+            ap.Add(UserSettings.User.Id);
+
+            return executeProcedure("[RealCompare].[spg_setValidateMainKass]",
+                new string[4] { "@id", "@RealSQL", "@ChessBoard", "@id_user"},
+                new DbType[4] { DbType.Int32, DbType.Decimal, DbType.Decimal, DbType.Int32 }, ap);
+        }
+
         #endregion
     }
 }
