@@ -367,6 +367,40 @@ namespace RealCompare
                 new DbType[4] { DbType.Int32, DbType.Decimal, DbType.Decimal, DbType.Int32 }, ap);
         }
 
+        /// <summary>
+        /// Запись\редактирование\удаление данных по главной кассе
+        /// </summary>
+        /// <param name="date">Дата выборки </param>
+        /// <returns></returns>
+        public async Task<DataTable> setRequestOfDifference(int id_MainKass, int id_RequestRepair, bool isVVO, int SourceDifference)
+        {
+            ap.Clear();
+            ap.Add(id_MainKass);
+            ap.Add(id_RequestRepair);
+            ap.Add(isVVO);
+            ap.Add(SourceDifference);
+
+            return executeProcedure("[RealCompare].[spg_setRequestOfDifference]",
+                new string[4] { "@id_MainKass", "@id_RequestRepair", "@isVVO", "@SourceDifference" },
+                new DbType[4] { DbType.Int32, DbType.Int32, DbType.Boolean, DbType.Int32 }, ap);
+        }
+
+
+        /// <summary>
+        /// Запись\редактирование\удаление данных по главной кассе
+        /// </summary>
+        /// <param name="date">Дата выборки </param>
+        /// <returns></returns>
+        public async Task<DataTable> getListRepairRequestForMainKass(int id_MainKass)
+        {
+            ap.Clear();
+            ap.Add(id_MainKass);
+
+            return executeProcedure("[RealCompare].[spg_getListRepairRequestForMainKass]",
+                new string[1] { "@id_MainKass" },
+                new DbType[1] { DbType.Int32 }, ap);
+        }
+
         #endregion
     }
 }

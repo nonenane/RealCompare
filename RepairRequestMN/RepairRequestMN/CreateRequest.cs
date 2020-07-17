@@ -13,6 +13,8 @@ namespace RepairRequestMN
         private Sql _sql = new Sql(ConnectionSettings.GetServer(), ConnectionSettings.GetDatabase(),
             ConnectionSettings.GetUsername(), ConnectionSettings.GetPassword(), ConnectionSettings.ProgramName);
 
+        int id_Req;
+
         public void setComment(string text)
         {
             richTextBox_Description.Text = text;
@@ -22,6 +24,11 @@ namespace RepairRequestMN
         {
             _sql = new Sql(ConnectionSettings.GetServer(indexConnect.ToString()), ConnectionSettings.GetDatabase(indexConnect.ToString()),
                 ConnectionSettings.GetUsername(), ConnectionSettings.GetPassword(), ConnectionSettings.ProgramName);
+        }
+
+        public int getIdRepairRequest()
+        {
+            return id_Req;
         }
 
         private bool correctIP = false;
@@ -61,6 +68,7 @@ namespace RepairRequestMN
 
         private void button_Close_Click(object sender, EventArgs e)
         {
+            this.DialogResult = DialogResult.Cancel;
             Close();
         }
 
@@ -99,7 +107,7 @@ namespace RepairRequestMN
                 var fault = richTextBox_Description.Text;
                 var ip = mtbIp.Text;
                 DataTable dtAddReq = _sql.CreateNewRequest(hwId, finalDate, idCreator, fio, cabinet, fault, ip);
-                int id_Req = (int)dtAddReq.Rows[0]["id"];
+                id_Req = (int)dtAddReq.Rows[0]["id"];
 
                 Logging.StartFirstLevel(97);
                 Logging.Comment("Создание заявки!");
@@ -114,11 +122,13 @@ namespace RepairRequestMN
                                 + " ; ФИО:" + Nwuram.Framework.Settings.User.UserSettings.User.FullUsername);
                 Logging.StopFirstLevel();
                 MessageBox.Show(@"Создание заявки прошло успешно!", @"Успех");
-                Close();
-
+              
                 if (Sql.bufferDataTable != null && Sql.bufferDataTable.Rows.Count > 0)
                     foreach (DataRow r in Sql.bufferDataTable.Rows)
                         _sql.setScan(id_Req, (byte[])r["Scan"], (string)r["cName"], (string)r["Extension"]);
+
+                this.DialogResult = DialogResult.OK;
+                Close();
             }
             else
             {
