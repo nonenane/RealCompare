@@ -7,6 +7,7 @@ using System.Data;
 using Nwuram.Framework.Data;
 using Nwuram.Framework.Settings.User;
 using System.Threading.Tasks;
+using Nwuram.Framework.Settings.Connection;
 
 namespace RealCompare
 {
@@ -387,7 +388,7 @@ namespace RealCompare
 
 
         /// <summary>
-        /// Запись\редактирование\удаление данных по главной кассе
+        /// Получение данных по заявкам на ремонт по главной кассе
         /// </summary>
         /// <param name="date">Дата выборки </param>
         /// <returns></returns>
@@ -395,10 +396,12 @@ namespace RealCompare
         {
             ap.Clear();
             ap.Add(id_MainKass);
+            bool is5Connect = ConnectionSettings.GetServer("5").Trim().Length > 0;
+            ap.Add(is5Connect);
 
             return executeProcedure("[RealCompare].[spg_getListRepairRequestForMainKass]",
-                new string[1] { "@id_MainKass" },
-                new DbType[1] { DbType.Int32 }, ap);
+                new string[2] { "@id_MainKass","@is5Connect" },
+                new DbType[2] { DbType.Int32,DbType.Boolean }, ap);
         }
 
         #endregion

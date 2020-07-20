@@ -46,6 +46,8 @@ namespace RealCompare
 
             //Console.WriteLine(ConnectionSettings.GetServer("5")+"  :  "+ ConnectionSettings.GetDatabase("5"));
 
+            btAdd.Visible = btEdit.Visible = btDel.Visible = !new List<string> { "ПР" }.Contains(UserSettings.User.StatusCode);
+
             this.Text = ConnectionSettings.ProgramName + " " + UserSettings.User.FullUsername;
             DateTime curDate = Parameters.hConnect.GetDate().AddDays(-1);
 
@@ -759,6 +761,77 @@ namespace RealCompare
                     }
                     #endregion
                 }
+                else
+                {
+                    if (rbDate.Checked)
+                    {
+                        resultTable.Columns.Add("MainKass", typeof(decimal));
+                        resultTable.Columns.Add("ChessBoard", typeof(decimal));
+                        resultTable.Columns.Add("RealSQL_vvo", typeof(decimal));
+
+
+                        foreach (DataRow row in resultTable.Rows)
+                        {
+                            row["MainKass"] = 0;
+                            row["ChessBoard"] = 0;
+                            row["RealSQL_vvo"] = 0;
+
+                            if (chkKsSql.Checked && chkRealSql.Checked)
+                            {
+                                row["isRealEquals"] = ((decimal)row["KsSql"] == (decimal)row["MainKass"] && (decimal)row["RealSql"] == (decimal)row["MainKass"]);
+                                row["delta"] = 0;
+                            }
+                            else if (chkKsSql.Checked)
+                            {
+                                row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["MainKass"];
+                                row["delta"] = (decimal)row["KsSql"] - (decimal)row["MainKass"];
+                            }
+                            else if (chkRealSql.Checked)
+                            {
+                                row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["MainKass"];
+                                row["delta"] = (decimal)row["RealSql"] - (decimal)row["MainKass"];
+                            }
+                        }
+
+                    }
+                    else if (rbDateAndVVO.Checked)
+                    {
+                        resultTable.Columns.Add("MainKass", typeof(decimal));
+                        resultTable.Columns.Add("ChessBoard", typeof(decimal));
+                        resultTable.Columns.Add("RealSQL_vvo", typeof(decimal));
+                        resultTable.Columns.Add("DateEdit", typeof(DateTime));
+                        resultTable.Columns.Add("FIO", typeof(string));
+                        resultTable.Columns.Add("id", typeof(int));
+
+
+                        foreach (DataRow row in resultTable.Rows)
+                        {
+                            row["MainKass"] = 0;
+                            row["ChessBoard"] = DBNull.Value;
+                            row["RealSQL_vvo"] = DBNull.Value;
+                            row["DateEdit"] = DBNull.Value;
+                            row["FIO"] = DBNull.Value;
+                            row["id"] = DBNull.Value;
+
+                            if (chkKsSql.Checked && chkRealSql.Checked)
+                            {
+                                row["isRealEquals"] = ((decimal)row["KsSql"] == (decimal)row["MainKass"] && (decimal)row["RealSql"] == (decimal)row["MainKass"]);
+                                row["delta"] = 0;
+                            }
+                            else if (chkKsSql.Checked)
+                            {
+                                row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["MainKass"];
+                                row["delta"] = (decimal)row["KsSql"] - (decimal)row["MainKass"];
+                            }
+                            else if (chkRealSql.Checked)
+                            {
+                                row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["MainKass"];
+                                row["delta"] = (decimal)row["RealSql"] - (decimal)row["MainKass"];
+                            }
+                        }
+
+                    }
+                }
                 #endregion
             }
 
@@ -1050,6 +1123,134 @@ namespace RealCompare
         #endregion
 
         #region Выгрузка в Excel\OpenCalc
+        private void setWidthColumn(int indexRow, int indexCol, int width, Nwuram.Framework.ToExcelNew.ExcelUnLoad report)
+        {
+            report.SetColumnWidth(indexRow, indexCol, indexRow, indexCol, width);
+        }
+
+        private void newReport()
+        {
+            Nwuram.Framework.ToExcelNew.ExcelUnLoad report = new Nwuram.Framework.ToExcelNew.ExcelUnLoad();
+
+            int indexRow = 1;
+
+            int maxColumns = 0;
+
+            foreach (DataGridViewColumn col in dgvMain.Columns)
+                if (col.Visible)
+                {
+                    maxColumns++;
+                    if (col.Name.Equals("DateReal")) setWidthColumn(indexRow, maxColumns, 12, report);
+                    if (col.Name.Equals("Department")) setWidthColumn(indexRow, maxColumns, 8, report);
+                    if (col.Name.Equals("EAN")) setWidthColumn(indexRow, maxColumns, 17, report);
+                    if (col.Name.Equals("cName")) setWidthColumn(indexRow, maxColumns, 28, report);
+                    if (col.Name.Equals("cMainKass")) setWidthColumn(indexRow, maxColumns, 14, report);
+                    if (col.Name.Equals("KsSql")) setWidthColumn(indexRow, maxColumns, 12, report);
+                    if (col.Name.Equals("RealSql")) setWidthColumn(indexRow, maxColumns, 12, report);
+                    if (col.Name.Equals("cDelta")) setWidthColumn(indexRow, maxColumns, 10, report);
+                }
+
+            #region "Head"
+            report.Merge(indexRow, 1, indexRow, maxColumns);
+            report.AddSingleValue("Сверка реализации", indexRow, 1);
+            report.SetFontBold(indexRow, 1, indexRow, 1);
+            report.SetFontSize(indexRow, 1, indexRow, 1, 16);
+            report.SetCellAlignmentToCenter(indexRow, 1, indexRow, 1);
+            indexRow++;
+            indexRow++;
+
+
+            report.Merge(indexRow, 1, indexRow, maxColumns);
+            report.AddSingleValue($"Период с {dtpStart.Value.ToShortDateString() } по {dtpEnd.Value.ToShortDateString() }", indexRow, 1);
+            indexRow++;
+
+            report.Merge(indexRow, 1, indexRow, maxColumns);
+            report.AddSingleValue($"Отдел: {cbDeps.Text}", indexRow, 1);
+            indexRow++;
+
+            report.Merge(indexRow, 1, indexRow, maxColumns);
+            report.AddSingleValue($"ТУ группа: {cbTUGroups.Text}", indexRow, 1);
+            indexRow++;
+
+            report.Merge(indexRow, 1, indexRow, maxColumns);
+            report.AddSingleValue($"Группировка: " +
+                $"{(rbDate.Checked ? rbDate.Text : (rbDateAndDep.Checked ? rbDateAndDep.Text : (rbDateAndDepAndGood.Checked ? rbDateAndDepAndGood.Text : (rbDateAndVVO.Checked ? rbDateAndVVO.Text : ""))))}", indexRow, 1);
+            indexRow++;
+
+
+            string srcs = "";
+            foreach (Control con in grpSources.Controls.Cast<Control>().OrderBy(c => c.TabIndex))
+            {
+                CheckBox box = con as CheckBox;
+                if (box != null)
+                {
+                    if (box.Checked)
+                    {
+                        srcs += (srcs.Length > 0 ? ", " : "") + box.Text;
+                    }
+                }
+            }
+
+            report.Merge(indexRow, 1, indexRow, maxColumns);
+            report.AddSingleValue($"Источники данных: {srcs}", indexRow, 1);
+            indexRow++;
+
+            report.Merge(indexRow, 1, indexRow, maxColumns);
+            report.AddSingleValue($"Магазин: {(Nwuram.Framework.Settings.Connection.ConnectionSettings.GetServer().Contains("K21") ? "K21" : "X14")}", indexRow, 1);
+            indexRow++;
+
+            report.Merge(indexRow, 1, indexRow, 6);
+            report.AddSingleValue("Выгрузил: " + Nwuram.Framework.Settings.User.UserSettings.User.FullUsername, indexRow, 1);
+            indexRow++;
+
+            report.Merge(indexRow, 1, indexRow, 6);
+            report.AddSingleValue("Дата выгрузки: " + DateTime.Now.ToString(), indexRow, 1);
+            indexRow++;
+            indexRow++;
+            #endregion
+
+            int indexCol = 0;
+            foreach (DataGridViewColumn col in dgvMain.Columns)
+                if (col.Visible)
+                {
+                    indexCol++;
+                    report.AddSingleValue(col.HeaderText, indexRow, indexCol);
+                }
+            report.SetFontBold(indexRow, 1, indexRow, maxColumns);
+            report.SetBorders(indexRow, 1, indexRow, maxColumns);
+            report.SetCellAlignmentToCenter(indexRow, 1, indexRow, maxColumns);
+            indexRow++;
+
+
+            foreach (DataGridViewRow row in dgvMain.Rows)
+            {
+                Color rColor = Color.White;
+                if (row.Cells["isRealEquals"].Value is bool && !(bool)row.Cells["isRealEquals"].Value)
+                    report.SetCellColor(indexRow, 1, indexRow, maxColumns, rColor);
+
+                indexCol = 0;
+                foreach (DataGridViewColumn col in dgvMain.Columns)
+                {
+                    if (col.Visible)
+                    {
+                        indexCol++;
+                        if (row.Cells[col.Index].Value is DateTime)
+                            report.AddSingleValue(((DateTime)row.Cells[col.Index].Value).ToShortDateString(), indexRow, indexCol);
+                        else
+                            report.AddSingleValue(row.Cells[col.Index].Value.ToString(), indexRow, indexCol);
+                        report.SetWrapText(indexRow, indexCol, indexRow, indexCol);                     
+                    }
+                }
+
+                report.SetBorders(indexRow, 1, indexRow, maxColumns);
+                report.SetCellAlignmentToCenter(indexRow, 1, indexRow, maxColumns);
+                report.SetCellAlignmentToJustify(indexRow, 1, indexRow, maxColumns);
+                indexRow++;
+            }
+
+            report.Show();            
+        }
+
         /// <summary>
         /// Выгрузка отчета
         /// </summary>
@@ -1160,9 +1361,17 @@ namespace RealCompare
                     }
                 }
 
-                Rep.SetBorders(10, 1, Parameters.Data.Rows.Count + 9, Parameters.Data.Columns.Count);
-                Rep.SaveToFile(Application.StartupPath + "\\Сверка реализации " + dtpStart.Value.ToString("ddMMyyyy") + "-" + dtpEnd.Value.ToString("ddMMyyyy") + " " + cbDeps.Text);
-                Rep.Show();
+                //Rep.SetBorders(10, 1, Parameters.Data.Rows.Count + 9, Parameters.Data.Columns.Count);
+                //if (new List<string> { "БГЛ" }.Contains(UserSettings.User.StatusCode))
+                //    Rep.Print(false);
+                //else
+                //{
+                //    Rep.SaveToFile(Application.StartupPath + "\\Сверка реализации " + dtpStart.Value.ToString("ddMMyyyy") + "-" + dtpEnd.Value.ToString("ddMMyyyy") + " " + cbDeps.Text);
+                //    Rep.Show();
+                //}
+
+                    Rep.SaveToFile(Application.StartupPath + "\\Сверка реализации " + dtpStart.Value.ToString("ddMMyyyy") + "-" + dtpEnd.Value.ToString("ddMMyyyy") + " " + cbDeps.Text);
+                    Rep.Show();
             }
             //else
             //{
@@ -1230,7 +1439,8 @@ namespace RealCompare
 
         private void btPrint_Click(object sender, EventArgs e)
         {
-            Print();
+            newReport();
+            //Print();
         }
         #endregion
 
@@ -1293,7 +1503,7 @@ namespace RealCompare
 
         private void dgvMain_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right && e.RowIndex != -1 && chbMainKass.Checked && rbDateAndVVO.Checked)
+            if (e.Button == MouseButtons.Right && e.RowIndex != -1 && chbMainKass.Checked && rbDateAndVVO.Checked && !new List<string> { "ПР" }.Contains(UserSettings.User.StatusCode))
             {
                 dgvMain.CurrentCell = dgvMain[e.ColumnIndex, e.RowIndex];
                 cmsMainGridContext.Show(MousePosition);
