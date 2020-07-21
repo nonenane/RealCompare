@@ -53,7 +53,81 @@ namespace RealCompare
         {
             if (rbErrorRealiz.Checked)
             {
-            
+                Task<DataTable> task = Parameters.hConnect.GetReportMainKass(dtpStart.Value.Date, dtpEnd.Value.Date, 1);
+                task.Wait();
+                if (task.Result == null || task.Result.Rows.Count == 0)
+                {
+                    MessageBox.Show("Нет данных для отчёта!", "Выгрузка отчёта", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                DataTable dtReport = task.Result.Copy();
+
+                Nwuram.Framework.ToExcelNew.ExcelUnLoad report = new Nwuram.Framework.ToExcelNew.ExcelUnLoad();
+                int indexRow = 1;
+
+                report.Merge(indexRow, 1, indexRow, 6);
+                report.AddSingleValue("Отчет по ошибкам в реализации", indexRow, 1);
+                report.SetFontBold(indexRow, 1, indexRow, 1);
+                report.SetFontSize(indexRow, 1, indexRow, 1, 16);
+                report.SetCellAlignmentToCenter(indexRow, 1, indexRow, 1);
+                indexRow++;
+                indexRow++;
+
+
+                report.Merge(indexRow, 1, indexRow, 6);
+                report.AddSingleValue($"Период с {dtpStart.Value.ToShortDateString()} по {dtpEnd.Value.ToShortDateString()}", indexRow, 1);
+                indexRow++;
+
+                report.Merge(indexRow, 1, indexRow, 6);
+                report.AddSingleValue($"Магазин: {(ConnectionSettings.GetServer().Contains("K21") ? "K21" : "X14")}", indexRow, 1);
+                indexRow++;
+
+                report.Merge(indexRow, 1, indexRow, 6);
+                report.AddSingleValue("Выгрузил: " + Nwuram.Framework.Settings.User.UserSettings.User.FullUsername, indexRow, 1);
+                indexRow++;
+
+                report.Merge(indexRow, 1, indexRow, 6);
+                report.AddSingleValue("Дата выгрузки: " + DateTime.Now.ToString(), indexRow, 1);
+                indexRow++;
+                indexRow++;
+
+
+                report.SetColumnWidth(1, 1, 1, 1, 26);
+                report.SetColumnWidth(1, 2, 1, 2, 20);
+                report.SetColumnWidth(1, 3, 1, 3, 28);
+                report.SetColumnWidth(1, 4, 1, 4, 21);
+                report.SetColumnWidth(1, 5, 1, 5, 22);
+                report.SetColumnWidth(1, 6, 1, 6, 22);
+
+                report.AddSingleValue("Дата расхождения", indexRow, 1);
+                report.AddSingleValue("Расхождение", indexRow, 2);
+                report.AddSingleValue("Дата заявки на ремонт", indexRow, 3);
+                report.AddSingleValue("Номер заявки", indexRow, 4);
+                report.AddSingleValue("Комментарий к заявке", indexRow, 5);
+                report.AddSingleValue("Дата подтверждения", indexRow, 6);
+
+                report.SetFontBold(indexRow, 1, indexRow, 6);
+                report.SetBorders(indexRow, 1, indexRow, 6);
+                report.SetCellAlignmentToCenter(indexRow, 1, indexRow, 6);
+                indexRow++;
+
+                foreach (DataRow row in dtReport.Rows)
+                {
+                    report.SetBorders(indexRow, 1, indexRow, 6);
+                    report.SetCellAlignmentToCenter(indexRow, 1, indexRow, 6);
+                    report.SetCellAlignmentToJustify(indexRow, 1, indexRow, 6);
+                    report.SetWrapText(indexRow, 1, indexRow, 6);
+                    report.AddSingleValue($"{((DateTime)row["Data"]).ToShortDateString()}", indexRow, 1);
+                    report.AddSingleValue($"{row["nameType"]}", indexRow, 2);
+                    report.AddSingleValue($"{row["DateSubmission"]}", indexRow, 3);
+                    report.AddSingleValue($"{row["Number"]}", indexRow, 4);
+                    report.AddSingleValue($"{row["Comment"]}", indexRow, 5);
+                    report.AddSingleValue($"{row["DateConfirm"]}", indexRow, 6);
+                    indexRow++;
+                }
+
+                report.Show();
             }
             else if (rbNullDataValidate.Checked)
             {
@@ -81,6 +155,8 @@ namespace RealCompare
                     dtRealizVVO = task.Result.Copy();
 
                 Nwuram.Framework.ToExcelNew.ExcelUnLoad report = new Nwuram.Framework.ToExcelNew.ExcelUnLoad();
+
+                
                 int indexRow = 1;
 
                 report.Merge(indexRow, 1, indexRow, 3);
@@ -130,7 +206,7 @@ namespace RealCompare
                     int headerStart = indexRow;
 
                     for (DateTime ii11 = dtpStart.Value; ii11 <= dtpEnd.Value; ii11 = ii11.AddDays(1))
-                    {                       
+                    {
                         int midStart = indexRow;
                         bool showData = false;
 
@@ -165,7 +241,7 @@ namespace RealCompare
                     report.SetWrapText(headerStart, 1, indexRow - 1, 1);
                     report.AddSingleValue($"Нет данных «Главная касса»", headerStart, 1);
 
-                }                        
+                }
                 #endregion
 
                 #region "Нет сверки с «Реал. SQL»"

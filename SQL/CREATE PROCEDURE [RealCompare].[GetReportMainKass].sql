@@ -11,7 +11,7 @@ GO
 -- Description:	<Получение данных для отчёта по главной кассы>
 -- =============================================
 
-CREATE PROCEDURE [RealCompare].[GetReportMainKass]
+ALTER PROCEDURE [RealCompare].[GetReportMainKass]
 	@dateStart Date,
 	@dateEnd Date,
 	@typeReport int --1 - Отчет по ошибкам в реализации ,2 -Отчет об отсутствии сверки данных
@@ -34,7 +34,7 @@ BEGIN
 			inner join RealCompare.j_MainKass mk on mk.id = rd.id_MainKass
 			inner join [Repair].[j_CommentRequest] cr on cr.id_RequestRepair = rr.id
 	where 
-		@dateStart<= rr.DateSubmission and rr.DateSubmission<=@dateEnd
+		@dateStart<= cast(rr.DateSubmission as date) and cast(rr.DateSubmission as date) <=@dateEnd
 END
 ELSE IF @typeReport = 2
 BEGIN
