@@ -15,11 +15,16 @@ namespace RealCompare
     public partial class frmAddRealizMainKass : Form
     {
         private bool isEditData = false;
-        private int id = 0;
+        //private int id = 0;
 
         public DateTime date { set; private get; }
-        public bool isVVO { set; private get; }
+        public bool isVVO { set; get; }
         public bool isEdit { set; private get; }
+
+        public DateTime dateRealiz { private set; get; }
+        public decimal Summa { private set; get; }
+        public int id { private set; get; }
+
         public frmAddRealizMainKass()
         {
             InitializeComponent();
@@ -118,23 +123,28 @@ namespace RealCompare
                 return;
             }
 
-            if (id == 0)
-            {
-                id = (int)dtResult.Rows[0]["id"];
-                Logging.StartFirstLevel(1);
-                Logging.Comment("Добавить Тип документа");
-                Logging.Comment($"ID: {id}");
-                //Logging.Comment($"Наименование: {tbNumber.Text.Trim()}");
-                Logging.StopFirstLevel();
-            }
-            else
-            {
-                Logging.StartFirstLevel(1);
-                Logging.Comment("Редактировать Тип документа");
-                Logging.Comment($"ID: {id}");
-                //Logging.VariableChange("Наименование", tbNumber.Text.Trim(), oldName);
-                Logging.StopFirstLevel();
-            }
+            //if (id == 0)
+            //{
+            //    id = (int)dtResult.Rows[0]["id"];
+            //    Logging.StartFirstLevel(1);
+            //    Logging.Comment("Добавить Тип документа");
+            //    Logging.Comment($"ID: {id}");
+            //    //Logging.Comment($"Наименование: {tbNumber.Text.Trim()}");
+            //    Logging.StopFirstLevel();
+            //}
+            //else
+            //{
+            //    Logging.StartFirstLevel(1);
+            //    Logging.Comment("Редактировать Тип документа");
+            //    Logging.Comment($"ID: {id}");
+            //    //Logging.VariableChange("Наименование", tbNumber.Text.Trim(), oldName);
+            //    Logging.StopFirstLevel();
+            //}
+
+            dateRealiz = dtpDate.Value.Date;
+            Summa = mainKass;
+            isVVO = rbVVO.Checked;
+            id = (int)dtResult.Rows[0]["id"];
 
             isEditData = false;
             MessageBox.Show("Данные сохранены.", "Сохранение данных", MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -155,214 +155,232 @@ namespace RealCompare
                     dtRealizVVO = task.Result.Copy();
 
                 Nwuram.Framework.ToExcelNew.ExcelUnLoad report = new Nwuram.Framework.ToExcelNew.ExcelUnLoad();
-
-                
-                int indexRow = 1;
-
-                report.Merge(indexRow, 1, indexRow, 3);
-                report.AddSingleValue("Отчет об отсутствии сверки данных", indexRow, 1);
-                report.SetFontBold(indexRow, 1, indexRow, 1);
-                report.SetFontSize(indexRow, 1, indexRow, 1, 16);
-                report.SetCellAlignmentToCenter(indexRow, 1, indexRow, 1);
-                indexRow++;
-                indexRow++;
-
-
-                report.Merge(indexRow, 1, indexRow, 3);
-                report.AddSingleValue($"Период с {dtpStart.Value.ToShortDateString()} по {dtpEnd.Value.ToShortDateString()}", indexRow, 1);
-                indexRow++;
-
-                report.Merge(indexRow, 1, indexRow, 3);
-                report.AddSingleValue($"Магазин: {(ConnectionSettings.GetServer().Contains("K21") ? "K21" : "X14")}", indexRow, 1);
-                indexRow++;
-
-                report.Merge(indexRow, 1, indexRow, 3);
-                report.AddSingleValue("Выгрузил: " + Nwuram.Framework.Settings.User.UserSettings.User.FullUsername, indexRow, 1);
-                indexRow++;
-
-                report.Merge(indexRow, 1, indexRow, 3);
-                report.AddSingleValue("Дата выгрузки: " + DateTime.Now.ToString(), indexRow, 1);
-                indexRow++;
-                indexRow++;
-
-
-                report.SetColumnWidth(1, 1, 1, 1, 26);
-                report.SetColumnWidth(1, 2, 1, 2, 20);
-                report.SetColumnWidth(1, 3, 1, 3, 28);
-
-                report.AddSingleValue("Причина", indexRow, 1);
-                report.AddSingleValue("Дата", indexRow, 2);
-                report.AddSingleValue("Отдел", indexRow, 3);
-
-                report.SetFontBold(indexRow, 1, indexRow, 3);
-                report.SetBorders(indexRow, 1, indexRow, 3);
-                report.SetCellAlignmentToCenter(indexRow, 1, indexRow, 3);
-                indexRow++;
-
-                #region "Нет данных «Главная касса»"
-                EnumerableRowCollection<DataRow> rowCollect = dtReport.AsEnumerable().Where(r => r.Field<int>("type") == 1);
-                if (rowCollect.Count() > 0)
-                {
-                    int headerStart = indexRow;
-
-                    for (DateTime ii11 = dtpStart.Value; ii11 <= dtpEnd.Value; ii11 = ii11.AddDays(1))
-                    {
-                        int midStart = indexRow;
-                        bool showData = false;
-
-
-                        if (rowCollect.AsEnumerable().Where(r => !r.Field<bool>("isVVO") && r.Field<DateTime>("Data").Date == ii11.Date).Count() == 0)
-                        {
-                            showData = true;
-                            report.AddSingleValue("Все отделы, кроме ВВО", indexRow, 3);
-                            indexRow++;
-                        }
-
-                        if (rowCollect.AsEnumerable().Where(r => r.Field<bool>("isVVO") && r.Field<DateTime>("Data").Date == ii11.Date).Count() == 0)
-                        {
-                            showData = true;
-                            report.AddSingleValue("Отдел ВВО", indexRow, 3);
-                            indexRow++;
-                        }
-
-                        if (showData)
-                        {
-                            report.Merge(midStart, 2, indexRow - 1, 2);
-                            report.AddSingleValue($"{ii11.ToShortDateString()}", midStart, 2);
-                            report.SetCellAlignmentToCenter(midStart, 2, indexRow - 1, 2);
-                            report.SetCellAlignmentToJustify(midStart, 2, indexRow - 1, 2);
-                        }
-                    }
-
-                    report.Merge(headerStart, 1, indexRow - 1, 1);
-                    report.SetBorders(headerStart, 1, indexRow - 1, 3);
-                    report.SetCellAlignmentToCenter(headerStart, 1, indexRow - 1, 1);
-                    report.SetCellAlignmentToJustify(headerStart, 1, indexRow - 1, 1);
-                    report.SetWrapText(headerStart, 1, indexRow - 1, 1);
-                    report.AddSingleValue($"Нет данных «Главная касса»", headerStart, 1);
-
-                }
-                #endregion
-
-                #region "Нет сверки с «Реал. SQL»"
-                rowCollect = dtReport.AsEnumerable().Where(r => r.Field<int>("type") == 2);
-                if (rowCollect.Count() > 0)
+                bool isFirstTab = true;
+                for (int i = 3; i >= 1; i--)
                 {
 
-                    int headerStart = indexRow;
+                    EnumerableRowCollection<DataRow> rowCollect = dtReport.AsEnumerable().Where(r => r.Field<int>("type") == i);
+                    if (rowCollect.Count() == 0) continue;
+                    if (!isFirstTab) report.GoToNextSheet();
 
-                    var groupData = rowCollect.AsEnumerable()
-                        .GroupBy(g => new { date = g.Field<DateTime>("Data") })
-                        .Select(s => new { s.Key.date });
-                    foreach (var gDate in groupData)
+
+                    int indexRow = 1;
+
+                    report.Merge(indexRow, 1, indexRow, 3);
+                    report.AddSingleValue("Отчет об отсутствии сверки данных", indexRow, 1);
+                    report.SetFontBold(indexRow, 1, indexRow, 1);
+                    report.SetFontSize(indexRow, 1, indexRow, 1, 16);
+                    report.SetCellAlignmentToCenter(indexRow, 1, indexRow, 1);
+                    indexRow++;
+                    indexRow++;
+
+
+                    report.Merge(indexRow, 1, indexRow, 3);
+                    report.AddSingleValue($"Период с {dtpStart.Value.ToShortDateString()} по {dtpEnd.Value.ToShortDateString()}", indexRow, 1);
+                    indexRow++;
+
+                    report.Merge(indexRow, 1, indexRow, 3);
+                    report.AddSingleValue($"Магазин: {(ConnectionSettings.GetServer().Contains("K21") ? "K21" : "X14")}", indexRow, 1);
+                    indexRow++;
+
+                    report.Merge(indexRow, 1, indexRow, 3);
+                    report.AddSingleValue("Выгрузил: " + Nwuram.Framework.Settings.User.UserSettings.User.FullUsername, indexRow, 1);
+                    indexRow++;
+
+                    report.Merge(indexRow, 1, indexRow, 3);
+                    report.AddSingleValue("Дата выгрузки: " + DateTime.Now.ToString(), indexRow, 1);
+                    indexRow++;
+                    indexRow++;
+
+
+                    report.SetColumnWidth(1, 1, 1, 1, 26);
+                    report.SetColumnWidth(1, 2, 1, 2, 20);
+                    report.SetColumnWidth(1, 3, 1, 3, 28);
+
+                    report.AddSingleValue("Причина", indexRow, 1);
+                    report.AddSingleValue("Дата", indexRow, 2);
+                    report.AddSingleValue("Отдел", indexRow, 3);
+
+                    report.SetFontBold(indexRow, 1, indexRow, 3);
+                    report.SetBorders(indexRow, 1, indexRow, 3);
+                    report.SetCellAlignmentToCenter(indexRow, 1, indexRow, 3);
+                    indexRow++;
+
+                    #region "Нет данных «Главная касса»"
+                    if (i == 1)
                     {
-                        int midStart = indexRow;
-                        bool showData = false;
-
-
-                        foreach (DataRow row in rowCollect.AsEnumerable().Where(r => !r.Field<bool>("isVVO") && r.Field<DateTime>("Data").Date == gDate.date.Date))
+                        //EnumerableRowCollection<DataRow> rowCollect = dtReport.AsEnumerable().Where(r => r.Field<int>("type") == 1);
+                        if (rowCollect.Count() > 0)
                         {
-                            showData = true;
-                            report.AddSingleValue("Все отделы, кроме ВВО", indexRow, 3);
-                            indexRow++;
-                        }
+                            if (isFirstTab) { isFirstTab = false; report.changeNameTab("Нет данных «Главная касса»"); } else { report.changeNameTab("Нет данных «Главная касса»"); }
 
-                        foreach (DataRow row in rowCollect.AsEnumerable().Where(r => r.Field<bool>("isVVO") && r.Field<DateTime>("Data").Date == gDate.date.Date))
-                        {
-                            showData = true;
-                            report.AddSingleValue("Отдел ВВО", indexRow, 3);
-                            indexRow++;
-                        }
+                            int headerStart = indexRow;
 
-                        if (showData)
-                        {
-                            report.Merge(midStart, 2, indexRow - 1, 2);
-                            report.AddSingleValue($"{gDate.date.ToShortDateString()}", midStart, 2);
-                            report.SetCellAlignmentToCenter(midStart, 2, indexRow - 1, 2);
-                            report.SetCellAlignmentToJustify(midStart, 2, indexRow - 1, 2);
-                        }
-                    }
-
-                    report.Merge(headerStart, 1, indexRow - 1, 1);
-                    report.AddSingleValue($"Нет сверки с «Реал. SQL»", headerStart, 1);
-                    report.SetBorders(headerStart, 1, indexRow - 1, 3);
-                    report.SetCellAlignmentToCenter(headerStart, 1, indexRow - 1, 1);
-                    report.SetCellAlignmentToJustify(headerStart, 1, indexRow - 1, 1);
-                }
-                #endregion
-
-                #region "Данные «Реал. SQL» отличаются от сохраненных"
-                rowCollect = dtReport.AsEnumerable().Where(r => r.Field<int>("type") == 3);
-                if (rowCollect.Count() > 0)
-                {
-
-                    int headerStart = indexRow;
-
-                    var groupData = rowCollect.AsEnumerable()
-                        .GroupBy(g => new { date = g.Field<DateTime>("Data") })
-                        .Select(s => new { s.Key.date });
-                    foreach (var gDate in groupData)
-                    {
-                        int midStart = indexRow;
-                        bool showData = false;
-
-                        foreach (DataRow row in rowCollect.AsEnumerable().Where(r => !r.Field<bool>("isVVO") && r.Field<DateTime>("Data").Date == gDate.date.Date))
-                        {
-                            if (dtRealiz.Rows.Count > 0)
+                            for (DateTime ii11 = dtpStart.Value; ii11 <= dtpEnd.Value; ii11 = ii11.AddDays(1))
                             {
-                                if (dtRealiz.AsEnumerable().Where(r => r.Field<DateTime>("dreal").Date == gDate.date.Date && r.Field<decimal>("RealSql") == (decimal)row["MainKass"]).Count() == 0)
+                                int midStart = indexRow;
+                                bool showData = false;
+
+
+                                if (rowCollect.AsEnumerable().Where(r => !r.Field<bool>("isVVO") && r.Field<DateTime>("Data").Date == ii11.Date).Count() == 0)
                                 {
                                     showData = true;
                                     report.AddSingleValue("Все отделы, кроме ВВО", indexRow, 3);
                                     indexRow++;
                                 }
-                            }
-                            else
-                            {
-                                showData = true;
-                                report.AddSingleValue("Все отделы, кроме ВВО", indexRow, 3);
-                                indexRow++;
-                            }
-                        }
 
-                        foreach (DataRow row in rowCollect.AsEnumerable().Where(r => r.Field<bool>("isVVO") && r.Field<DateTime>("Data").Date == gDate.date.Date))
-                        {
-                            if (dtRealizVVO.Rows.Count > 0)
-                            {
-                                if (dtRealizVVO.AsEnumerable().Where(r => r.Field<DateTime>("dreal").Date == gDate.date.Date && r.Field<decimal>("RealSql") == (decimal)row["MainKass"]).Count() == 0)
+                                if (rowCollect.AsEnumerable().Where(r => r.Field<bool>("isVVO") && r.Field<DateTime>("Data").Date == ii11.Date).Count() == 0)
                                 {
                                     showData = true;
                                     report.AddSingleValue("Отдел ВВО", indexRow, 3);
                                     indexRow++;
                                 }
-                            }
-                            else
-                            {
-                                showData = true;
-                                report.AddSingleValue("Отдел ВВО", indexRow, 3);
-                                indexRow++;
-                            }
-                        }
 
-                        if (showData)
-                        {
-                            report.Merge(midStart, 2, indexRow - 1, 2);
-                            report.AddSingleValue($"{gDate.date.ToShortDateString()}", midStart, 2);
-                            report.SetCellAlignmentToCenter(midStart, 2, indexRow - 1, 2);
-                            report.SetCellAlignmentToJustify(midStart, 2, indexRow - 1, 2);
+                                if (showData)
+                                {
+                                    report.Merge(midStart, 2, indexRow - 1, 2);
+                                    report.AddSingleValue($"{ii11.ToShortDateString()}", midStart, 2);
+                                    report.SetCellAlignmentToCenter(midStart, 2, indexRow - 1, 2);
+                                    report.SetCellAlignmentToJustify(midStart, 2, indexRow - 1, 2);
+                                }
+                            }
+
+                            report.Merge(headerStart, 1, indexRow - 1, 1);
+                            report.SetBorders(headerStart, 1, indexRow - 1, 3);
+                            report.SetCellAlignmentToCenter(headerStart, 1, indexRow - 1, 1);
+                            report.SetCellAlignmentToJustify(headerStart, 1, indexRow - 1, 1);
+                            report.SetWrapText(headerStart, 1, indexRow - 1, 1);
+                            report.AddSingleValue($"Нет данных «Главная касса»", headerStart, 1);
+
                         }
                     }
+                    #endregion
 
-                    report.Merge(headerStart, 1, indexRow - 1, 1);
-                    report.SetBorders(headerStart, 1, indexRow - 1, 3);
-                    report.SetCellAlignmentToCenter(headerStart, 1, indexRow - 1, 1);
-                    report.SetCellAlignmentToJustify(headerStart, 1, indexRow - 1, 1);
-                    report.SetWrapText(headerStart, 1, indexRow - 1, 1);
-                    report.AddSingleValue($"Данные «Реал. SQL» отличаются от сохраненных", headerStart, 1);
+                    #region "Нет сверки с «Реал. SQL»"
+                    if (i == 2)
+                    {
+                        //EnumerableRowCollection<DataRow> rowCollect = dtReport.AsEnumerable().Where(r => r.Field<int>("type") == 2);
+                        if (rowCollect.Count() > 0)
+                        {
+                            if (isFirstTab) { isFirstTab = false; report.changeNameTab("Нет сверки с «Реал. SQL»"); } else { report.changeNameTab("Нет сверки с «Реал. SQL»"); }
+                            int headerStart = indexRow;
 
+                            var groupData = rowCollect.AsEnumerable()
+                                .GroupBy(g => new { date = g.Field<DateTime>("Data") })
+                                .Select(s => new { s.Key.date });
+                            foreach (var gDate in groupData)
+                            {
+                                int midStart = indexRow;
+                                bool showData = false;
+
+
+                                foreach (DataRow row in rowCollect.AsEnumerable().Where(r => !r.Field<bool>("isVVO") && r.Field<DateTime>("Data").Date == gDate.date.Date))
+                                {
+                                    showData = true;
+                                    report.AddSingleValue("Все отделы, кроме ВВО", indexRow, 3);
+                                    indexRow++;
+                                }
+
+                                foreach (DataRow row in rowCollect.AsEnumerable().Where(r => r.Field<bool>("isVVO") && r.Field<DateTime>("Data").Date == gDate.date.Date))
+                                {
+                                    showData = true;
+                                    report.AddSingleValue("Отдел ВВО", indexRow, 3);
+                                    indexRow++;
+                                }
+
+                                if (showData)
+                                {
+                                    report.Merge(midStart, 2, indexRow - 1, 2);
+                                    report.AddSingleValue($"{gDate.date.ToShortDateString()}", midStart, 2);
+                                    report.SetCellAlignmentToCenter(midStart, 2, indexRow - 1, 2);
+                                    report.SetCellAlignmentToJustify(midStart, 2, indexRow - 1, 2);
+                                }
+                            }
+
+                            report.Merge(headerStart, 1, indexRow - 1, 1);
+                            report.AddSingleValue($"Нет сверки с «Реал. SQL»", headerStart, 1);
+                            report.SetBorders(headerStart, 1, indexRow - 1, 3);
+                            report.SetCellAlignmentToCenter(headerStart, 1, indexRow - 1, 1);
+                            report.SetCellAlignmentToJustify(headerStart, 1, indexRow - 1, 1);
+                        }
+                    }
+                    #endregion
+
+                    #region "Данные «Реал. SQL» отличаются от сохраненных"
+                    if (i == 3)
+                    {
+                        //EnumerableRowCollection<DataRow> rowCollect = dtReport.AsEnumerable().Where(r => r.Field<int>("type") == 3);
+                        if (rowCollect.Count() > 0)
+                        {
+                            if (isFirstTab) { isFirstTab = false; report.changeNameTab("Данные «Реал. SQL» отличаются от сохраненных"); } else { report.changeNameTab("Данные «Реал. SQL» отличаются от сохраненных"); }
+                            int headerStart = indexRow;
+
+                            var groupData = rowCollect.AsEnumerable()
+                                .GroupBy(g => new { date = g.Field<DateTime>("Data") })
+                                .Select(s => new { s.Key.date });
+                            foreach (var gDate in groupData)
+                            {
+                                int midStart = indexRow;
+                                bool showData = false;
+
+                                foreach (DataRow row in rowCollect.AsEnumerable().Where(r => !r.Field<bool>("isVVO") && r.Field<DateTime>("Data").Date == gDate.date.Date))
+                                {
+                                    if (dtRealiz.Rows.Count > 0)
+                                    {
+                                        if (dtRealiz.AsEnumerable().Where(r => r.Field<DateTime>("dreal").Date == gDate.date.Date && r.Field<decimal>("RealSql") == (decimal)row["MainKass"]).Count() == 0)
+                                        {
+                                            showData = true;
+                                            report.AddSingleValue("Все отделы, кроме ВВО", indexRow, 3);
+                                            indexRow++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        showData = true;
+                                        report.AddSingleValue("Все отделы, кроме ВВО", indexRow, 3);
+                                        indexRow++;
+                                    }
+                                }
+
+                                foreach (DataRow row in rowCollect.AsEnumerable().Where(r => r.Field<bool>("isVVO") && r.Field<DateTime>("Data").Date == gDate.date.Date))
+                                {
+                                    if (dtRealizVVO.Rows.Count > 0)
+                                    {
+                                        if (dtRealizVVO.AsEnumerable().Where(r => r.Field<DateTime>("dreal").Date == gDate.date.Date && r.Field<decimal>("RealSql") == (decimal)row["MainKass"]).Count() == 0)
+                                        {
+                                            showData = true;
+                                            report.AddSingleValue("Отдел ВВО", indexRow, 3);
+                                            indexRow++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        showData = true;
+                                        report.AddSingleValue("Отдел ВВО", indexRow, 3);
+                                        indexRow++;
+                                    }
+                                }
+
+                                if (showData)
+                                {
+                                    report.Merge(midStart, 2, indexRow - 1, 2);
+                                    report.AddSingleValue($"{gDate.date.ToShortDateString()}", midStart, 2);
+                                    report.SetCellAlignmentToCenter(midStart, 2, indexRow - 1, 2);
+                                    report.SetCellAlignmentToJustify(midStart, 2, indexRow - 1, 2);
+                                }
+                            }
+
+                            report.Merge(headerStart, 1, indexRow - 1, 1);
+                            report.SetBorders(headerStart, 1, indexRow - 1, 3);
+                            report.SetCellAlignmentToCenter(headerStart, 1, indexRow - 1, 1);
+                            report.SetCellAlignmentToJustify(headerStart, 1, indexRow - 1, 1);
+                            report.SetWrapText(headerStart, 1, indexRow - 1, 1);
+                            report.AddSingleValue($"Данные «Реал. SQL» отличаются от сохраненных", headerStart, 1);
+
+                        }
+                    }
+                    #endregion
                 }
-                #endregion
-
                 report.Show();
 
             }
