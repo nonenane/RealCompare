@@ -949,6 +949,10 @@ namespace RealCompare
             dgvMain.Rows[e.RowIndex].DefaultCellStyle.BackColor =
                 dgvMain.Rows[e.RowIndex].DefaultCellStyle.SelectionBackColor = rColor;
 
+            dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.BackColor =
+                            dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.SelectionBackColor = Color.White;
+            
+
             if (chbMainKass.Checked && rbDateAndVVO.Checked)
             {
                 if ((bsGrdMain.DataSource as DataTable).DefaultView[e.RowIndex]["ChessBoard"] != DBNull.Value
@@ -2092,6 +2096,57 @@ namespace RealCompare
             dgvRepaireRequest.DataSource = task.Result;
         }
 
+        #region "Объединение"
+       
+        private void dgvMain_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            e.AdvancedBorderStyle.Bottom = DataGridViewAdvancedCellBorderStyle.None;
+            if (e.RowIndex < 1 || e.ColumnIndex < 0)
+                return;
+
+            if (e.ColumnIndex != DateReal.Index) return;
+
+            if (IsTheSameCellValue(e.ColumnIndex, e.RowIndex))
+            {
+                e.AdvancedBorderStyle.Top = DataGridViewAdvancedCellBorderStyle.None;
+            }
+            else
+            {
+                e.AdvancedBorderStyle.Top = dgvMain.AdvancedCellBorderStyle.Top;
+                //e.AdvancedBorderStyle.Bottom = dgvMain.AdvancedCellBorderStyle.Bottom;
+            }
+
+            if (e.RowIndex == dgvMain.Rows.Count-1) {
+                e.AdvancedBorderStyle.Bottom = dgvMain.AdvancedCellBorderStyle.Bottom;
+            }
+        }
+
+        private void dgvMain_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex == 0)
+                return;
+            if (IsTheSameCellValue(e.ColumnIndex, e.RowIndex))
+            {
+                e.Value = "";
+                e.FormattingApplied = true;
+            }
+        }
+
+        bool IsTheSameCellValue(int column, int row)
+        {
+            DataGridViewCell cell1 = dgvMain[column, row];
+            DataGridViewCell cell2 = dgvMain[column, row - 1];
+            if (cell1.Value == null || cell2.Value == null)
+            {
+                return false;
+            }
+
+            //int id = (int)(bsGrdMain.DataSource as DataTable).DefaultView[row]["id"];
+            //int id_pre = (int)(bsGrdMain.DataSource as DataTable).DefaultView[row - 1]["id"];
+
+            return cell1.Value.ToString() == cell2.Value.ToString() && column== DateReal.Index;// && id == id_pre;
+        }
+        #endregion
     }
 
     class CustomComparer : IEqualityComparer<DataRow>

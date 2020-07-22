@@ -30,8 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -40,6 +38,8 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.grpSearch = new System.Windows.Forms.GroupBox();
             this.lbName = new System.Windows.Forms.Label();
             this.tbName = new System.Windows.Forms.TextBox();
@@ -59,6 +59,15 @@
             this.lbDep = new System.Windows.Forms.Label();
             this.lbTgrp = new System.Windows.Forms.Label();
             this.dgvMain = new System.Windows.Forms.DataGridView();
+            this.DateReal = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Department = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EAN = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cMainKass = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.KsSql = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RealSql = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cDelta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isRealEquals = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cmsMainGridContext = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.установитьСверкуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.снятьСверкуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -103,15 +112,6 @@
             this.btAdd = new System.Windows.Forms.Button();
             this.tbTotalcMainKass = new System.Windows.Forms.TextBox();
             this.bsMain = new System.Windows.Forms.BindingSource(this.components);
-            this.DateReal = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Department = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.EAN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cMainKass = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.KsSql = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RealSql = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cDelta = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.isRealEquals = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.grpSearch.SuspendLayout();
             this.grpGroups.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
@@ -349,13 +349,107 @@
             this.dgvMain.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvMain.Size = new System.Drawing.Size(1107, 273);
             this.dgvMain.TabIndex = 9;
+            this.dgvMain.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvMain_CellFormatting);
             this.dgvMain.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvMain_CellMouseClick);
+            this.dgvMain.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvMain_CellPainting);
             this.dgvMain.ColumnWidthChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dgwMain_ColumnWidthChanged);
             this.dgvMain.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvMain_RowPostPaint);
             this.dgvMain.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.dgvMain_RowPrePaint);
             this.dgvMain.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgvMain_RowsAdded);
             this.dgvMain.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgvMain_RowsRemoved);
             this.dgvMain.SelectionChanged += new System.EventHandler(this.dgvMain_SelectionChanged);
+            // 
+            // DateReal
+            // 
+            this.DateReal.DataPropertyName = "date";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.Format = "d";
+            dataGridViewCellStyle2.NullValue = null;
+            this.DateReal.DefaultCellStyle = dataGridViewCellStyle2;
+            this.DateReal.FillWeight = 50F;
+            this.DateReal.HeaderText = "Дата реал.";
+            this.DateReal.MinimumWidth = 20;
+            this.DateReal.Name = "DateReal";
+            // 
+            // Department
+            // 
+            this.Department.DataPropertyName = "depName";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.Department.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Department.FillWeight = 50F;
+            this.Department.HeaderText = "Отдел";
+            this.Department.MinimumWidth = 20;
+            this.Department.Name = "Department";
+            // 
+            // EAN
+            // 
+            this.EAN.DataPropertyName = "ean";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.EAN.DefaultCellStyle = dataGridViewCellStyle4;
+            this.EAN.FillWeight = 60F;
+            this.EAN.HeaderText = "EAN";
+            this.EAN.MinimumWidth = 20;
+            this.EAN.Name = "EAN";
+            // 
+            // cName
+            // 
+            this.cName.DataPropertyName = "goodsName";
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.cName.DefaultCellStyle = dataGridViewCellStyle5;
+            this.cName.FillWeight = 190F;
+            this.cName.HeaderText = "Наименование товара";
+            this.cName.MinimumWidth = 20;
+            this.cName.Name = "cName";
+            // 
+            // cMainKass
+            // 
+            this.cMainKass.DataPropertyName = "MainKass";
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle6.Format = "N2";
+            dataGridViewCellStyle6.NullValue = null;
+            this.cMainKass.DefaultCellStyle = dataGridViewCellStyle6;
+            this.cMainKass.HeaderText = "Главная касса";
+            this.cMainKass.Name = "cMainKass";
+            this.cMainKass.ReadOnly = true;
+            this.cMainKass.Visible = false;
+            // 
+            // KsSql
+            // 
+            this.KsSql.DataPropertyName = "KsSql";
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle7.Format = "N2";
+            this.KsSql.DefaultCellStyle = dataGridViewCellStyle7;
+            this.KsSql.FillWeight = 50F;
+            this.KsSql.HeaderText = "Шахматка";
+            this.KsSql.MinimumWidth = 20;
+            this.KsSql.Name = "KsSql";
+            // 
+            // RealSql
+            // 
+            this.RealSql.DataPropertyName = "RealSql";
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle8.Format = "N2";
+            this.RealSql.DefaultCellStyle = dataGridViewCellStyle8;
+            this.RealSql.FillWeight = 50F;
+            this.RealSql.HeaderText = "Реал. SQL";
+            this.RealSql.MinimumWidth = 20;
+            this.RealSql.Name = "RealSql";
+            // 
+            // cDelta
+            // 
+            this.cDelta.DataPropertyName = "delta";
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.cDelta.DefaultCellStyle = dataGridViewCellStyle9;
+            this.cDelta.HeaderText = "Дельта";
+            this.cDelta.Name = "cDelta";
+            this.cDelta.Visible = false;
+            // 
+            // isRealEquals
+            // 
+            this.isRealEquals.DataPropertyName = "isRealEquals";
+            this.isRealEquals.HeaderText = "isRealEquals";
+            this.isRealEquals.Name = "isRealEquals";
+            this.isRealEquals.Visible = false;
             // 
             // cmsMainGridContext
             // 
@@ -829,98 +923,6 @@
             this.tbTotalcMainKass.Size = new System.Drawing.Size(87, 20);
             this.tbTotalcMainKass.TabIndex = 29;
             this.tbTotalcMainKass.Visible = false;
-            // 
-            // DateReal
-            // 
-            this.DateReal.DataPropertyName = "date";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.Format = "d";
-            dataGridViewCellStyle2.NullValue = null;
-            this.DateReal.DefaultCellStyle = dataGridViewCellStyle2;
-            this.DateReal.FillWeight = 50F;
-            this.DateReal.HeaderText = "Дата реал.";
-            this.DateReal.MinimumWidth = 20;
-            this.DateReal.Name = "DateReal";
-            // 
-            // Department
-            // 
-            this.Department.DataPropertyName = "depName";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.Department.DefaultCellStyle = dataGridViewCellStyle3;
-            this.Department.FillWeight = 50F;
-            this.Department.HeaderText = "Отдел";
-            this.Department.MinimumWidth = 20;
-            this.Department.Name = "Department";
-            // 
-            // EAN
-            // 
-            this.EAN.DataPropertyName = "ean";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.EAN.DefaultCellStyle = dataGridViewCellStyle4;
-            this.EAN.FillWeight = 60F;
-            this.EAN.HeaderText = "EAN";
-            this.EAN.MinimumWidth = 20;
-            this.EAN.Name = "EAN";
-            // 
-            // cName
-            // 
-            this.cName.DataPropertyName = "goodsName";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.cName.DefaultCellStyle = dataGridViewCellStyle5;
-            this.cName.FillWeight = 190F;
-            this.cName.HeaderText = "Наименование товара";
-            this.cName.MinimumWidth = 20;
-            this.cName.Name = "cName";
-            // 
-            // cMainKass
-            // 
-            this.cMainKass.DataPropertyName = "MainKass";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle6.Format = "N2";
-            dataGridViewCellStyle6.NullValue = null;
-            this.cMainKass.DefaultCellStyle = dataGridViewCellStyle6;
-            this.cMainKass.HeaderText = "Главная касса";
-            this.cMainKass.Name = "cMainKass";
-            this.cMainKass.ReadOnly = true;
-            this.cMainKass.Visible = false;
-            // 
-            // KsSql
-            // 
-            this.KsSql.DataPropertyName = "KsSql";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle7.Format = "N2";
-            this.KsSql.DefaultCellStyle = dataGridViewCellStyle7;
-            this.KsSql.FillWeight = 50F;
-            this.KsSql.HeaderText = "Шахматка";
-            this.KsSql.MinimumWidth = 20;
-            this.KsSql.Name = "KsSql";
-            // 
-            // RealSql
-            // 
-            this.RealSql.DataPropertyName = "RealSql";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle8.Format = "N2";
-            this.RealSql.DefaultCellStyle = dataGridViewCellStyle8;
-            this.RealSql.FillWeight = 50F;
-            this.RealSql.HeaderText = "Реал. SQL";
-            this.RealSql.MinimumWidth = 20;
-            this.RealSql.Name = "RealSql";
-            // 
-            // cDelta
-            // 
-            this.cDelta.DataPropertyName = "delta";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.cDelta.DefaultCellStyle = dataGridViewCellStyle9;
-            this.cDelta.HeaderText = "Дельта";
-            this.cDelta.Name = "cDelta";
-            this.cDelta.Visible = false;
-            // 
-            // isRealEquals
-            // 
-            this.isRealEquals.DataPropertyName = "isRealEquals";
-            this.isRealEquals.HeaderText = "isRealEquals";
-            this.isRealEquals.Name = "isRealEquals";
-            this.isRealEquals.Visible = false;
             // 
             // Main
             // 
