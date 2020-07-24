@@ -949,9 +949,8 @@ namespace RealCompare
             dgvMain.Rows[e.RowIndex].DefaultCellStyle.BackColor =
                 dgvMain.Rows[e.RowIndex].DefaultCellStyle.SelectionBackColor = rColor;
 
-            dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.BackColor =
-                            dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.SelectionBackColor = Color.White;
-            
+          
+
 
             if (chbMainKass.Checked && rbDateAndVVO.Checked)
             {
@@ -968,6 +967,11 @@ namespace RealCompare
                             dgvMain.Rows[e.RowIndex].Cells["cMainKass"].Style.SelectionBackColor = panel2.BackColor;
                     }
                 }
+            }
+            else
+            {
+                dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.BackColor =
+                              dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.SelectionBackColor = Color.White;
             }
 
         }
@@ -1801,6 +1805,8 @@ namespace RealCompare
 
         private void reCountDelta()
         {
+            if (bsGrdMain.DataSource == null) return;
+
             foreach (DataRow row in (bsGrdMain.DataSource as DataTable).Rows)
             {
                 if (chkKsSql.Checked && chkRealSql.Checked)
@@ -2104,7 +2110,16 @@ namespace RealCompare
             if (e.RowIndex < 1 || e.ColumnIndex < 0)
                 return;
 
-            if (e.ColumnIndex != DateReal.Index) return;
+            if (e.RowIndex == dgvMain.Rows.Count - 1)
+            {
+                e.AdvancedBorderStyle.Bottom = dgvMain.AdvancedCellBorderStyle.Bottom;
+            }
+
+            if (e.ColumnIndex != DateReal.Index)
+            {
+                e.AdvancedBorderStyle.Top = dgvMain.AdvancedCellBorderStyle.Top;
+                return;
+            }
 
             if (IsTheSameCellValue(e.ColumnIndex, e.RowIndex))
             {
@@ -2116,15 +2131,16 @@ namespace RealCompare
                 //e.AdvancedBorderStyle.Bottom = dgvMain.AdvancedCellBorderStyle.Bottom;
             }
 
-            if (e.RowIndex == dgvMain.Rows.Count-1) {
-                e.AdvancedBorderStyle.Bottom = dgvMain.AdvancedCellBorderStyle.Bottom;
-            }
+           
         }
 
         private void dgvMain_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             if (e.RowIndex == 0)
                 return;
+
+            if (e.ColumnIndex != DateReal.Index) return;
+            
             if (IsTheSameCellValue(e.ColumnIndex, e.RowIndex))
             {
                 e.Value = "";
