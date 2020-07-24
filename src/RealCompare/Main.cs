@@ -2088,8 +2088,8 @@ namespace RealCompare
                //(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"] == DBNull.Value
                //&& (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSQL_vvo"] == DBNull.Value
                    (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"] != DBNull.Value
-                && (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"]
-                && (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["KsSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"]
+                && ((decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"]
+                || (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["KsSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"])
               );
 
 
