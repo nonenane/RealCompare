@@ -25,6 +25,8 @@ namespace RealCompare
         public decimal Summa { private set; get; }
         public int id { private set; get; }
 
+        private DateTime tmp_date;
+
         public frmAddRealizMainKass()
         {
             InitializeComponent();
@@ -46,6 +48,8 @@ namespace RealCompare
                 rbVVO.Checked = isVVO;
             }
             getData();
+
+            tmp_date = dtpDate.Value.Date;
 
             isEditData = false;
         }
@@ -184,12 +188,14 @@ namespace RealCompare
 
         private void dtpDate_CloseUp(object sender, EventArgs e)
         {
-            getData();
+            if (tmp_date != dtpDate.Value.Date)
+                getData();
         }
 
         private void dtpDate_Leave(object sender, EventArgs e)
-        {            
-            getData();
+        {
+            if (tmp_date != dtpDate.Value.Date)
+                getData();
         }
 
         private void tbRealiz_TextChanged(object sender, EventArgs e)
