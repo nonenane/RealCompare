@@ -64,6 +64,7 @@ namespace RealCompare
                 DataTable dtReport = task.Result.Copy();
 
                 Nwuram.Framework.ToExcelNew.ExcelUnLoad report = new Nwuram.Framework.ToExcelNew.ExcelUnLoad();
+                //Nwuram.Framework.ToExcel.HandmadeReport report = new Nwuram.Framework.ToExcel.HandmadeReport();                
                 int indexRow = 1;
 
                 report.Merge(indexRow, 1, indexRow, 6);
@@ -154,7 +155,7 @@ namespace RealCompare
                 if (task.Result != null && task.Result.Rows.Count != 0)
                     dtRealizVVO = task.Result.Copy();
 
-                Nwuram.Framework.ToExcelNew.ExcelUnLoad report = new Nwuram.Framework.ToExcelNew.ExcelUnLoad();
+                Nwuram.Framework.ToExcelNew.ExcelUnLoad report = new Nwuram.Framework.ToExcelNew.ExcelUnLoad();                
                 bool isFirstTab = true;
                 for (int i = 3; i >= 1; i--)
                 {
@@ -381,6 +382,7 @@ namespace RealCompare
                     }
                     #endregion
                 }
+             
                 report.Show();
 
             }

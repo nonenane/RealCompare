@@ -1657,7 +1657,9 @@ namespace RealCompare
         {
 
             if (!(dtpStart.Value <= frmAddRK.dateRealiz.Date && frmAddRK.dateRealiz.Date <= dtpEnd.Value.Date)) return;
-
+            if (bsGrdMain.DataSource == null) return;
+            if ((bsGrdMain.DataSource as DataTable).Rows.Count == 0) return;
+            
             EnumerableRowCollection<DataRow> rowCollect = (bsGrdMain.DataSource as DataTable)
                             .AsEnumerable().Where(r => r.Field<DateTime>("date").Date == frmAddRK.dateRealiz.Date && r.Field<bool>("isVVO") == frmAddRK.isVVO);
 

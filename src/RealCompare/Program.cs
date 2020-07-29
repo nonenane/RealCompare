@@ -25,6 +25,7 @@ namespace RealCompare
                 Project.FillSettings(args);
                 //Application.Run(new frmCreateReport());
                 Application.Run(new Main());
+                Nwuram.Framework.Project.Project.clearBufferFiles();
             }
         }
     }
