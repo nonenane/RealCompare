@@ -265,7 +265,9 @@ namespace RealCompare
                 dgvMain_SelectionChanged(null, null);
             }
 
-            dgvMain.DataSource = null;
+            
+            dgvMain.DataSource = null;            
+
             cbDeps.SelectedIndex = 0;
             cbTUGroups.SelectedIndex = 0;
         }
@@ -1113,7 +1115,12 @@ namespace RealCompare
                 filter += (filter.Length > 0 ? " AND " : "") + "isRealEquals = false";
             }
 
-            bsGrdMain.Filter = filter;
+            try
+            {
+                bsGrdMain.Filter = filter;
+            }
+            catch
+            { }
 
             reSumTotal();
         }
