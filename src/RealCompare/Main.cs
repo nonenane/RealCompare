@@ -197,6 +197,7 @@ namespace RealCompare
         private void rbDate_CheckedChanged(object sender, EventArgs e)
         {
             EnableByGroups();
+            visibleColumnDelta();
         }
 
         private void rbDateAndDep_CheckedChanged(object sender, EventArgs e)
@@ -207,6 +208,7 @@ namespace RealCompare
         private void rbDateAndDepAndGood_CheckedChanged(object sender, EventArgs e)
         {
             EnableByGroups();
+            visibleColumnDelta();
             if (cDelta.Visible) cDelta.Width = 65;
         }
 
@@ -319,34 +321,34 @@ namespace RealCompare
 
         private void dgvMain_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            if (dgvMain != null && dgvMain.Rows.Count != 0)
-            {
-                btPrint.Enabled = true;
-                CountTotal();
-            }
-            else
-            {
-                tbTotalKsSql.Text =
-                tbTotalRealSql.Text =
-                tbTotalcDelta.Text = "";
-            }
+            //if (dgvMain != null && dgvMain.Rows.Count != 0)
+            //{
+            //    btPrint.Enabled = true;
+            //    CountTotal();
+            //}
+            //else
+            //{
+            //    tbTotalKsSql.Text =
+            //    tbTotalRealSql.Text =
+            //    tbTotalcDelta.Text = "";
+            //}
         }
 
         private void dgvMain_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
-            if (dgvMain.Rows.Count == 0)
-            {
-                btPrint.Enabled = false;
-                tbTotalKsSql.Text =
+            //if (dgvMain.Rows.Count == 0)
+            //{
+            //    btPrint.Enabled = false;
+            //    tbTotalKsSql.Text =
 
-                tbTotalRealSql.Text =
-                tbTotalcDelta.Text =
-                tbTotalcMainKass.Text = "";
-            }
-            else
-            {
-                CountTotal();
-            }
+            //    tbTotalRealSql.Text =
+            //    tbTotalcDelta.Text =
+            //    tbTotalcMainKass.Text = "";
+            //}
+            //else
+            //{
+            //    CountTotal();
+            //}
         }
 
         #region Получение реализаций
@@ -906,6 +908,7 @@ namespace RealCompare
             try
             {
                 dgvMain.DataSource = bsGrdMain;
+                reSumTotal();
             }
             catch (Exception ex)
             {
@@ -1082,7 +1085,12 @@ namespace RealCompare
 
             bsGrdMain.Filter = filter;
 
-            if ((bsGrdMain.DataSource as DataTable) != null && (bsGrdMain.DataSource as DataTable).Rows.Count > 0)
+            reSumTotal();
+        }
+
+        private void reSumTotal()
+        {
+            if ((bsGrdMain.DataSource as DataTable) != null && (bsGrdMain.DataSource as DataTable).Rows.Count > 0 && dgvMain.Rows.Count>0)
             {
                 if (chbMainKass.Checked)
                 {
@@ -1108,6 +1116,13 @@ namespace RealCompare
                 decimal sumDelta = (bsGrdMain.DataSource as DataTable).DefaultView.ToTable().AsEnumerable()
                             .Sum(r => r.Field<decimal?>("delta") ?? 0);
                 tbTotalcDelta.Text = sumDelta.ToString("0.00");
+            }
+            else
+            {
+                tbTotalcMainKass.Text=
+                tbTotalKsSql.Text =
+                tbTotalRealSql.Text =
+                tbTotalcDelta.Text = "0.00";
             }
         }
 
@@ -1981,6 +1996,7 @@ namespace RealCompare
         private void rbDateAndVVO_CheckedChanged(object sender, EventArgs e)
         {
             EnableByGroups();
+            visibleColumnDelta();
         }
 
         private void dgvMain_SelectionChanged(object sender, EventArgs e)
@@ -2061,7 +2077,7 @@ namespace RealCompare
 
             lbTotal.Visible = count != 0;
 
-
+            reSumTotal();
         }
 
         private void btReportMainKass_Click(object sender, EventArgs e)
