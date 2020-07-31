@@ -1,4 +1,5 @@
-﻿using Nwuram.Framework.Settings.Connection;
+﻿using Nwuram.Framework.Logging;
+using Nwuram.Framework.Settings.Connection;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -60,6 +61,12 @@ namespace RealCompare
                     MessageBox.Show("Нет данных для отчёта!", "Выгрузка отчёта", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
+
+                Logging.StartFirstLevel(489);
+                Logging.Comment($"Период с {dtpStart.Value.ToShortDateString()} по {dtpEnd.Value.ToShortDateString()}");
+                Logging.Comment($"Отчет по ошибкам в реализации");               
+                Logging.StopFirstLevel();
+
 
                 DataTable dtReport = task.Result.Copy();
 
@@ -139,6 +146,11 @@ namespace RealCompare
                     MessageBox.Show("Нет данных для отчёта!", "Выгрузка отчёта", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
+
+                Logging.StartFirstLevel(489);
+                Logging.Comment($"Период с {dtpStart.Value.ToShortDateString()} по {dtpEnd.Value.ToShortDateString()}");
+                Logging.Comment($"Отчет об отсутствии сверки данных");
+                Logging.StopFirstLevel();
 
                 DataTable dtReport = task.Result.Copy();
 

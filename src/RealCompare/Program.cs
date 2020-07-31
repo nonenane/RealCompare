@@ -7,6 +7,8 @@ using System.Data.OleDb;
 using System.Reflection;
 using System.IO;
 using System.Data;
+using Nwuram.Framework.Logging;
+using Nwuram.Framework.Settings.Connection;
 
 namespace RealCompare
 {
@@ -22,10 +24,22 @@ namespace RealCompare
             Application.SetCompatibleTextRenderingDefault(false);
             if (args.Length > 0)
             {
-                Project.FillSettings(args);
-                //Application.Run(new frmCreateReport());
-                Application.Run(new Main());
-                Nwuram.Framework.Project.Project.clearBufferFiles();
+                if (Project.FillSettings(args))
+                {
+                    Logging.Init(ConnectionSettings.GetServer(), ConnectionSettings.GetDatabase(), ConnectionSettings.GetUsername(), ConnectionSettings.GetPassword(), ConnectionSettings.ProgramName);
+
+                    Logging.StartFirstLevel(1);
+                    Logging.Comment("Вход в программу");
+                    Logging.StopFirstLevel();
+
+                    Application.Run(new Main());
+
+                    Logging.StartFirstLevel(2);
+                    Logging.Comment("Выход из программы");
+                    Logging.StopFirstLevel();
+
+                    Nwuram.Framework.Project.Project.clearBufferFiles();
+                }
             }
         }
     }

@@ -603,6 +603,7 @@
             this.btViewRepair.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btViewRepair.BackgroundImage = global::RealCompare.Properties.Resources.old_edit_find;
             this.btViewRepair.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btViewRepair.Enabled = false;
             this.btViewRepair.Location = new System.Drawing.Point(677, 86);
             this.btViewRepair.Name = "btViewRepair";
             this.btViewRepair.Size = new System.Drawing.Size(35, 35);

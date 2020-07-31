@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Nwuram.Framework.ToExcel;
 using System.Threading.Tasks;
+using Nwuram.Framework.Logging;
 
 namespace RealCompare
 {
@@ -359,6 +360,35 @@ namespace RealCompare
                 MessageBox.Show("В группе чек-боксов\n\"Источники данных\"\nдолжно быть отмечено\nминимум два источника.", "Предупреждение", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 return;
             }
+
+
+            Logging.StartFirstLevel(1555);
+            Logging.Comment("Произведена сверка реализаций со следующими параметрами:");
+            Logging.Comment($"Период с {dtpStart.Value.ToShortDateString()} по {dtpEnd.Value.ToShortDateString()}");
+            Logging.Comment($"Отдел ID: {cbDeps.SelectedValue}; Наименование: {cbDeps.Text}");
+            Logging.Comment($"Т/У группы ID: {cbTUGroups.SelectedValue}; Наименование: {cbTUGroups.Text}");
+
+            foreach (Control cnt in grpGroups.Controls)
+            {
+                if (cnt is RadioButton && (cnt as RadioButton).Checked)
+                { Logging.Comment($"Группировка по \": {(cnt as RadioButton).Text}\""); break; }
+            }
+
+            foreach (Control cnt in grpGroups.Controls)
+            {
+                if (cnt is CheckBox && (cnt as CheckBox).Checked)
+                { Logging.Comment($"Источники данных: \": {(cnt as CheckBox).Text}\""); }
+            }
+
+            Logging.Comment($"Магазин: {(ConnectionSettings.GetServer().Contains("K21") ? "K21" : "X14")}");
+            //if (tbTotalcMainKass.Visible)
+            //    Logging.Comment($"Итого Главня касса: {tbTotalcMainKass.Text}");
+            //if (tbTotalKsSql.Visible)
+            //    Logging.Comment($"Итого Шахматка: {tbTotalKsSql.Text}");
+            //if (tbTotalRealSql.Visible)
+            //    Logging.Comment($"Итого Реал. SQL: {tbTotalRealSql.Text}");
+            Logging.StopFirstLevel();
+
 
             //Определение параметров для выгрузки данных
             //Parameters.isRealDbf = chkRealDbf.Checked;
@@ -1156,6 +1186,35 @@ namespace RealCompare
 
         private void newReport()
         {
+            Logging.StartFirstLevel(79);
+            Logging.Comment($"Период с {dtpStart.Value.ToShortDateString()} по {dtpEnd.Value.ToShortDateString()}");
+            Logging.Comment($"Отдел ID: {cbDeps.SelectedValue}; Наименование: {cbDeps.Text}");
+            Logging.Comment($"Т/У группы ID: {cbTUGroups.SelectedValue}; Наименование: {cbTUGroups.Text}");
+            
+            foreach (Control cnt in grpGroups.Controls)
+            {
+                if (cnt is RadioButton && (cnt as RadioButton).Checked)
+                { Logging.Comment($"Группировка по \": {(cnt as RadioButton).Text}\""); break; }
+            }
+            
+            foreach (Control cnt in grpGroups.Controls)
+            {
+                if (cnt is CheckBox && (cnt as CheckBox).Checked)
+                { Logging.Comment($"Источники данных: \": {(cnt as CheckBox).Text}\""); }
+            }
+
+            Logging.Comment($"Магазин: {(ConnectionSettings.GetServer().Contains("K21") ? "K21" : "X14")}");
+
+
+            if (tbTotalcMainKass.Visible)
+                Logging.Comment($"Итого Главня касса: {tbTotalcMainKass.Text}");
+            if (tbTotalKsSql.Visible)
+                Logging.Comment($"Итого Шахматка: {tbTotalKsSql.Text}");
+            if (tbTotalRealSql.Visible)
+                Logging.Comment($"Итого Реал. SQL: {tbTotalRealSql.Text}");
+            Logging.StopFirstLevel();
+
+
             Nwuram.Framework.ToExcelNew.ExcelUnLoad report = new Nwuram.Framework.ToExcelNew.ExcelUnLoad();
 
             int indexRow = 1;
@@ -1659,6 +1718,14 @@ namespace RealCompare
                         MessageBox.Show(Parameters.centralText("При сохранение данных возникли ошибки записи.\nОбратитесь в ОЭЭС\n"), "Сохранение данных", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
+
+                    Logging.StartFirstLevel(171);
+                    Logging.Comment($"ID: {id}");
+                    Logging.Comment($"Дата реализации: {date.ToShortDateString()}");
+                    Logging.Comment($"Признак реализации: {(isVVO ? "отдел ВВО" : "все отделы, кроме ВВО")}");
+                    Logging.Comment($"Реализация: {MainKass.ToString("0.00")}");
+                    Logging.StopFirstLevel();
+
                     //RefreshGrid();
                     delDataInTable(date, isVVO);
                     return;
@@ -1846,7 +1913,12 @@ namespace RealCompare
 
         private void btViewRepair_Click(object sender, EventArgs e)
         {
+            if (dgvRepaireRequest.DataSource == null) return;
+            if ((dgvRepaireRequest.DataSource as DataTable).Rows.Count == 0) return;
 
+            int id_repair = (int)(dgvRepaireRequest.DataSource as DataTable).Rows[dgvRepaireRequest.CurrentRow.Index]["id_RequestRepair"];
+
+            new RepairRequestMN.ViewRequestInWork(id_repair) { Text = "Просмотр заявки на ремонт" }.ShowDialog();
         }
 
         private void установитьСверкуToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1871,10 +1943,17 @@ namespace RealCompare
 
                 if (result == -1)
                 {
-                    MessageBox.Show(Parameters.centralText("Запись уже удалена другим пользователем\n"), "Удаление записи", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(Parameters.centralText("Запись удалена другим пользователем\n"), "Удаление записи", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     addAndDropSverka(date, isVVO, false);
                     return;
                 }
+
+                Logging.StartFirstLevel(1553);
+                Logging.Comment($"ID: {id}");
+                Logging.Comment($"Дата реализации: {date.ToShortDateString()}");
+                Logging.Comment($"Признак реализации: {(isVVO ? "отдел ВВО" : "все отделы, кроме ВВО")}");
+                Logging.Comment($"Сумма сверки : {MainKass.ToString("0.00")}");
+                Logging.StopFirstLevel();
 
                 addAndDropSverka(date, isVVO, false);
 
@@ -1886,7 +1965,7 @@ namespace RealCompare
             if (DialogResult.Yes == MessageBox.Show("Снять сверку?", "Сверка", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
             {
                 int id = (int)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"];
-                //decimal MainKass = (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"];
+                decimal MainKass = (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"];
                 DateTime date = (DateTime)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["date"];
                 bool isVVO = (bool)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["isVVO"];
 
@@ -1908,6 +1987,14 @@ namespace RealCompare
                     //addAndDropSverka(date, isVVO, true);
                     return;
                 }
+
+                Logging.StartFirstLevel(1554);
+                Logging.Comment($"ID: {id}");
+                Logging.Comment($"Дата реализации: {date.ToShortDateString()}");
+                Logging.Comment($"Признак реализации: {(isVVO ? "отдел ВВО" : "все отделы, кроме ВВО")}");
+                Logging.Comment($"Сумма сверки : {MainKass.ToString("0.00")}");
+                Logging.StopFirstLevel();
+
                 RefreshGrid();
                 //addAndDropSverka(date, isVVO, true);
             }
@@ -1977,6 +2064,7 @@ namespace RealCompare
                 if (task.Result == null)
                 {
                     MessageBox.Show(Parameters.centralText("При сохранение данных возникли ошибки записи.\nОбратитесь в ОЭЭС\n"), "Сохранение данных", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Logging.StopFirstLevel();
                     return;
                 }
 
@@ -1985,9 +2073,19 @@ namespace RealCompare
                 if (result == -1)
                 {
                     MessageBox.Show(Parameters.centralText("Запись уже удалена другим пользователем\n"), "Удаление записи", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Logging.StopFirstLevel();
                     RefreshGrid();
                     return;
                 }
+
+
+                //Logging.StartFirstLevel(1203);
+                //Logging.Comment($"ID: {id}");
+                Logging.Comment($"Дата реализации: {date.ToShortDateString()}");
+                Logging.Comment($"Признак реализации: {(isVVO ? "отдел ВВО" : "все отделы, кроме ВВО")}");
+                Logging.Comment($"Сумма сверки : {MainKass.ToString("0.00")}");
+                Logging.StopFirstLevel();
+
 
                 getListRepairRequestMainKass(id);
             }
@@ -2010,6 +2108,7 @@ namespace RealCompare
                     tbFio.Text = "";
                     btDel.Enabled = btEdit.Enabled = false;
                     dgvRepaireRequest.DataSource = null;
+                    btViewRepair.Enabled = false;
                     return;
                 }
 
@@ -2026,7 +2125,11 @@ namespace RealCompare
                         int id_MainKass = (int)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"];
                         getListRepairRequestMainKass(id_MainKass);
                     }
-                    else dgvRepaireRequest.DataSource = null;
+                    else
+                    {
+                        btViewRepair.Enabled = false;
+                        dgvRepaireRequest.DataSource = null;
+                    }
 
                     return;
                 }
@@ -2118,6 +2221,7 @@ namespace RealCompare
             Task<DataTable> task = Parameters.hConnect.getListRepairRequestForMainKass(id_mainKass);
             task.Wait();
             dgvRepaireRequest.DataSource = task.Result;
+            btViewRepair.Enabled = dgvRepaireRequest.Rows.Count != 0;
         }
 
         #region "Объединение"

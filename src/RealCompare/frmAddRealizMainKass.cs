@@ -15,6 +15,7 @@ namespace RealCompare
     public partial class frmAddRealizMainKass : Form
     {
         private bool isEditData = false;
+        private string _oldRealiz;
         //private int id = 0;
 
         public DateTime date { set; private get; }
@@ -127,23 +128,25 @@ namespace RealCompare
                 return;
             }
 
-            //if (id == 0)
-            //{
-            //    id = (int)dtResult.Rows[0]["id"];
-            //    Logging.StartFirstLevel(1);
-            //    Logging.Comment("Добавить Тип документа");
-            //    Logging.Comment($"ID: {id}");
-            //    //Logging.Comment($"Наименование: {tbNumber.Text.Trim()}");
-            //    Logging.StopFirstLevel();
-            //}
-            //else
-            //{
-            //    Logging.StartFirstLevel(1);
-            //    Logging.Comment("Редактировать Тип документа");
-            //    Logging.Comment($"ID: {id}");
-            //    //Logging.VariableChange("Наименование", tbNumber.Text.Trim(), oldName);
-            //    Logging.StopFirstLevel();
-            //}
+            if (id == 0)
+            {
+                id = (int)dtResult.Rows[0]["id"];
+                Logging.StartFirstLevel(170);                
+                Logging.Comment($"ID: {id}");                
+                Logging.Comment($"Дата реализации: {dtpDate.Value.ToShortDateString()}");
+                Logging.Comment($"Признак реализации: {(rbVVO.Checked ? rbVVO.Text : rbAllWithOutVVO.Text)}");
+                Logging.Comment($"Реализация: {mainKass.ToString("0.00")}");
+                Logging.StopFirstLevel();
+            }
+            else
+            {
+                Logging.StartFirstLevel(183);
+                Logging.Comment($"ID: {id}");
+                Logging.Comment($"Дата реализации: {dtpDate.Value.ToShortDateString()}");
+                Logging.Comment($"Признак реализации: {(rbVVO.Checked ? rbVVO.Text : rbAllWithOutVVO.Text)}");
+                Logging.VariableChange($"Реализация", mainKass.ToString("0.00"), _oldRealiz);
+                Logging.StopFirstLevel();
+            }
 
             dateRealiz = dtpDate.Value.Date;
             Summa = mainKass;
@@ -174,6 +177,7 @@ namespace RealCompare
             {
                 id = (int)task.Result.Rows[0]["id"];
                 tbRealiz.Text = ((decimal)task.Result.Rows[0]["MainKass"]).ToString("0.00");
+                _oldRealiz = tbRealiz.Text;
                 rbVVO.Checked = (bool)task.Result.Rows[0]["isVVO"];
                 this.Text = "Редактирование реализации";
             }

@@ -109,24 +109,33 @@ namespace RepairRequestMN
                 DataTable dtAddReq = _sql.CreateNewRequest(hwId, finalDate, idCreator, fio, cabinet, fault, ip);
                 id_Req = (int)dtAddReq.Rows[0]["id"];
 
-                Logging.StartFirstLevel(97);
+                Logging.StartFirstLevel(1203);
                 Logging.Comment("Создание заявки!");
+                Logging.Comment($"ID: {id_Req}");
                 Logging.Comment("№ кабинета:" + textBox_Number.Text);
                 Logging.Comment("Дата подачи:" + date.ToShortDateString());
                 Logging.Comment("Время подачи:" + time.ToString());
                 Logging.Comment("Оборудование ID:" + hwId + ";Наименование: " + comboBox_Hardware.Text);
+                Logging.Comment($"IP: {ip}");
                 Logging.Comment("ФИО:" + textBox_Name.Text);
                 Logging.Comment("Описание неисправности:" + richTextBox_Description.Text);
 
-                Logging.Comment("Операцию выполнил: ID:" + Nwuram.Framework.Settings.User.UserSettings.User.Id
-                                + " ; ФИО:" + Nwuram.Framework.Settings.User.UserSettings.User.FullUsername);
-                Logging.StopFirstLevel();
-                MessageBox.Show(@"Создание заявки прошло успешно!", @"Успех");
-              
-                if (Sql.bufferDataTable != null && Sql.bufferDataTable.Rows.Count > 0)
-                    foreach (DataRow r in Sql.bufferDataTable.Rows)
-                        _sql.setScan(id_Req, (byte[])r["Scan"], (string)r["cName"], (string)r["Extension"]);
+                //Logging.Comment("Операцию выполнил: ID:" + Nwuram.Framework.Settings.User.UserSettings.User.Id
+                //                + " ; ФИО:" + Nwuram.Framework.Settings.User.UserSettings.User.FullUsername);
+               
 
+                if (Sql.bufferDataTable != null && Sql.bufferDataTable.Rows.Count > 0)
+                {
+                    Logging.Comment($"Работа с документами");
+                    foreach (DataRow r in Sql.bufferDataTable.Rows)
+                    {
+                        _sql.setScan(id_Req, (byte[])r["Scan"], (string)r["cName"], (string)r["Extension"]);
+                        Logging.Comment($"Файл: {(string)r["cName"]}.{(string)r["Extension"]}");
+                    }
+                }
+
+                //Logging.StopFirstLevel();
+                MessageBox.Show(@"Создание заявки прошло успешно!", @"Успех");
                 this.DialogResult = DialogResult.OK;
                 Close();
             }
