@@ -37,7 +37,7 @@ namespace RealCompare
         ArrayList alDataColumns = new ArrayList();
 
         private void Main_Load(object sender, EventArgs e)
-        {
+        {                       
             dgvMain.AutoGenerateColumns = false;
             dgvRepaireRequest.AutoGenerateColumns = false;
             Parameters.hConnect = new SqlWorker(ConnectionSettings.GetServer(), ConnectionSettings.GetDatabase(), ConnectionSettings.GetUsername(), ConnectionSettings.GetPassword(), ConnectionSettings.ProgramName);
@@ -946,7 +946,7 @@ namespace RealCompare
             {
                 Console.WriteLine(ex.Message);
             }
-
+            btPrint.Enabled = (dgvMain != null && dgvMain.Rows.Count != 0);
 
             //dgvMain.DataSource = resultTable;
 
@@ -1120,7 +1120,10 @@ namespace RealCompare
                 bsGrdMain.Filter = filter;
             }
             catch
-            { }
+            {
+                btPrint.Enabled = false;
+            }
+            btPrint.Enabled = (dgvMain != null && dgvMain.Rows.Count != 0);
 
             reSumTotal();
         }
@@ -1896,27 +1899,36 @@ namespace RealCompare
 
         private void reCountDelta()
         {
-            if (bsGrdMain.DataSource == null) return;
+            if (bsGrdMain.DataSource == null || (bsGrdMain.DataSource as DataTable).Rows.Count == 0 || dgvMain.Rows.Count == 0) return;
 
             foreach (DataRow row in (bsGrdMain.DataSource as DataTable).Rows)
             {
-                if (chkKsSql.Checked && chkRealSql.Checked)
+                if (chbMainKass.Checked)
                 {
-                    row["isRealEquals"] = ((decimal)row["KsSql"] == (decimal)row["MainKass"] && (decimal)row["RealSql"] == (decimal)row["MainKass"]);
-                    row["delta"] = 0;
+                    if (chkKsSql.Checked && chkRealSql.Checked)
+                    {
+                        row["isRealEquals"] = ((decimal)row["KsSql"] == (decimal)row["MainKass"] && (decimal)row["RealSql"] == (decimal)row["MainKass"]);
+                        row["delta"] = 0;
+                    }
+                    else if (chkKsSql.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["MainKass"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["MainKass"];
+                    }
+                    else if (chkRealSql.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["MainKass"];
+                        row["delta"] = (decimal)row["RealSql"] - (decimal)row["MainKass"];
+                    }
                 }
-                else if (chkKsSql.Checked)
+                else
                 {
-                    row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["MainKass"];
-                    row["delta"] = (decimal)row["KsSql"] - (decimal)row["MainKass"];
-                }
-                else if (chkRealSql.Checked)
-                {
-                    row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["MainKass"];
-                    row["delta"] = (decimal)row["RealSql"] - (decimal)row["MainKass"];
+                    row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["RealSql"];
+                    row["delta"] = (decimal)row["KsSql"] - (decimal)row["RealSql"];
                 }
             }
         }
+        
 
         private void btViewRepair_Click(object sender, EventArgs e)
         {
@@ -2109,7 +2121,7 @@ namespace RealCompare
             try
             {
 
-                if ((bsGrdMain.DataSource as DataTable) == null || (bsGrdMain.DataSource as DataTable).Rows.Count == 0 || (bsGrdMain.DataSource as DataTable).DefaultView.Count == 0)
+                if ((bsGrdMain.DataSource as DataTable) == null || (bsGrdMain.DataSource as DataTable).Rows.Count == 0 || (bsGrdMain.DataSource as DataTable).DefaultView.Count == 0 || dgvMain.Rows.Count==0)
                 {
                     tbDateAdd.Text = "";
                     tbFio.Text = "";
@@ -2186,6 +2198,7 @@ namespace RealCompare
             }
 
             lbTotal.Visible = count != 0;
+            btPrint.Enabled = (dgvMain != null && dgvMain.Rows.Count != 0);
 
             reSumTotal();
         }
@@ -2229,6 +2242,7 @@ namespace RealCompare
             task.Wait();
             dgvRepaireRequest.DataSource = task.Result;
             btViewRepair.Enabled = dgvRepaireRequest.Rows.Count != 0;
+            btDel.Enabled = dgvRepaireRequest.Rows.Count == 0;
         }
 
         #region "Объединение"
