@@ -41,8 +41,9 @@ namespace RealCompare
         }
 
         private void frmAddRealizMainKass_Load(object sender, EventArgs e)
-        {                     
-            dtpDate.MaxDate = Parameters.hConnect.GetDate().AddDays(-1);
+        {
+            dtpDate.Value = date.Date;
+            dtpDate.MaxDate = Parameters.hConnect.GetDate().AddDays(-1);            
             if (isEdit)
             {
                 dtpDate.Value = date.Date;

@@ -23,7 +23,11 @@ IF @typeReport = 1
 BEGIN
 	select 
 		mk.Data,
-		case when rd.SourceDifference = 1 then 'с Реал. SQL' else 'с Шахматка' end as nameType,
+		case 
+			when rd.SourceDifference = 1 then 'с Реал. SQL'
+			when rd.SourceDifference = 2 then 'с Шахматка' 
+			when rd.SourceDifference = 3 then 'с Реал. SQL и Шахматка' 
+		end as nameType,
 		rr.DateSubmission,
 		rr.Number,
 		cr.Comment,
@@ -32,9 +36,10 @@ BEGIN
 		Repair.j_RequestRepair rr
 			inner join RealCompare.j_RequestOfDifference rd on rd.id_RequestRepair = rr.id
 			inner join RealCompare.j_MainKass mk on mk.id = rd.id_MainKass
-			inner join [Repair].[j_CommentRequest] cr on cr.id_RequestRepair = rr.id
+			left join [Repair].[j_CommentRequest] cr on cr.id_RequestRepair = rr.id
 	where 
-		@dateStart<= cast(rr.DateSubmission as date) and cast(rr.DateSubmission as date) <=@dateEnd
+		--@dateStart<= cast(rr.DateSubmission as date) and cast(rr.DateSubmission as date) <=@dateEnd
+		@dateStart<= cast(mk.Data as date) and cast(mk.Data as date) <=@dateEnd
 END
 ELSE IF @typeReport = 2
 BEGIN

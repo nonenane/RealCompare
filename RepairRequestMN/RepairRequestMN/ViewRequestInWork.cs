@@ -96,7 +96,7 @@ namespace RepairRequestMN
 
                 Logging.StartFirstLevel(1556);
                 Logging.Comment($"ID: {_id}");
-                Logging.Comment("У заявки установлен  статус \"в работе’\". Предыдущий статус с \"выполнено\"");
+                //Logging.Comment("У заявки установлен  статус \"в работе’\". Предыдущий статус с \"выполнено\"");
                 Logging.Comment("№ заявки:" + textBox_Number.Text);
                 Logging.Comment("Дата подачи:" + textBox_Date.Text);
                 Logging.Comment("Время подачи:" + textBox_Time.Text);

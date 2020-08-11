@@ -376,7 +376,7 @@ namespace RealCompare
                 { Logging.Comment($"Группировка по \": {(cnt as RadioButton).Text}\""); break; }
             }
 
-            foreach (Control cnt in grpGroups.Controls)
+            foreach (Control cnt in grpSources.Controls)
             {
                 if (cnt is CheckBox && (cnt as CheckBox).Checked)
                 { Logging.Comment($"Источники данных: \": {(cnt as CheckBox).Text}\""); }
@@ -1626,7 +1626,14 @@ namespace RealCompare
 
         private void btAdd_Click(object sender, EventArgs e)
         {
+
+            DateTime date = new DateTime();
+
+            if (dgvMain.CurrentRow != null && dgvMain.CurrentRow.Index != -1)
+                date = (DateTime)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["date"];
+
             frmAddRealizMainKass frmAddRK = new frmAddRealizMainKass();
+            frmAddRK.date = date;
             if (DialogResult.OK == frmAddRK.ShowDialog())
             {
                 addDataToTable(frmAddRK);

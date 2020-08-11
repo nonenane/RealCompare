@@ -622,6 +622,7 @@
             this.btCheckExisting.TabIndex = 23;
             this.ttButtons.SetToolTip(this.btCheckExisting, "Проверка наличия чеков");
             this.btCheckExisting.UseVisualStyleBackColor = true;
+            this.btCheckExisting.Visible = false;
             this.btCheckExisting.Click += new System.EventHandler(this.btCheckExisting_Click);
             // 
             // btExit
