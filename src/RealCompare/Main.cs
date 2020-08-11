@@ -546,7 +546,7 @@ namespace RealCompare
                                    KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
                                    RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
                                    delta = g.Sum(table => Decimal.Parse(table["delta"].ToString())),
-                                   isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) > 0)
+                                   isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) % 2==0)
                                }).CopyToDataTable();
             }
             else if (rbDateAndDep.Checked)
@@ -567,7 +567,7 @@ namespace RealCompare
                                    KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
                                    RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
                                    delta = g.Sum(table => Decimal.Parse(table["delta"].ToString())),
-                                   isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) > 0)
+                                   isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) % 2==0)
                                }).CopyToDataTable();
 
             }
