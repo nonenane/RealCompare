@@ -519,6 +519,7 @@ namespace RealCompare
 
             resultTable.Columns.Add("isRealEquals", typeof(bool));
             resultTable.Columns.Add("delta", typeof(decimal));
+
             foreach (DataRow dr in resultTable.Rows)
             {
                 dr["delta"] = decimal.Parse(dr["KsSql"].ToString()) - decimal.Parse(dr["RealSql"].ToString());
@@ -546,7 +547,7 @@ namespace RealCompare
                                    KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
                                    RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
                                    delta = g.Sum(table => Decimal.Parse(table["delta"].ToString())),
-                                   isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) % 2==0)
+                                   isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) % 2 == 0)
                                }).CopyToDataTable();
             }
             else if (rbDateAndDep.Checked)
@@ -567,9 +568,63 @@ namespace RealCompare
                                    KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
                                    RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
                                    delta = g.Sum(table => Decimal.Parse(table["delta"].ToString())),
-                                   isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) % 2==0)
+                                   isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) % 2 == 0)
                                }).CopyToDataTable();
+            }
+            else if (rbDateAndVVO.Checked && !chbMainKass.Checked)
+            {
+                DataTable dtTmpMain = (from table in resultTable.AsEnumerable().Where(r => r.Field<int>("id_dep") != 6)
+                                       group table by new
+                                       {
+                                           date = table["date"],
+                                       }
+                       into g
 
+                                       select new
+                                       {
+                                           date = g.Key.date,
+                                           KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
+                                           RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
+                                           delta = g.Sum(table => Decimal.Parse(table["delta"].ToString())),
+                                           isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) > 0),
+                                           isVVO = false,
+                                           depName = "Все отделы, кроме ВВО"
+                                       }).CopyToDataTable();
+
+                DataTable dtTmpVVo = (from table in resultTable.AsEnumerable().Where(r => r.Field<int>("id_dep") == 6)
+                                      group table by new
+                                      {
+                                          date = table["date"],
+                                      }
+                       into g
+
+                                      select new
+                                      {
+                                          date = g.Key.date,
+                                          KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
+                                          RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
+                                          delta = g.Sum(table => Decimal.Parse(table["delta"].ToString())),
+                                          isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) > 0),
+                                          isVVO = true,
+                                          depName = "Отдел ВВО"
+                                      }).CopyToDataTable();
+
+
+                resultTable = dtTmpMain.Clone();
+                resultTable = dtTmpMain.Copy();
+                resultTable.Merge(dtTmpVVo);
+            }
+
+            foreach (DataRow dr in resultTable.Rows)
+            {
+                dr["delta"] = decimal.Parse(dr["KsSql"].ToString()) - decimal.Parse(dr["RealSql"].ToString());
+            }
+
+            foreach (DataRow dr in resultTable.Rows)
+            {
+                if (dr["KsSql"].ToString() == dr["RealSql"].ToString())
+                    dr["isRealEquals"] = true;
+                else dr["isRealEquals"] = false;
             }
 
 
