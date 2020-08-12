@@ -45,6 +45,16 @@ namespace RealCompare
             Parameters.hConnectKass = new SqlWorker(ConnectionSettings.GetServer("3"), ConnectionSettings.GetDatabase("3"), ConnectionSettings.GetUsername(), ConnectionSettings.GetPassword(), ConnectionSettings.ProgramName);
             Parameters.hConnectVVOKass = new SqlWorker(ConnectionSettings.GetServer("4"), ConnectionSettings.GetDatabase("4"), ConnectionSettings.GetUsername(), ConnectionSettings.GetPassword(), ConnectionSettings.ProgramName);
 
+
+            toolStripStatusLabel1.Text = $"Основной Сервер:{ConnectionSettings.GetServer()}:{ConnectionSettings.GetDatabase()}";
+
+
+            if (ConnectionSettings.GetServer("2").Length != 0 || ConnectionSettings.GetServer("3").Length != 0 || ConnectionSettings.GetServer("4").Length != 0)
+                toolStripStatusLabel1.Text += " | Дополнительные сервера:" +
+               (ConnectionSettings.GetServer("2").Length != 0 ? $" {ConnectionSettings.GetServer("2")}:{ConnectionSettings.GetDatabase("2")} | " : $"") +
+                (ConnectionSettings.GetServer("3").Length != 0 ? $" {ConnectionSettings.GetServer("3")}:{ConnectionSettings.GetDatabase("3")} | " : $"") +
+                (ConnectionSettings.GetServer("4").Length != 0 ? $" {ConnectionSettings.GetServer("4")}:{ConnectionSettings.GetDatabase("4")}" : $"");
+
             //Console.WriteLine(ConnectionSettings.GetServer("5")+"  :  "+ ConnectionSettings.GetDatabase("5"));
 
             btAdd.Visible = btEdit.Visible = btDel.Visible = !new List<string> { "ПР" }.Contains(UserSettings.User.StatusCode);
@@ -431,8 +441,11 @@ namespace RealCompare
             //    alDataColumns.Add("RealDbf");
             //}
 
-            pbData.Visible = true;
-            pbData.Value = 0;
+            //pbData.Visible = true;
+            //pbData.Value = 0;
+            toolStripProgressBar1.Visible = true;
+            toolStripProgressBar1.Value = 0;
+
             this.Enabled = false;
             dgvMain.DataSource = null;
             try
@@ -586,7 +599,7 @@ namespace RealCompare
                                            KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
                                            RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
                                            delta = g.Sum(table => Decimal.Parse(table["delta"].ToString())),
-                                           isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) > 0),
+                                           isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) %2== 0),
                                            isVVO = false,
                                            depName = "Все отделы, кроме ВВО"
                                        }).CopyToDataTable();
@@ -604,7 +617,7 @@ namespace RealCompare
                                           KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
                                           RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
                                           delta = g.Sum(table => Decimal.Parse(table["delta"].ToString())),
-                                          isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) > 0),
+                                          isRealEquals = ((g.Sum(table => (bool)table["isRealEquals"] ? 1 : 0)) % 2 == 0),
                                           isVVO = true,
                                           depName = "Отдел ВВО"
                                       }).CopyToDataTable();
@@ -1008,7 +1021,8 @@ namespace RealCompare
             this.Enabled = true;
 
 
-            pbData.Visible = false;
+            //pbData.Visible = false;
+            toolStripProgressBar1.Visible = false;
 
         }
 
@@ -1635,7 +1649,7 @@ namespace RealCompare
             }
             else
             {
-                rbDateAndVVO.Enabled = false;
+                //rbDateAndVVO.Enabled = false;
                 rbDateAndDep.Enabled = true;
                 rbDateAndDepAndGood.Enabled = true;
                 cMainKass.Visible = false;
@@ -2193,7 +2207,7 @@ namespace RealCompare
                     return;
                 }
 
-                if (rbDateAndVVO.Checked)
+                if (rbDateAndVVO.Checked && chbMainKass.Checked)
                 {
                     tbFio.Text = (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["FIO"].ToString();
                     tbDateAdd.Text = (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["DateEdit"].ToString();
