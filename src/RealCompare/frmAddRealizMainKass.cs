@@ -18,7 +18,7 @@ namespace RealCompare
         private string _oldRealiz;
         //private int id = 0;
 
-        public DateTime date { set; private get; }
+        public DateTime? date { set; private get; }
         public bool isVVO { set; get; }
         public bool isEdit { set; private get; }
 
@@ -42,13 +42,21 @@ namespace RealCompare
 
         private void frmAddRealizMainKass_Load(object sender, EventArgs e)
         {
-            dtpDate.Value = date.Date;
-            dtpDate.MaxDate = Parameters.hConnect.GetDate().AddDays(-1);            
+          
+
             if (isEdit)
             {
-                dtpDate.Value = date.Date;
+                dtpDate.Value = ((DateTime?)date).Value.Date;
                 rbVVO.Checked = isVVO;
             }
+            else
+            {
+                if (date != null)
+                    dtpDate.Value = ((DateTime?)date).Value.Date;
+            }
+            dtpDate.MaxDate = Parameters.hConnect.GetDate().AddDays(-1);
+
+
             getData();
 
             tmp_date = dtpDate.Value.Date;

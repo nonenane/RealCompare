@@ -1696,7 +1696,7 @@ namespace RealCompare
         private void btAdd_Click(object sender, EventArgs e)
         {
 
-            DateTime date = new DateTime();
+            DateTime? date = null;
 
             if (dgvMain.CurrentRow != null && dgvMain.CurrentRow.Index != -1)
                 date = (DateTime)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["date"];
