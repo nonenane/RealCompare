@@ -25,6 +25,11 @@ namespace RealCompare
         /// Коннект к серверу с KassRealiz ВВО
         /// </summary>
         public static SqlWorker hConnectVVOKass { get; set; }
+
+        /// <summary>
+        /// Коннект к серверу с X14
+        /// </summary>
+        public static SqlWorker hConnectX14 { get; set; }
         #region Параметры для загрузки данных
         public static int groupType { get; set; }
         public static bool isKsSql { get; set; }        

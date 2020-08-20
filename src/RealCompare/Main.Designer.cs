@@ -29,17 +29,19 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle34 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle35 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle36 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle37 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle38 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle39 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle40 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             this.grpSearch = new System.Windows.Forms.GroupBox();
             this.lbName = new System.Windows.Forms.Label();
             this.tbName = new System.Windows.Forms.TextBox();
@@ -59,15 +61,6 @@
             this.lbDep = new System.Windows.Forms.Label();
             this.lbTgrp = new System.Windows.Forms.Label();
             this.dgvMain = new System.Windows.Forms.DataGridView();
-            this.DateReal = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Department = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.EAN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cMainKass = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.KsSql = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RealSql = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cDelta = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.isRealEquals = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cmsMainGridContext = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.установитьСверкуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.снятьСверкуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -115,6 +108,20 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.tbTotalcDiscount = new System.Windows.Forms.TextBox();
+            this.chbGraphRealiz = new System.Windows.Forms.CheckBox();
+            this.tbTotalcGraphRealiz = new System.Windows.Forms.TextBox();
+            this.DateReal = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Department = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EAN = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cMainKass = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cDiscount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.KsSql = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RealSql = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cGraphRealiz = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cDelta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isRealEquals = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.grpSearch.SuspendLayout();
             this.grpGroups.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
@@ -325,14 +332,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvMain.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvMain.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle31.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle31.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle31.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle31.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle31.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle31.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvMain.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle31;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvMain.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvMain.ColumnHeadersHeight = 40;
             this.dgvMain.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvMain.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -341,13 +348,17 @@
             this.EAN,
             this.cName,
             this.cMainKass,
+            this.cDiscount,
             this.KsSql,
             this.RealSql,
+            this.cGraphRealiz,
             this.cDelta,
             this.isRealEquals});
             this.dgvMain.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvMain.Location = new System.Drawing.Point(12, 130);
+            this.dgvMain.MultiSelect = false;
             this.dgvMain.Name = "dgvMain";
+            this.dgvMain.ReadOnly = true;
             this.dgvMain.RowHeadersVisible = false;
             this.dgvMain.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvMain.Size = new System.Drawing.Size(1107, 273);
@@ -361,98 +372,6 @@
             this.dgvMain.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgvMain_RowsAdded);
             this.dgvMain.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgvMain_RowsRemoved);
             this.dgvMain.SelectionChanged += new System.EventHandler(this.dgvMain_SelectionChanged);
-            // 
-            // DateReal
-            // 
-            this.DateReal.DataPropertyName = "date";
-            dataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle32.Format = "d";
-            dataGridViewCellStyle32.NullValue = null;
-            this.DateReal.DefaultCellStyle = dataGridViewCellStyle32;
-            this.DateReal.FillWeight = 50F;
-            this.DateReal.HeaderText = "Дата реал.";
-            this.DateReal.MinimumWidth = 20;
-            this.DateReal.Name = "DateReal";
-            // 
-            // Department
-            // 
-            this.Department.DataPropertyName = "depName";
-            dataGridViewCellStyle33.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.Department.DefaultCellStyle = dataGridViewCellStyle33;
-            this.Department.FillWeight = 50F;
-            this.Department.HeaderText = "Отдел";
-            this.Department.MinimumWidth = 20;
-            this.Department.Name = "Department";
-            // 
-            // EAN
-            // 
-            this.EAN.DataPropertyName = "ean";
-            dataGridViewCellStyle34.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.EAN.DefaultCellStyle = dataGridViewCellStyle34;
-            this.EAN.FillWeight = 60F;
-            this.EAN.HeaderText = "EAN";
-            this.EAN.MinimumWidth = 20;
-            this.EAN.Name = "EAN";
-            // 
-            // cName
-            // 
-            this.cName.DataPropertyName = "goodsName";
-            dataGridViewCellStyle35.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.cName.DefaultCellStyle = dataGridViewCellStyle35;
-            this.cName.FillWeight = 190F;
-            this.cName.HeaderText = "Наименование товара";
-            this.cName.MinimumWidth = 20;
-            this.cName.Name = "cName";
-            // 
-            // cMainKass
-            // 
-            this.cMainKass.DataPropertyName = "MainKass";
-            dataGridViewCellStyle36.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle36.Format = "N2";
-            dataGridViewCellStyle36.NullValue = null;
-            this.cMainKass.DefaultCellStyle = dataGridViewCellStyle36;
-            this.cMainKass.HeaderText = "Главная касса";
-            this.cMainKass.Name = "cMainKass";
-            this.cMainKass.ReadOnly = true;
-            this.cMainKass.Visible = false;
-            // 
-            // KsSql
-            // 
-            this.KsSql.DataPropertyName = "KsSql";
-            dataGridViewCellStyle37.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle37.Format = "N2";
-            this.KsSql.DefaultCellStyle = dataGridViewCellStyle37;
-            this.KsSql.FillWeight = 50F;
-            this.KsSql.HeaderText = "Шахматка";
-            this.KsSql.MinimumWidth = 20;
-            this.KsSql.Name = "KsSql";
-            // 
-            // RealSql
-            // 
-            this.RealSql.DataPropertyName = "RealSql";
-            dataGridViewCellStyle38.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle38.Format = "N2";
-            this.RealSql.DefaultCellStyle = dataGridViewCellStyle38;
-            this.RealSql.FillWeight = 50F;
-            this.RealSql.HeaderText = "Реал. SQL";
-            this.RealSql.MinimumWidth = 20;
-            this.RealSql.Name = "RealSql";
-            // 
-            // cDelta
-            // 
-            this.cDelta.DataPropertyName = "delta";
-            dataGridViewCellStyle39.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.cDelta.DefaultCellStyle = dataGridViewCellStyle39;
-            this.cDelta.HeaderText = "Дельта";
-            this.cDelta.Name = "cDelta";
-            this.cDelta.Visible = false;
-            // 
-            // isRealEquals
-            // 
-            this.isRealEquals.DataPropertyName = "isRealEquals";
-            this.isRealEquals.HeaderText = "isRealEquals";
-            this.isRealEquals.Name = "isRealEquals";
-            this.isRealEquals.Visible = false;
             // 
             // cmsMainGridContext
             // 
@@ -488,12 +407,13 @@
             // grpSources
             // 
             this.grpSources.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.grpSources.Controls.Add(this.chbGraphRealiz);
             this.grpSources.Controls.Add(this.chbMainKass);
             this.grpSources.Controls.Add(this.chkRealSql);
             this.grpSources.Controls.Add(this.chkKsSql);
             this.grpSources.Location = new System.Drawing.Point(12, 461);
             this.grpSources.Name = "grpSources";
-            this.grpSources.Size = new System.Drawing.Size(183, 97);
+            this.grpSources.Size = new System.Drawing.Size(183, 110);
             this.grpSources.TabIndex = 10;
             this.grpSources.TabStop = false;
             this.grpSources.Text = "Источники данных:";
@@ -501,7 +421,7 @@
             // chbMainKass
             // 
             this.chbMainKass.AutoSize = true;
-            this.chbMainKass.Location = new System.Drawing.Point(13, 68);
+            this.chbMainKass.Location = new System.Drawing.Point(13, 66);
             this.chbMainKass.Name = "chbMainKass";
             this.chbMainKass.Size = new System.Drawing.Size(101, 17);
             this.chbMainKass.TabIndex = 6;
@@ -514,7 +434,7 @@
             this.chkRealSql.AutoSize = true;
             this.chkRealSql.Checked = true;
             this.chkRealSql.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkRealSql.Location = new System.Drawing.Point(13, 45);
+            this.chkRealSql.Location = new System.Drawing.Point(13, 44);
             this.chkRealSql.Name = "chkRealSql";
             this.chkRealSql.Size = new System.Drawing.Size(78, 17);
             this.chkRealSql.TabIndex = 3;
@@ -562,27 +482,29 @@
             // 
             this.tbTotalKsSql.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.tbTotalKsSql.BackColor = System.Drawing.Color.White;
-            this.tbTotalKsSql.Location = new System.Drawing.Point(661, 409);
+            this.tbTotalKsSql.Location = new System.Drawing.Point(661, 408);
             this.tbTotalKsSql.Name = "tbTotalKsSql";
             this.tbTotalKsSql.ReadOnly = true;
             this.tbTotalKsSql.Size = new System.Drawing.Size(87, 20);
             this.tbTotalKsSql.TabIndex = 19;
+            this.tbTotalKsSql.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // tbTotalRealSql
             // 
             this.tbTotalRealSql.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.tbTotalRealSql.BackColor = System.Drawing.Color.White;
-            this.tbTotalRealSql.Location = new System.Drawing.Point(747, 409);
+            this.tbTotalRealSql.Location = new System.Drawing.Point(747, 408);
             this.tbTotalRealSql.Name = "tbTotalRealSql";
             this.tbTotalRealSql.ReadOnly = true;
             this.tbTotalRealSql.Size = new System.Drawing.Size(87, 20);
             this.tbTotalRealSql.TabIndex = 19;
+            this.tbTotalRealSql.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // lbTotal
             // 
             this.lbTotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lbTotal.AutoSize = true;
-            this.lbTotal.Location = new System.Drawing.Point(522, 413);
+            this.lbTotal.Location = new System.Drawing.Point(380, 412);
             this.lbTotal.Name = "lbTotal";
             this.lbTotal.Size = new System.Drawing.Size(40, 13);
             this.lbTotal.TabIndex = 20;
@@ -607,7 +529,7 @@
             this.btViewRepair.BackgroundImage = global::RealCompare.Properties.Resources.old_edit_find;
             this.btViewRepair.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btViewRepair.Enabled = false;
-            this.btViewRepair.Location = new System.Drawing.Point(677, 86);
+            this.btViewRepair.Location = new System.Drawing.Point(677, 99);
             this.btViewRepair.Name = "btViewRepair";
             this.btViewRepair.Size = new System.Drawing.Size(35, 35);
             this.btViewRepair.TabIndex = 26;
@@ -702,11 +624,12 @@
             // 
             this.tbTotalcDelta.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.tbTotalcDelta.BackColor = System.Drawing.Color.White;
-            this.tbTotalcDelta.Location = new System.Drawing.Point(919, 409);
+            this.tbTotalcDelta.Location = new System.Drawing.Point(1032, 408);
             this.tbTotalcDelta.Name = "tbTotalcDelta";
             this.tbTotalcDelta.ReadOnly = true;
             this.tbTotalcDelta.Size = new System.Drawing.Size(87, 20);
             this.tbTotalcDelta.TabIndex = 24;
+            this.tbTotalcDelta.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tbTotalcDelta.Visible = false;
             this.tbTotalcDelta.TextChanged += new System.EventHandler(this.tbTotalcDelta_TextChanged);
             // 
@@ -714,7 +637,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(43, 14);
+            this.label1.Location = new System.Drawing.Point(43, 27);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(86, 13);
             this.label1.TabIndex = 17;
@@ -726,7 +649,7 @@
             this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(11)))));
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.panel2.Location = new System.Drawing.Point(17, 10);
+            this.panel2.Location = new System.Drawing.Point(17, 23);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(20, 20);
             this.panel2.TabIndex = 21;
@@ -735,7 +658,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(184, 14);
+            this.label2.Location = new System.Drawing.Point(184, 27);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(50, 13);
             this.label2.TabIndex = 17;
@@ -747,7 +670,7 @@
             this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(255)))), ((int)(((byte)(153)))));
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.panel3.Location = new System.Drawing.Point(158, 10);
+            this.panel3.Location = new System.Drawing.Point(158, 23);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(20, 20);
             this.panel3.TabIndex = 21;
@@ -760,14 +683,14 @@
             this.dgvRepaireRequest.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvRepaireRequest.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewCellStyle40.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle40.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle40.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle40.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle40.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle40.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle40.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRepaireRequest.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle40;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvRepaireRequest.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
             this.dgvRepaireRequest.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvRepaireRequest.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.cNumRequest,
@@ -775,7 +698,7 @@
             this.cRequestInfo,
             this.cRequestConfirm,
             this.cRequestStatus});
-            this.dgvRepaireRequest.Location = new System.Drawing.Point(17, 36);
+            this.dgvRepaireRequest.Location = new System.Drawing.Point(17, 49);
             this.dgvRepaireRequest.MultiSelect = false;
             this.dgvRepaireRequest.Name = "dgvRepaireRequest";
             this.dgvRepaireRequest.ReadOnly = true;
@@ -824,7 +747,7 @@
             // 
             this.tbFio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tbFio.BackColor = System.Drawing.Color.White;
-            this.tbFio.Location = new System.Drawing.Point(306, 10);
+            this.tbFio.Location = new System.Drawing.Point(306, 23);
             this.tbFio.Name = "tbFio";
             this.tbFio.ReadOnly = true;
             this.tbFio.Size = new System.Drawing.Size(227, 20);
@@ -834,7 +757,7 @@
             // 
             this.tbDateAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tbDateAdd.BackColor = System.Drawing.Color.White;
-            this.tbDateAdd.Location = new System.Drawing.Point(634, 10);
+            this.tbDateAdd.Location = new System.Drawing.Point(634, 23);
             this.tbDateAdd.Name = "tbDateAdd";
             this.tbDateAdd.ReadOnly = true;
             this.tbDateAdd.Size = new System.Drawing.Size(119, 20);
@@ -844,7 +767,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(248, 14);
+            this.label3.Location = new System.Drawing.Point(248, 27);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(52, 13);
             this.label3.TabIndex = 17;
@@ -854,7 +777,7 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(539, 14);
+            this.label4.Location = new System.Drawing.Point(539, 27);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(96, 13);
             this.label4.TabIndex = 17;
@@ -879,7 +802,7 @@
             this.groupBox1.Controls.Add(this.btViewRepair);
             this.groupBox1.Location = new System.Drawing.Point(196, 432);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(759, 126);
+            this.groupBox1.Size = new System.Drawing.Size(759, 139);
             this.groupBox1.TabIndex = 28;
             this.groupBox1.TabStop = false;
             this.groupBox1.Visible = false;
@@ -889,7 +812,7 @@
             this.btDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btDel.Image = global::RealCompare.Properties.Resources.Trash;
-            this.btDel.Location = new System.Drawing.Point(718, 34);
+            this.btDel.Location = new System.Drawing.Point(718, 47);
             this.btDel.Name = "btDel";
             this.btDel.Size = new System.Drawing.Size(35, 35);
             this.btDel.TabIndex = 26;
@@ -901,7 +824,7 @@
             this.btEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btEdit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btEdit.Image = global::RealCompare.Properties.Resources.Edit;
-            this.btEdit.Location = new System.Drawing.Point(677, 34);
+            this.btEdit.Location = new System.Drawing.Point(677, 47);
             this.btEdit.Name = "btEdit";
             this.btEdit.Size = new System.Drawing.Size(35, 35);
             this.btEdit.TabIndex = 26;
@@ -913,7 +836,7 @@
             this.btAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btAdd.Image = global::RealCompare.Properties.Resources.Add;
-            this.btAdd.Location = new System.Drawing.Point(636, 34);
+            this.btAdd.Location = new System.Drawing.Point(636, 47);
             this.btAdd.Name = "btAdd";
             this.btAdd.Size = new System.Drawing.Size(35, 35);
             this.btAdd.TabIndex = 26;
@@ -924,11 +847,12 @@
             // 
             this.tbTotalcMainKass.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.tbTotalcMainKass.BackColor = System.Drawing.Color.White;
-            this.tbTotalcMainKass.Location = new System.Drawing.Point(568, 409);
+            this.tbTotalcMainKass.Location = new System.Drawing.Point(568, 408);
             this.tbTotalcMainKass.Name = "tbTotalcMainKass";
             this.tbTotalcMainKass.ReadOnly = true;
             this.tbTotalcMainKass.Size = new System.Drawing.Size(87, 20);
             this.tbTotalcMainKass.TabIndex = 29;
+            this.tbTotalcMainKass.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tbTotalcMainKass.Visible = false;
             // 
             // statusStrip1
@@ -960,11 +884,171 @@
             this.toolStripProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.toolStripProgressBar1.Visible = false;
             // 
+            // tbTotalcDiscount
+            // 
+            this.tbTotalcDiscount.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.tbTotalcDiscount.BackColor = System.Drawing.Color.White;
+            this.tbTotalcDiscount.Location = new System.Drawing.Point(476, 408);
+            this.tbTotalcDiscount.Name = "tbTotalcDiscount";
+            this.tbTotalcDiscount.ReadOnly = true;
+            this.tbTotalcDiscount.Size = new System.Drawing.Size(87, 20);
+            this.tbTotalcDiscount.TabIndex = 32;
+            this.tbTotalcDiscount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tbTotalcDiscount.Visible = false;
+            // 
+            // chbGraphRealiz
+            // 
+            this.chbGraphRealiz.AutoSize = true;
+            this.chbGraphRealiz.Location = new System.Drawing.Point(13, 88);
+            this.chbGraphRealiz.Name = "chbGraphRealiz";
+            this.chbGraphRealiz.Size = new System.Drawing.Size(128, 17);
+            this.chbGraphRealiz.TabIndex = 7;
+            this.chbGraphRealiz.Text = "График Реализации";
+            this.chbGraphRealiz.UseVisualStyleBackColor = true;
+            this.chbGraphRealiz.CheckedChanged += new System.EventHandler(this.chbGraphRealiz_CheckedChanged);
+            // 
+            // tbTotalcGraphRealiz
+            // 
+            this.tbTotalcGraphRealiz.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.tbTotalcGraphRealiz.BackColor = System.Drawing.Color.White;
+            this.tbTotalcGraphRealiz.Location = new System.Drawing.Point(840, 408);
+            this.tbTotalcGraphRealiz.Name = "tbTotalcGraphRealiz";
+            this.tbTotalcGraphRealiz.ReadOnly = true;
+            this.tbTotalcGraphRealiz.Size = new System.Drawing.Size(87, 20);
+            this.tbTotalcGraphRealiz.TabIndex = 33;
+            this.tbTotalcGraphRealiz.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // DateReal
+            // 
+            this.DateReal.DataPropertyName = "date";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.Format = "d";
+            dataGridViewCellStyle2.NullValue = null;
+            this.DateReal.DefaultCellStyle = dataGridViewCellStyle2;
+            this.DateReal.FillWeight = 50F;
+            this.DateReal.HeaderText = "Дата реал.";
+            this.DateReal.MinimumWidth = 20;
+            this.DateReal.Name = "DateReal";
+            this.DateReal.ReadOnly = true;
+            // 
+            // Department
+            // 
+            this.Department.DataPropertyName = "depName";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.Department.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Department.FillWeight = 50F;
+            this.Department.HeaderText = "Отдел";
+            this.Department.MinimumWidth = 20;
+            this.Department.Name = "Department";
+            this.Department.ReadOnly = true;
+            // 
+            // EAN
+            // 
+            this.EAN.DataPropertyName = "ean";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.EAN.DefaultCellStyle = dataGridViewCellStyle4;
+            this.EAN.FillWeight = 60F;
+            this.EAN.HeaderText = "EAN";
+            this.EAN.MinimumWidth = 20;
+            this.EAN.Name = "EAN";
+            this.EAN.ReadOnly = true;
+            // 
+            // cName
+            // 
+            this.cName.DataPropertyName = "goodsName";
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.cName.DefaultCellStyle = dataGridViewCellStyle5;
+            this.cName.FillWeight = 190F;
+            this.cName.HeaderText = "Наименование товара";
+            this.cName.MinimumWidth = 20;
+            this.cName.Name = "cName";
+            this.cName.ReadOnly = true;
+            // 
+            // cMainKass
+            // 
+            this.cMainKass.DataPropertyName = "MainKass";
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle6.Format = "N2";
+            dataGridViewCellStyle6.NullValue = null;
+            this.cMainKass.DefaultCellStyle = dataGridViewCellStyle6;
+            this.cMainKass.HeaderText = "Главная касса";
+            this.cMainKass.Name = "cMainKass";
+            this.cMainKass.ReadOnly = true;
+            this.cMainKass.Visible = false;
+            // 
+            // cDiscount
+            // 
+            this.cDiscount.DataPropertyName = "discount";
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle7.Format = "N2";
+            dataGridViewCellStyle7.NullValue = null;
+            this.cDiscount.DefaultCellStyle = dataGridViewCellStyle7;
+            this.cDiscount.HeaderText = "Скидка";
+            this.cDiscount.Name = "cDiscount";
+            this.cDiscount.ReadOnly = true;
+            this.cDiscount.Visible = false;
+            // 
+            // KsSql
+            // 
+            this.KsSql.DataPropertyName = "KsSql";
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle8.Format = "N2";
+            this.KsSql.DefaultCellStyle = dataGridViewCellStyle8;
+            this.KsSql.FillWeight = 50F;
+            this.KsSql.HeaderText = "Шахматка";
+            this.KsSql.MinimumWidth = 20;
+            this.KsSql.Name = "KsSql";
+            this.KsSql.ReadOnly = true;
+            // 
+            // RealSql
+            // 
+            this.RealSql.DataPropertyName = "RealSql";
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle9.Format = "N2";
+            this.RealSql.DefaultCellStyle = dataGridViewCellStyle9;
+            this.RealSql.FillWeight = 50F;
+            this.RealSql.HeaderText = "Реал. SQL";
+            this.RealSql.MinimumWidth = 20;
+            this.RealSql.Name = "RealSql";
+            this.RealSql.ReadOnly = true;
+            // 
+            // cGraphRealiz
+            // 
+            this.cGraphRealiz.DataPropertyName = "graphRealiz";
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle10.Format = "N2";
+            dataGridViewCellStyle10.NullValue = null;
+            this.cGraphRealiz.DefaultCellStyle = dataGridViewCellStyle10;
+            this.cGraphRealiz.HeaderText = "График реализации";
+            this.cGraphRealiz.Name = "cGraphRealiz";
+            this.cGraphRealiz.ReadOnly = true;
+            this.cGraphRealiz.Visible = false;
+            // 
+            // cDelta
+            // 
+            this.cDelta.DataPropertyName = "delta";
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.cDelta.DefaultCellStyle = dataGridViewCellStyle11;
+            this.cDelta.HeaderText = "Дельта";
+            this.cDelta.Name = "cDelta";
+            this.cDelta.ReadOnly = true;
+            this.cDelta.Visible = false;
+            // 
+            // isRealEquals
+            // 
+            this.isRealEquals.DataPropertyName = "isRealEquals";
+            this.isRealEquals.HeaderText = "isRealEquals";
+            this.isRealEquals.Name = "isRealEquals";
+            this.isRealEquals.ReadOnly = true;
+            this.isRealEquals.Visible = false;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1131, 596);
+            this.Controls.Add(this.tbTotalcGraphRealiz);
+            this.Controls.Add(this.tbTotalcDiscount);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btReportMainKass);
             this.Controls.Add(this.tbTotalcMainKass);
@@ -1084,18 +1168,23 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn cRequestInfo;
         private System.Windows.Forms.DataGridViewTextBoxColumn cRequestConfirm;
         private System.Windows.Forms.DataGridViewTextBoxColumn cRequestStatus;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+        private System.Windows.Forms.TextBox tbTotalcDiscount;
+        private System.Windows.Forms.CheckBox chbGraphRealiz;
+        private System.Windows.Forms.TextBox tbTotalcGraphRealiz;
         private System.Windows.Forms.DataGridViewTextBoxColumn DateReal;
         private System.Windows.Forms.DataGridViewTextBoxColumn Department;
         private System.Windows.Forms.DataGridViewTextBoxColumn EAN;
         private System.Windows.Forms.DataGridViewTextBoxColumn cName;
         private System.Windows.Forms.DataGridViewTextBoxColumn cMainKass;
+        private System.Windows.Forms.DataGridViewTextBoxColumn cDiscount;
         private System.Windows.Forms.DataGridViewTextBoxColumn KsSql;
         private System.Windows.Forms.DataGridViewTextBoxColumn RealSql;
+        private System.Windows.Forms.DataGridViewTextBoxColumn cGraphRealiz;
         private System.Windows.Forms.DataGridViewTextBoxColumn cDelta;
         private System.Windows.Forms.DataGridViewTextBoxColumn isRealEquals;
-        private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
     }
 }
 

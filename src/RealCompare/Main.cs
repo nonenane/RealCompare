@@ -45,6 +45,8 @@ namespace RealCompare
             Parameters.hConnectKass = new SqlWorker(ConnectionSettings.GetServer("3"), ConnectionSettings.GetDatabase("3"), ConnectionSettings.GetUsername(), ConnectionSettings.GetPassword(), ConnectionSettings.ProgramName);
             Parameters.hConnectVVOKass = new SqlWorker(ConnectionSettings.GetServer("4"), ConnectionSettings.GetDatabase("4"), ConnectionSettings.GetUsername(), ConnectionSettings.GetPassword(), ConnectionSettings.ProgramName);
 
+            if (ConnectionSettings.GetServer("5").Length > 0)
+                Parameters.hConnectX14 = new SqlWorker(ConnectionSettings.GetServer("5"), ConnectionSettings.GetDatabase("5"), ConnectionSettings.GetUsername(), ConnectionSettings.GetPassword(), ConnectionSettings.ProgramName);
 
             toolStripStatusLabel1.Text = $"Основной Сервер:{ConnectionSettings.GetServer()}:{ConnectionSettings.GetDatabase()}";
 
@@ -103,7 +105,8 @@ namespace RealCompare
         {
             foreach (DataGridViewColumn Col in dgvMain.Columns)
             {
-                if (Col.Index >= 4 && Col.Visible)
+                //if (Col.Index >= 4 && Col.Visible)
+                if(Col.Visible)
                 {
                     foreach (Control con in this.Controls)
                     {
@@ -117,7 +120,7 @@ namespace RealCompare
                 }
 
                 string columnName = "";
-                for (int i = 3; i >= 0; i--)
+                for (int i = 2; i >= 0; i--)
                 {
                     if (dgvMain.Columns[i].Visible)
                     {
@@ -498,7 +501,7 @@ namespace RealCompare
         private void bgwGetCompare_DoWork(object sender, DoWorkEventArgs e)
         {
             DataTable dtRealDbf = new DataTable(); //Реализация из dbf
-
+            DataTable dtGraphRealiz = null;
             //Реализация из SQL
             //  DataTable dtRealData = Parameters.hConnect.GetCompareData(Parameters.dateStart, Parameters.dateEnd, Parameters.groupType, Parameters.isShah, Parameters.isKsSql, Parameters.isRealSql, Parameters.isRealSql2);
 
@@ -507,6 +510,15 @@ namespace RealCompare
             DataTable dtJRealizVVO = Parameters.hConnectVVO.GetJRealizVVO(Parameters.dateStart, Parameters.dateEnd);
             DataTable dtJournal = Parameters.hConnectKass.GetKassRealizJournal(Parameters.dateStart, Parameters.dateEnd);
             DataTable dtJournalVVO = Parameters.hConnectVVOKass.GetKassRealizJournalVVO(Parameters.dateStart, Parameters.dateEnd);
+
+
+            if (chbGraphRealiz.Checked)
+            {
+                Task<DataTable> task = Parameters.hConnectKass.getRealizHours(Parameters.dateStart, Parameters.dateEnd, !rbDate.Checked);
+                task.Wait();
+                dtGraphRealiz = task.Result;
+            }
+
 
             dtJRealiz.Merge(dtJRealizVVO);
             dtJournal.Merge(dtJournalVVO);
@@ -532,7 +544,7 @@ namespace RealCompare
 
             resultTable.Columns.Add("isRealEquals", typeof(bool));
             resultTable.Columns.Add("delta", typeof(decimal));
-
+          
             foreach (DataRow dr in resultTable.Rows)
             {
                 dr["delta"] = decimal.Parse(dr["KsSql"].ToString()) - decimal.Parse(dr["RealSql"].ToString());
@@ -544,6 +556,10 @@ namespace RealCompare
                     dr["isRealEquals"] = true;
                 else dr["isRealEquals"] = false;
             }
+
+
+
+
 
             if (rbDate.Checked)
             {
@@ -640,9 +656,34 @@ namespace RealCompare
                 else dr["isRealEquals"] = false;
             }
 
+            if (chbGraphRealiz.Checked)
+            {
+                if (!resultTable.Columns.Contains("graphRealiz"))
+                    resultTable.Columns.Add("graphRealiz", typeof(decimal));
+                
+                foreach (DataRow row in resultTable.Rows)
+                {
+                    EnumerableRowCollection<DataRow> rowCollect;
+                    if (rbDate.Checked)
+                    {
+                        rowCollect = dtGraphRealiz.AsEnumerable().Where(r => r.Field<DateTime>("DateCount").Date == ((DateTime)row["date"]).Date);
+                    }
+                    else
+                    {
+                        rowCollect = dtGraphRealiz.AsEnumerable().Where(r => r.Field<DateTime>("DateCount").Date == ((DateTime)row["date"]).Date && r.Field<int>("id_Departments") ==(int)row["id_dep"]);
+
+                    }
+                    if (rowCollect.Count() > 0)
+                            row["graphRealiz"] = rowCollect.First()["Realiz"];
+                        else
+                            row["graphRealiz"] = 0;                    
+                }
+            }
+
 
             if (chbMainKass.Checked)
             {
+                Task<DataTable> task;
                 #region "Формирование группировки данных для разбивки по дате и отделам"
                 if (rbDateAndVVO.Checked)
                 {
@@ -690,7 +731,7 @@ namespace RealCompare
                 #endregion
 
                 #region "Получение данных по главной кассе"
-                Task<DataTable> task = Parameters.hConnect.getMainKassForListDate(Parameters.dateStart, Parameters.dateEnd);
+                task = Parameters.hConnect.getMainKassForListDate(Parameters.dateStart, Parameters.dateEnd);
                 task.Wait();
                 DataTable dtMainKass = task.Result;
                 #endregion
@@ -937,6 +978,40 @@ namespace RealCompare
 
                     }
                 }
+                #endregion
+
+                #region "Расчёт скидки"
+                DataTable dtDiscount;
+                task = Parameters.hConnectKass.getDiscount(Parameters.dateStart, Parameters.dateEnd,false);
+                task.Wait();
+                dtDiscount = task.Result;
+
+                task = Parameters.hConnectVVOKass.getDiscount(Parameters.dateStart, Parameters.dateEnd, true);
+                task.Wait();
+                if (task.Result != null)
+                    dtDiscount.Merge(task.Result);
+
+                if (!resultTable.Columns.Contains("discount"))
+                    resultTable.Columns.Add("discount", typeof(decimal));
+
+                foreach (DataRow row in resultTable.Rows)
+                {
+                    EnumerableRowCollection<DataRow> rowCollect;
+                    if (rbDate.Checked)
+                        rowCollect = dtDiscount.AsEnumerable().Where(r => r.Field<DateTime>("conDate").Date == ((DateTime)row["date"]).Date);
+                    else
+                        rowCollect = dtDiscount.AsEnumerable().Where(r => r.Field<DateTime>("conDate").Date == ((DateTime)row["date"]).Date && r.Field<bool>("isVVO") == (bool)row["isVVO"]);
+                    if (rowCollect.Count() > 0)
+                    {
+                        row["discount"] = rowCollect.Sum(r => r.Field<decimal>("cash_val"));
+                    }
+                    else
+                    {
+                        row["discount"] = 0;
+                    }
+                }
+
+
                 #endregion
             }
 
@@ -1206,6 +1281,10 @@ namespace RealCompare
                     decimal SumMainKass = (bsGrdMain.DataSource as DataTable).DefaultView.ToTable().AsEnumerable()
                          .Sum(r => r.Field<decimal?>("MainKass") ?? 0);
                     tbTotalcMainKass.Text = SumMainKass.ToString("0.00");
+
+                    SumMainKass = (bsGrdMain.DataSource as DataTable).DefaultView.ToTable().AsEnumerable()
+                       .Sum(r => r.Field<decimal?>("MainKass") ?? 0);
+                    tbTotalcDiscount.Text = SumMainKass.ToString("0.00");
                 }
 
                 if (chkKsSql.Checked)
@@ -1222,6 +1301,13 @@ namespace RealCompare
                     tbTotalRealSql.Text = SumRealSql.ToString("0.00");
                 }
 
+                if (chbGraphRealiz.Checked)
+                {
+                    //decimal SumGraphRealiz = (bsGrdMain.DataSource as DataTable).DefaultView.ToTable().AsEnumerable()
+                    //     .Sum(r => r.Field<decimal?>("MainKass") ?? 0);
+                    //tbTotalcGraphRealiz.Text = SumGraphRealiz.ToString("0.00");
+                }
+
                 decimal sumDelta = (bsGrdMain.DataSource as DataTable).DefaultView.ToTable().AsEnumerable()
                             .Sum(r => r.Field<decimal?>("delta") ?? 0);
                 tbTotalcDelta.Text = sumDelta.ToString("0.00");
@@ -1231,7 +1317,9 @@ namespace RealCompare
                 tbTotalcMainKass.Text=
                 tbTotalKsSql.Text =
                 tbTotalRealSql.Text =
-                tbTotalcDelta.Text = "0.00";
+                tbTotalcDelta.Text =
+                tbTotalcDiscount.Text =
+                tbTotalcGraphRealiz.Text = "0.00";
             }
         }
 
@@ -1641,7 +1729,9 @@ namespace RealCompare
                 rbDateAndDepAndGood.Enabled = false;
                 if (rbDateAndDep.Checked || rbDateAndDepAndGood.Checked) rbDate.Checked = true;
                 cMainKass.Visible = true;
+                cDiscount.Visible = true;
                 tbTotalcMainKass.Visible = true;
+                tbTotalcDiscount.Visible = true;
                 //label3.Visible = tbFio.Visible = label4.Visible = tbDateAdd.Visible = rbDateAndVVO.Checked;
                 //btViewRepair.Visible = dgvRepaireRequest.Visible = btAdd.Visible = btEdit.Visible = btDel.Visible = rbDateAndVVO.Checked;
                 groupBox1.Visible = rbDateAndVVO.Checked;
@@ -1653,7 +1743,9 @@ namespace RealCompare
                 rbDateAndDep.Enabled = true;
                 rbDateAndDepAndGood.Enabled = true;
                 cMainKass.Visible = false;
+                cDiscount.Visible = false;
                 tbTotalcMainKass.Visible = false;
+                tbTotalcDiscount.Visible = false;
                 //label3.Visible = tbFio.Visible = label4.Visible = tbDateAdd.Visible = false;
                 //btViewRepair.Visible = dgvRepaireRequest.Visible = btAdd.Visible = btEdit.Visible = btDel.Visible = false;
                 groupBox1.Visible = false;
@@ -2314,7 +2406,12 @@ namespace RealCompare
 
         private void getListRepairRequestMainKass(int id_mainKass)
         {
-            Task<DataTable> task = Parameters.hConnect.getListRepairRequestForMainKass(id_mainKass);
+            Task<DataTable> task;
+            //if (Parameters.hConnectX14 != null)
+            //    task = Parameters.hConnectX14.getListRepairRequestForMainKass(id_mainKass);
+            //else
+                task = Parameters.hConnect.getListRepairRequestForMainKass(id_mainKass);
+
             task.Wait();
             dgvRepaireRequest.DataSource = task.Result;
             btViewRepair.Enabled = dgvRepaireRequest.Rows.Count != 0;
@@ -2382,6 +2479,13 @@ namespace RealCompare
             return cell1.Value.ToString() == cell2.Value.ToString() && column== DateReal.Index;// && id == id_pre;
         }
         #endregion
+
+        private void chbGraphRealiz_CheckedChanged(object sender, EventArgs e)
+        {
+            cGraphRealiz.Visible = chbGraphRealiz.Checked;
+            tbTotalcGraphRealiz.Visible = chbGraphRealiz.Checked;
+            visibleColumnDelta();
+        }
     }
 
     class CustomComparer : IEqualityComparer<DataRow>

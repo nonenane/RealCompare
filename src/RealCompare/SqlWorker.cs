@@ -405,5 +405,45 @@ namespace RealCompare
         }
 
         #endregion
+
+        #region "Скидки"
+        /// <summary>
+        /// Получение данных по скидкам
+        /// </summary>
+        /// <param name="dateStart"></param>
+        /// <param name="dateEnd"></param>
+        /// <returns></returns>
+        public async Task<DataTable> getDiscount(DateTime dateStart, DateTime dateEnd, bool isVVO)
+        {
+            ap.Clear();
+            ap.Add(dateStart);
+            ap.Add(dateEnd);
+            ap.Add(isVVO);
+           
+            return executeProcedure("[RealCompare].[spg_getDiscount]",
+               new string[3] { "@dateStart", "@dateEnd","@isVVO" },
+               new DbType[3] { DbType.Date, DbType.Date,DbType.Boolean}, ap);
+        }
+        #endregion
+
+        #region "График Реализации"
+        /// <summary>
+        /// Получение данных по графику реализации
+        /// </summary>
+        /// <param name="dateStart"></param>
+        /// <param name="dateEnd"></param>
+        /// <returns></returns>
+        public async Task<DataTable> getRealizHours(DateTime dateStart, DateTime dateEnd, bool withDeps)
+        {
+            ap.Clear();
+            ap.Add(dateStart);
+            ap.Add(dateEnd);
+            ap.Add(withDeps);
+
+            return executeProcedure("[RealCompare].[spg_getRealizHours]",
+               new string[3] { "@dateStart", "@dateEnd", "@withDeps" },
+               new DbType[3] { DbType.Date, DbType.Date, DbType.Boolean }, ap);
+        }
+        #endregion
     }
 }
