@@ -66,6 +66,7 @@
             this.снятьСверкуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.создатьЗаявкуНаРемонтToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpSources = new System.Windows.Forms.GroupBox();
+            this.chbGraphRealiz = new System.Windows.Forms.CheckBox();
             this.chbMainKass = new System.Windows.Forms.CheckBox();
             this.chkRealSql = new System.Windows.Forms.CheckBox();
             this.chkKsSql = new System.Windows.Forms.CheckBox();
@@ -109,7 +110,6 @@
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.tbTotalcDiscount = new System.Windows.Forms.TextBox();
-            this.chbGraphRealiz = new System.Windows.Forms.CheckBox();
             this.tbTotalcGraphRealiz = new System.Windows.Forms.TextBox();
             this.DateReal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Department = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -369,8 +369,6 @@
             this.dgvMain.ColumnWidthChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.dgwMain_ColumnWidthChanged);
             this.dgvMain.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvMain_RowPostPaint);
             this.dgvMain.RowPrePaint += new System.Windows.Forms.DataGridViewRowPrePaintEventHandler(this.dgvMain_RowPrePaint);
-            this.dgvMain.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgvMain_RowsAdded);
-            this.dgvMain.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgvMain_RowsRemoved);
             this.dgvMain.SelectionChanged += new System.EventHandler(this.dgvMain_SelectionChanged);
             // 
             // cmsMainGridContext
@@ -417,6 +415,17 @@
             this.grpSources.TabIndex = 10;
             this.grpSources.TabStop = false;
             this.grpSources.Text = "Источники данных:";
+            // 
+            // chbGraphRealiz
+            // 
+            this.chbGraphRealiz.AutoSize = true;
+            this.chbGraphRealiz.Location = new System.Drawing.Point(13, 88);
+            this.chbGraphRealiz.Name = "chbGraphRealiz";
+            this.chbGraphRealiz.Size = new System.Drawing.Size(128, 17);
+            this.chbGraphRealiz.TabIndex = 7;
+            this.chbGraphRealiz.Text = "График Реализации";
+            this.chbGraphRealiz.UseVisualStyleBackColor = true;
+            this.chbGraphRealiz.CheckedChanged += new System.EventHandler(this.chbGraphRealiz_CheckedChanged);
             // 
             // chbMainKass
             // 
@@ -896,17 +905,6 @@
             this.tbTotalcDiscount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.tbTotalcDiscount.Visible = false;
             // 
-            // chbGraphRealiz
-            // 
-            this.chbGraphRealiz.AutoSize = true;
-            this.chbGraphRealiz.Location = new System.Drawing.Point(13, 88);
-            this.chbGraphRealiz.Name = "chbGraphRealiz";
-            this.chbGraphRealiz.Size = new System.Drawing.Size(128, 17);
-            this.chbGraphRealiz.TabIndex = 7;
-            this.chbGraphRealiz.Text = "График Реализации";
-            this.chbGraphRealiz.UseVisualStyleBackColor = true;
-            this.chbGraphRealiz.CheckedChanged += new System.EventHandler(this.chbGraphRealiz_CheckedChanged);
-            // 
             // tbTotalcGraphRealiz
             // 
             this.tbTotalcGraphRealiz.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
@@ -917,6 +915,7 @@
             this.tbTotalcGraphRealiz.Size = new System.Drawing.Size(87, 20);
             this.tbTotalcGraphRealiz.TabIndex = 33;
             this.tbTotalcGraphRealiz.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tbTotalcGraphRealiz.Visible = false;
             // 
             // DateReal
             // 
@@ -1028,6 +1027,8 @@
             // 
             this.cDelta.DataPropertyName = "delta";
             dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle11.Format = "N2";
+            dataGridViewCellStyle11.NullValue = null;
             this.cDelta.DefaultCellStyle = dataGridViewCellStyle11;
             this.cDelta.HeaderText = "Дельта";
             this.cDelta.Name = "cDelta";

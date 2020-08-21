@@ -33,7 +33,7 @@ namespace RealCompare
         }
 
         private BindingSource bsGrdMain = new BindingSource();
-        private DataTable resultTable;
+        private DataTable resultTable, dtResult, Departments;
         ArrayList alDataColumns = new ArrayList();
 
         private void Main_Load(object sender, EventArgs e)
@@ -81,26 +81,60 @@ namespace RealCompare
             }
         }
 
+        private void btExit_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Вы действительно хотите выйти из программы?", "Запрос на выход.", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                this.Close();
+
+                Regex filePattern = new Regex(@"\d+.dbf");
+                DirectoryInfo dInf = new DirectoryInfo(Application.StartupPath);
+                FileInfo[] files = dInf.GetFiles("*.dbf");
+
+                foreach (FileInfo fi in files)
+                {
+                    if (filePattern.Match(fi.Name).Success)
+                    {
+                        try
+                        {
+                            fi.Delete();
+                        }
+                        catch (IOException) { }
+                        catch (System.Security.SecurityException) { }
+                        catch (UnauthorizedAccessException) { }
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Получение списка отделов
         /// </summary>
         private void GetDepartments()
         {
-            DataTable Departments = Parameters.hConnect.GetDepartments();
-            cbDeps.DataSource = Departments;
+            Departments = Parameters.hConnect.GetDepartments();
+            cbDeps.DataSource = Departments.Copy();
             cbDeps.ValueMember = "id";
             cbDeps.DisplayMember = "name";
         }
 
+        private void cbDeps_SelectedValueChanged(object sender, EventArgs e)
+        {
+            int curId;
+            if (int.TryParse(cbDeps.SelectedValue.ToString(), out curId))
+            {
+                GetTUGroups(curId);
+                SetFilter();
+            }
+        }
+
+        #region "Работа с гридом"
+
         private void dgwMain_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
             setTotalTextBoxPosition();
-        }
-
-        /// <summary>
-        /// Задает положение и размер полей с итогами в соответствии с колонками грида
-        /// </summary>
-        /// <param name="ColumnName">Колонка грида</param>
+        }    
+     
         private void setTotalTextBoxPosition()
         {
             foreach (DataGridViewColumn Col in dgvMain.Columns)
@@ -134,39 +168,142 @@ namespace RealCompare
             }
         }
 
-        private void btExit_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Вы действительно хотите выйти из программы?", "Запрос на выход.", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                this.Close();
-
-                Regex filePattern = new Regex(@"\d+.dbf");
-                DirectoryInfo dInf = new DirectoryInfo(Application.StartupPath);
-                FileInfo[] files = dInf.GetFiles("*.dbf");
-
-                foreach (FileInfo fi in files)
-                {
-                    if (filePattern.Match(fi.Name).Success)
-                    {
-                        try
-                        {
-                            fi.Delete();
-                        }
-                        catch (IOException) { }
-                        catch (System.Security.SecurityException) { }
-                        catch (UnauthorizedAccessException) { }
-                    }
-                }
-            }
-        }
-
         private void Main_Resize(object sender, EventArgs e)
         {
-            foreach (DataGridViewColumn col in dgvMain.Columns)
+            //setTotalTextBoxPosition();
+            //foreach (DataGridViewColumn col in dgvMain.Columns)
+            //{
+            //    setTotalTextBoxPosition();
+            //}
+        }
+
+        private void dgvMain_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            Color rColor = Color.White;
+            rColor = (dgvMain.Rows[e.RowIndex].Cells["isRealEquals"].Value is bool && (bool)dgvMain.Rows[e.RowIndex].Cells["isRealEquals"].Value) ? Color.White : panel1.BackColor;
+
+            dgvMain.Rows[e.RowIndex].DefaultCellStyle.SelectionForeColor = Color.Black;
+
+            dgvMain.Rows[e.RowIndex].DefaultCellStyle.BackColor =
+                dgvMain.Rows[e.RowIndex].DefaultCellStyle.SelectionBackColor = rColor;
+
+
+
+
+            if (chbMainKass.Checked && rbDateAndVVO.Checked)
             {
-                setTotalTextBoxPosition();
+                if (dtResult.DefaultView[e.RowIndex]["ChessBoard"] != DBNull.Value
+                    && dtResult.DefaultView[e.RowIndex]["RealSQL_vvo"] != DBNull.Value)
+                {
+                    dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.BackColor =
+                    dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.SelectionBackColor = panel3.BackColor;
+
+                    if ((decimal)dtResult.DefaultView[e.RowIndex]["RealSql"] != (decimal)dtResult.DefaultView[e.RowIndex]["RealSQL_vvo"]
+                        || (decimal)dtResult.DefaultView[e.RowIndex]["KsSql"] != (decimal)dtResult.DefaultView[e.RowIndex]["ChessBoard"])
+                    {
+                        dgvMain.Rows[e.RowIndex].Cells["cMainKass"].Style.BackColor =
+                            dgvMain.Rows[e.RowIndex].Cells["cMainKass"].Style.SelectionBackColor = panel2.BackColor;
+                    }
+                }
+                else
+                {
+                    dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.BackColor =
+                                dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.SelectionBackColor = Color.White;
+                }
+            }
+            else
+            {
+                dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.BackColor =
+                              dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.SelectionBackColor = Color.White;
+            }
+
+        }
+
+
+        private void dgvMain_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right && e.RowIndex != -1 && chbMainKass.Checked && rbDateAndVVO.Checked && !new List<string> { "ПР" }.Contains(UserSettings.User.StatusCode))
+            {
+                dgvMain.CurrentCell = dgvMain[e.ColumnIndex, e.RowIndex];
+                cmsMainGridContext.Show(MousePosition);
             }
         }
+
+        private void dgvMain_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            DataGridView dgv = sender as DataGridView;
+            //Рисуем рамку для выделеной строки
+            if (dgv.Rows[e.RowIndex].Selected)
+            {
+                int width = dgv.Width;
+                Rectangle r = dgv.GetRowDisplayRectangle(e.RowIndex, false);
+                Rectangle rect = new Rectangle(r.X, r.Y, width - 1, r.Height - 1);
+
+                ControlPaint.DrawBorder(e.Graphics, rect,
+                    SystemColors.Highlight, 2, ButtonBorderStyle.Solid,
+                    SystemColors.Highlight, 2, ButtonBorderStyle.Solid,
+                    SystemColors.Highlight, 2, ButtonBorderStyle.Solid,
+                    SystemColors.Highlight, 2, ButtonBorderStyle.Solid);
+            }
+        }
+
+        private void dgvMain_SelectionChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dtResult == null || dtResult.Rows.Count == 0 || dtResult.DefaultView.Count == 0 || dgvMain.Rows.Count == 0)
+                {
+                    tbDateAdd.Text = "";
+                    tbFio.Text = "";
+                    btDel.Enabled = btEdit.Enabled = false;
+                    dgvRepaireRequest.DataSource = null;
+                    btViewRepair.Enabled = false;
+                    return;
+                }
+
+                if (rbDateAndVVO.Checked && chbMainKass.Checked)
+                {
+                    DataRowView _rowView = dtResult.DefaultView[dgvMain.CurrentRow.Index];
+
+                    tbFio.Text = _rowView["FIO"].ToString();
+                    tbDateAdd.Text = _rowView["DateEdit"].ToString();
+                    btDel.Enabled = btEdit.Enabled =
+                        _rowView["ChessBoard"] == DBNull.Value
+                        && _rowView["RealSQL_vvo"] == DBNull.Value
+                        && _rowView["id"] != DBNull.Value;
+
+                    if (_rowView["id"] != DBNull.Value)
+                    {
+                        int id_MainKass = (int)_rowView["id"];
+                        getListRepairRequestMainKass(id_MainKass);
+                    }
+                    else
+                    {
+                        btViewRepair.Enabled = false;
+                        dgvRepaireRequest.DataSource = null;
+                    }
+
+                    return;
+                }
+                else
+                {
+                    tbDateAdd.Text = "";
+                    tbFio.Text = "";
+                    btDel.Enabled = btEdit.Enabled = false;
+                    dgvRepaireRequest.DataSource = null;
+                    return;
+                }
+            }
+            catch
+            {
+                tbDateAdd.Text = "";
+                tbFio.Text = "";
+                btDel.Enabled = btEdit.Enabled = false;
+                dgvRepaireRequest.DataSource = null;
+            }
+        }
+
+        #endregion
 
         private void dtpStart_ValueChanged(object sender, EventArgs e)
         {
@@ -204,6 +341,7 @@ namespace RealCompare
             }
 
             dgvMain.DataSource = null;
+            reSumTotal();
             tbDateAdd.Text = "";
             tbFio.Text = "";
         }
@@ -333,38 +471,6 @@ namespace RealCompare
             //if (cDelta.Visible) cDelta.Width = 65;
             dgvMain_SelectionChanged(null, null);
             visibleColumnDelta();
-        }
-
-        private void dgvMain_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            //if (dgvMain != null && dgvMain.Rows.Count != 0)
-            //{
-            //    btPrint.Enabled = true;
-            //    CountTotal();
-            //}
-            //else
-            //{
-            //    tbTotalKsSql.Text =
-            //    tbTotalRealSql.Text =
-            //    tbTotalcDelta.Text = "";
-            //}
-        }
-
-        private void dgvMain_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-        {
-            //if (dgvMain.Rows.Count == 0)
-            //{
-            //    btPrint.Enabled = false;
-            //    tbTotalKsSql.Text =
-
-            //    tbTotalRealSql.Text =
-            //    tbTotalcDelta.Text =
-            //    tbTotalcMainKass.Text = "";
-            //}
-            //else
-            //{
-            //    CountTotal();
-            //}
         }
 
         #region Получение реализаций
@@ -500,6 +606,14 @@ namespace RealCompare
 
         private void bgwGetCompare_DoWork(object sender, DoWorkEventArgs e)
         {
+            if (rbDate.Checked) calDateData();
+            else if (rbDateAndDep.Checked) calDateAndDepsData();
+            else if (rbDateAndDepAndGood.Checked) { }
+            else if (rbDateAndVVO.Checked) calDateAndVvoData();
+
+            return;
+
+
             DataTable dtRealDbf = new DataTable(); //Реализация из dbf
             DataTable dtGraphRealiz = null;
             //Реализация из SQL
@@ -510,8 +624,7 @@ namespace RealCompare
             DataTable dtJRealizVVO = Parameters.hConnectVVO.GetJRealizVVO(Parameters.dateStart, Parameters.dateEnd);
             DataTable dtJournal = Parameters.hConnectKass.GetKassRealizJournal(Parameters.dateStart, Parameters.dateEnd);
             DataTable dtJournalVVO = Parameters.hConnectVVOKass.GetKassRealizJournalVVO(Parameters.dateStart, Parameters.dateEnd);
-
-
+           
             if (chbGraphRealiz.Checked)
             {
                 Task<DataTable> task = Parameters.hConnectKass.getRealizHours(Parameters.dateStart, Parameters.dateEnd, !rbDate.Checked);
@@ -523,22 +636,41 @@ namespace RealCompare
             dtJRealiz.Merge(dtJRealizVVO);
             dtJournal.Merge(dtJournalVVO);
 
-            resultTable = (from g in dtGoodsUpdates.AsEnumerable()
-                           join jreal in dtJRealiz.AsEnumerable() on new { Q = g.Field<string>("ean"), W = g.Field<DateTime>("dreal") } equals new { Q = jreal.Field<string>("ean"), W = jreal.Field<DateTime>("dreal") }
-                           join jour in dtJournal.AsEnumerable() on new { Q = g.Field<string>("ean"), W = g.Field<DateTime>("dreal") } equals new { Q = jour.Field<string>("ean"), W = jour.Field<DateTime>("dreal") }
+            //resultTable = (from g in dtGoodsUpdates.AsEnumerable()
+            //               join jreal in dtJRealiz.AsEnumerable() on new { Q = g.Field<string>("ean"), W = g.Field<DateTime>("dreal") } equals new { Q = jreal.Field<string>("ean"), W = jreal.Field<DateTime>("dreal") }
+            //               join jour in dtJournal.AsEnumerable() on new { Q = g.Field<string>("ean"), W = g.Field<DateTime>("dreal") } equals new { Q = jour.Field<string>("ean"), W = jour.Field<DateTime>("dreal") }
 
+            //               select new
+            //               {
+            //                   date = g.Field<DateTime>("dreal"),
+            //                   id_dep = g.Field<int>("id_dep"),
+            //                   depName = jreal.Field<string>("depName"),
+            //                   ean = g.Field<string>("ean"),
+            //                   goodsName = g.Field<string>("name"),
+            //                   KsSql = jour.Field<decimal>("KsSql"),
+            //                   RealSql = jreal.Field<decimal>("RealSql"),
+            //                   idTU = g.Field<Int16>("idTU")
+            //               }).CopyToDataTable();
+
+            resultTable = (from g in dtGoodsUpdates.AsEnumerable()
+                           join jreal in dtJRealiz.AsEnumerable() on new { Q = g.Field<string>("ean"), W = g.Field<DateTime>("dreal") } equals new { Q = jreal.Field<string>("ean"), W = jreal.Field<DateTime>("dreal") } into t1
+                           join jour in dtJournal.AsEnumerable() on new { Q = g.Field<string>("ean"), W = g.Field<DateTime>("dreal") } equals new { Q = jour.Field<string>("ean"), W = jour.Field<DateTime>("dreal") } into t2
+                           //into tempJoin
+                           from leftjoin1 in t1.DefaultIfEmpty()
+                           from leftjoin2 in t2.DefaultIfEmpty()
                            select new
                            {
                                date = g.Field<DateTime>("dreal"),
                                id_dep = g.Field<int>("id_dep"),
-                               depName = jreal.Field<string>("depName"),
+                               depName = leftjoin1 == null ? "" : leftjoin1.Field<string>("depName"),
                                ean = g.Field<string>("ean"),
                                goodsName = g.Field<string>("name"),
-                               KsSql = jour.Field<decimal>("KsSql"),
-                               RealSql = jreal.Field<decimal>("RealSql"),
+                               KsSql = leftjoin2 == null ? 0 : leftjoin2.Field<decimal>("KsSql"),
+                               RealSql = leftjoin1 == null ? 0 : leftjoin1.Field<decimal>("RealSql"),
                                idTU = g.Field<Int16>("idTU")
-                           }).CopyToDataTable();
+                           }).CopyToDataTable();            
 
+            //EnumerableRowCollection<DataRow> rowCla = resultTable.AsEnumerable().Where(r => r.Field<string>("ean").Equals("4601653025820"));
 
             bgwGetCompare.ReportProgress(40);
 
@@ -1024,6 +1156,858 @@ namespace RealCompare
             bgwGetCompare.ReportProgress(100);
         }
 
+        #region "Новые расчёты по типам выборки"
+        /// <summary>
+        /// Расчёт данных группировка по датам
+        /// </summary>
+        private void calDateData()
+        {
+            //DataTable dtResult = new DataTable();
+            //dtResult.Columns.Add("date", typeof(DateTime));
+            //dtResult.Columns.Add("RealSql", typeof(decimal));
+            //dtResult.Columns.Add("KsSql", typeof(decimal));
+            //dtResult.Columns.Add("graphRealiz", typeof(decimal));
+            //dtResult.Columns.Add("MainKass", typeof(decimal));
+            //dtResult.Columns.Add("discount", typeof(decimal));
+            ////dtResult.Columns.Add("depName", typeof(string));
+            ////dtResult.Columns.Add("ean", typeof(string));
+            ////dtResult.Columns.Add("goodsName", typeof(string));
+            ////dtResult.Columns.Add("delta", typeof(decimal));
+            ////dtResult.Columns.Add("isRealEquals", typeof(bool));            
+            //dtResult.AcceptChanges();
+
+            //if (dtJRealiz != null && dtJournal != null)
+            //    dtJRealiz.Merge(dtJournal);
+            dtResult = null;
+            DataTable dtJRealiz = null, dtJournal = null, dtMainKass = null, dtGraphRealiz = null, dtDiscount = null;
+
+            Task<DataTable> task;
+
+            if (chkRealSql.Checked)
+            {
+                task = Parameters.hConnect.getRealizForDate(Parameters.dateStart, Parameters.dateEnd, false, false);
+                task.Wait();
+                dtJRealiz = task.Result.Copy();
+                task = Parameters.hConnectVVO.getRealizForDate(Parameters.dateStart, Parameters.dateEnd, true, false);
+                task.Wait();
+                if (task.Result != null) dtJRealiz.Merge(task.Result);
+
+                dtJRealiz = (from table in dtJRealiz.AsEnumerable()
+                             group table by new
+                             {
+                                 date = table["dreal"],
+                             }
+                               into g
+                             select new
+                             {
+                                 g.Key.date,
+                                 RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
+                                 KsSql = (decimal)0,
+                                 graphRealiz = (decimal)0,
+                                 MainKass = (decimal)0,
+                                 discount = (decimal)0,
+                             }).CopyToDataTable();
+                if (dtResult == null) dtResult = dtJRealiz.Clone();
+                dtResult.Merge(dtJRealiz);
+            }
+
+            if (chkKsSql.Checked)
+            {
+                task = Parameters.hConnectKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, false);
+                task.Wait();
+                dtJournal = task.Result.Copy();
+                task = Parameters.hConnectVVOKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, true);
+                task.Wait();
+                if (task.Result != null) dtJournal.Merge(task.Result);
+
+
+                dtJournal = (from table in dtJournal.AsEnumerable()
+                             group table by new
+                             {
+                                 date = table["conDate"],
+                             }
+                               into g
+                             select new
+                             {
+                                 g.Key.date,
+                                 RealSql = (decimal)0,
+                                 KsSql = g.Sum(table => Decimal.Parse(table["cash_val"].ToString())),
+                                 graphRealiz = (decimal)0,
+                                 MainKass = (decimal)0,
+                                 discount = (decimal)0,
+                             }).CopyToDataTable();
+
+                if (dtResult == null) dtResult = dtJournal.Clone();
+                dtResult.Merge(dtJournal);
+            }
+
+            if (chbGraphRealiz.Checked)
+            {
+                task = Parameters.hConnectKass.getRealizHours(Parameters.dateStart, Parameters.dateEnd, !rbDate.Checked);
+                task.Wait();
+                dtGraphRealiz = task.Result;
+
+                dtGraphRealiz = (from table in dtGraphRealiz.AsEnumerable()
+                                 group table by new
+                                 {
+                                     date = table["DateCount"],
+                                 }
+                             into g
+                                 select new
+                                 {
+                                     g.Key.date,
+                                     RealSql = (decimal)0,
+                                     KsSql = (decimal)0,
+                                     graphRealiz = g.Sum(table => Decimal.Parse(table["Realiz"].ToString())),
+                                     MainKass = (decimal)0,
+                                     discount = (decimal)0,
+                                 }).CopyToDataTable();
+
+                if (dtResult == null) dtResult = dtGraphRealiz.Clone();
+
+                dtResult.Merge(dtGraphRealiz);
+            }
+
+            if (chbMainKass.Checked)
+            {
+                task = Parameters.hConnect.getMainKassForListDate(Parameters.dateStart, Parameters.dateEnd);
+                task.Wait();
+                dtMainKass = task.Result;
+
+                dtMainKass = (from table in dtMainKass.AsEnumerable()
+                              group table by new
+                              {
+                                  date = table["Data"],
+                              }
+                           into g
+                              select new
+                              {
+                                  g.Key.date,
+                                  RealSql = (decimal)0,
+                                  KsSql = (decimal)0,
+                                  graphRealiz = (decimal)0,
+                                  MainKass = g.Sum(table => Decimal.Parse(table["MainKass"].ToString())),
+                                  discount = (decimal)0,
+                              }).CopyToDataTable();
+
+                if (dtResult == null) dtResult = dtMainKass.Clone();
+                dtResult.Merge(dtMainKass);
+
+                task = Parameters.hConnectKass.getDiscount(Parameters.dateStart, Parameters.dateEnd, false);
+                task.Wait();
+                dtDiscount = task.Result;
+
+                task = Parameters.hConnectVVOKass.getDiscount(Parameters.dateStart, Parameters.dateEnd, true);
+                task.Wait();
+                if (task.Result != null)
+                    dtDiscount.Merge(task.Result);
+
+
+                dtDiscount = (from table in dtDiscount.AsEnumerable()
+                              group table by new
+                              {
+                                  date = table["conDate"],
+                              }
+                           into g
+                              select new
+                              {
+                                  g.Key.date,
+                                  RealSql = (decimal)0,
+                                  KsSql = (decimal)0,
+                                  graphRealiz = (decimal)0,
+                                  MainKass = (decimal)0,
+                                  discount = g.Sum(table => Decimal.Parse(table["cash_val"].ToString())),
+                              }).CopyToDataTable();
+
+                if (dtResult == null) dtResult = dtDiscount.Clone();
+                dtResult.Merge(dtDiscount);
+            }
+
+            #region "группировка дат и расчёт сумм по колонкам"
+            dtResult = (from table in dtResult.AsEnumerable()
+                        group table by new
+                        {
+                            date = table["date"],
+                        }
+                           into g
+                        select new
+                        {
+                            g.Key.date,
+                            RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
+                            KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
+                            graphRealiz = g.Sum(table => Decimal.Parse(table["graphRealiz"].ToString())),
+                            MainKass = g.Sum(table => Decimal.Parse(table["MainKass"].ToString())),
+                            discount = g.Sum(table => Decimal.Parse(table["discount"].ToString())),
+                        }).CopyToDataTable();
+
+            #endregion
+
+            #region "Расчёт дельты и расхождения"
+            dtResult.Columns.Add("delta", typeof(decimal));
+            dtResult.Columns.Add("isRealEquals", typeof(bool));
+
+            foreach (DataRow row in dtResult.Rows)
+            {
+
+                if (chkKsSql.Checked && chkRealSql.Checked && chbMainKass.Checked && chbGraphRealiz.Checked)//Все флаги
+                {
+                    row["isRealEquals"] =
+                        (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                        && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                        && (decimal)row["graphRealiz"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+
+                        && (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                        && (decimal)row["KsSql"] == (decimal)row["graphRealiz"]
+
+                        && (decimal)row["KsSql"] == (decimal)row["RealSql"];
+                    row["delta"] = 0;
+                }
+                else
+                if (chkKsSql.Checked && chkRealSql.Checked && (chbMainKass.Checked || chbGraphRealiz.Checked))//Шахматка и реал SQL с главной кассой или графиком реализации
+                {
+                    if (chbMainKass.Checked)
+                    {
+                        row["isRealEquals"] =
+                            (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                            && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
+                    }
+                    else if (chbGraphRealiz.Checked)
+                    {
+                        row["isRealEquals"] =
+                            (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                            && (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+                    }
+
+                    row["delta"] = 0;
+                }
+                else if (chkKsSql.Checked && (chkRealSql.Checked || chbMainKass.Checked || chbGraphRealiz.Checked))//Шахматка c реал SQL или главной кассой или графиком реализации
+                {
+                    if (chbMainKass.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["MainKass"] + (decimal)row["discount"];
+                    }
+                    else if (chbGraphRealiz.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["graphRealiz"];
+                    }
+                    else if (chkRealSql.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["RealSql"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["RealSql"];
+                    }
+                }
+                else if (chkRealSql.Checked && (chkKsSql.Checked || chbMainKass.Checked || chbGraphRealiz.Checked))
+                {
+                    if (chbMainKass.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
+                        row["delta"] = (decimal)row["RealSql"] - (decimal)row["MainKass"] + (decimal)row["discount"];
+                    }
+                    else if (chbGraphRealiz.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["graphRealiz"];
+                        row["delta"] = (decimal)row["RealSql"] - (decimal)row["graphRealiz"];
+                    }
+                    else if (chkRealSql.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["RealSql"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["RealSql"];
+                    }
+                }
+            }
+            #endregion
+        }
+
+        /// <summary>
+        /// Расчёт данных группировка по датам и отделу
+        /// </summary>
+        private void calDateAndDepsData()
+        {
+            //DataTable dtResult = new DataTable();
+            //dtResult.Columns.Add("date", typeof(DateTime));
+            //dtResult.Columns.Add("RealSql", typeof(decimal));
+            //dtResult.Columns.Add("KsSql", typeof(decimal));
+            //dtResult.Columns.Add("graphRealiz", typeof(decimal));
+            //dtResult.Columns.Add("MainKass", typeof(decimal));
+            //dtResult.Columns.Add("discount", typeof(decimal));
+            ////dtResult.Columns.Add("depName", typeof(string));
+            ////dtResult.Columns.Add("ean", typeof(string));
+            ////dtResult.Columns.Add("goodsName", typeof(string));
+            ////dtResult.Columns.Add("delta", typeof(decimal));
+            ////dtResult.Columns.Add("isRealEquals", typeof(bool));            
+            //dtResult.AcceptChanges();
+
+            //if (dtJRealiz != null && dtJournal != null)
+            //    dtJRealiz.Merge(dtJournal);
+            dtResult = null;
+            DataTable dtJRealiz = null, dtJournal = null, dtMainKass = null, dtGraphRealiz = null, dtDiscount = null;
+
+            Task<DataTable> task;
+
+            if (chkRealSql.Checked)
+            {
+                task = Parameters.hConnect.getRealizForDate(Parameters.dateStart, Parameters.dateEnd, false, false);
+                task.Wait();
+                dtJRealiz = task.Result.Copy();
+                task = Parameters.hConnectVVO.getRealizForDate(Parameters.dateStart, Parameters.dateEnd, true, false);
+                task.Wait();
+                if (task.Result != null) dtJRealiz.Merge(task.Result);
+
+                dtJRealiz = (from table in dtJRealiz.AsEnumerable()
+                             group table by new
+                             {
+                                 date = table["dreal"],
+                                 id_dep = table["id_dep"]
+                             }
+                               into g
+                             select new
+                             {
+                                 g.Key.date,
+                                 id_dep = Convert.ToInt32(g.Key.id_dep.ToString()),
+                                 RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
+                                 KsSql = (decimal)0,
+                                 graphRealiz = (decimal)0,
+                                 MainKass = (decimal)0,
+                                 discount = (decimal)0,
+                             }).CopyToDataTable();
+                if (dtResult == null) dtResult = dtJRealiz.Clone();
+                dtResult.Merge(dtJRealiz);
+            }
+
+            if (chkKsSql.Checked)
+            {
+                task = Parameters.hConnectKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, false);
+                task.Wait();
+                dtJournal = task.Result.Copy();
+                task = Parameters.hConnectVVOKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, true);
+                task.Wait();
+                if (task.Result != null) dtJournal.Merge(task.Result);
+
+
+                dtJournal = (from table in dtJournal.AsEnumerable()
+                             group table by new
+                             {
+                                 date = table["conDate"],
+                                 id_dep = table["dpt_no"]
+                             }
+                               into g
+                             select new
+                             {
+                                 g.Key.date,
+                                 id_dep = Convert.ToInt32(g.Key.id_dep.ToString()),
+                                 RealSql = (decimal)0,
+                                 KsSql = g.Sum(table => Decimal.Parse(table["cash_val"].ToString())),
+                                 graphRealiz = (decimal)0,
+                                 MainKass = (decimal)0,
+                                 discount = (decimal)0,
+                             }).CopyToDataTable();
+
+                if (dtResult == null) dtResult = dtJournal.Clone();
+                dtResult.Merge(dtJournal);
+            }
+
+            if (chbGraphRealiz.Checked)
+            {
+                task = Parameters.hConnectKass.getRealizHours(Parameters.dateStart, Parameters.dateEnd, !rbDate.Checked);
+                task.Wait();
+                dtGraphRealiz = task.Result;
+
+                dtGraphRealiz = (from table in dtGraphRealiz.AsEnumerable()
+                                 group table by new
+                                 {
+                                     date = table["DateCount"],
+                                     id_dep = table["id_Departments"]
+                                 }
+                             into g
+                                 select new
+                                 {
+                                     g.Key.date,
+                                     id_dep = Convert.ToInt32(g.Key.id_dep.ToString()),
+                                     RealSql = (decimal)0,
+                                     KsSql = (decimal)0,
+                                     graphRealiz = g.Sum(table => Decimal.Parse(table["Realiz"].ToString())),
+                                     MainKass = (decimal)0,
+                                     discount = (decimal)0,
+                                 }).CopyToDataTable();
+
+                if (dtResult == null) dtResult = dtGraphRealiz.Clone();
+
+                dtResult.Merge(dtGraphRealiz);
+            }
+
+            /*if (chbMainKass.Checked)
+            {
+                task = Parameters.hConnect.getMainKassForListDate(Parameters.dateStart, Parameters.dateEnd);
+                task.Wait();
+                dtMainKass = task.Result;
+
+                dtMainKass = (from table in dtMainKass.AsEnumerable()
+                              group table by new
+                              {
+                                  date = table["Data"],
+                              }
+                           into g
+                              select new
+                              {
+                                  g.Key.date,
+                                  RealSql = (decimal)0,
+                                  KsSql = (decimal)0,
+                                  graphRealiz = (decimal)0,
+                                  MainKass = g.Sum(table => Decimal.Parse(table["MainKass"].ToString())),
+                                  discount = (decimal)0,
+                              }).CopyToDataTable();
+
+                if (dtResult == null) dtResult = dtMainKass.Clone();
+                dtResult.Merge(dtMainKass);
+
+                task = Parameters.hConnectKass.getDiscount(Parameters.dateStart, Parameters.dateEnd, false);
+                task.Wait();
+                dtDiscount = task.Result;
+
+                task = Parameters.hConnectVVOKass.getDiscount(Parameters.dateStart, Parameters.dateEnd, true);
+                task.Wait();
+                if (task.Result != null)
+                    dtDiscount.Merge(task.Result);
+
+
+                dtDiscount = (from table in dtDiscount.AsEnumerable()
+                              group table by new
+                              {
+                                  date = table["conDate"],
+                              }
+                           into g
+                              select new
+                              {
+                                  g.Key.date,
+                                  RealSql = (decimal)0,
+                                  KsSql = (decimal)0,
+                                  graphRealiz = (decimal)0,
+                                  MainKass = (decimal)0,
+                                  discount = g.Sum(table => Decimal.Parse(table["cash_val"].ToString())),
+                              }).CopyToDataTable();
+
+                if (dtResult == null) dtResult = dtDiscount.Clone();
+                dtResult.Merge(dtDiscount);
+            }*/
+
+            #region "группировка дат и расчёт сумм по колонкам"
+            dtResult = (from table in dtResult.AsEnumerable()
+                        group table by new
+                        {
+                            date = table["date"],
+                            id_dep = table["id_dep"]
+                        }
+                           into g
+                        select new
+                        {
+                            g.Key.date,
+                            g.Key.id_dep,
+                            depName = Departments.AsEnumerable().Where(r=>r.Field<int>("id")==(int)g.Key.id_dep).First()["name"],
+                            RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
+                            KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
+                            graphRealiz = g.Sum(table => Decimal.Parse(table["graphRealiz"].ToString())),
+                            MainKass = g.Sum(table => Decimal.Parse(table["MainKass"].ToString())),
+                            discount = g.Sum(table => Decimal.Parse(table["discount"].ToString())),
+                        }).CopyToDataTable();
+
+            #endregion
+
+            #region "Расчёт дельты и расхождения"
+            dtResult.Columns.Add("delta", typeof(decimal));
+            dtResult.Columns.Add("isRealEquals", typeof(bool));
+
+            foreach (DataRow row in dtResult.Rows)
+            {
+
+                if (chkKsSql.Checked && chkRealSql.Checked && chbMainKass.Checked && chbGraphRealiz.Checked)//Все флаги
+                {
+                    row["isRealEquals"] =
+                        (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                        && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                        && (decimal)row["graphRealiz"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+
+                        && (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                        && (decimal)row["KsSql"] == (decimal)row["graphRealiz"]
+
+                        && (decimal)row["KsSql"] == (decimal)row["RealSql"];
+                    row["delta"] = 0;
+                }
+                else
+                if (chkKsSql.Checked && chkRealSql.Checked && (chbMainKass.Checked || chbGraphRealiz.Checked))//Шахматка и реал SQL с главной кассой или графиком реализации
+                {
+                    if (chbMainKass.Checked)
+                    {
+                        row["isRealEquals"] =
+                            (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                            && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
+                    }
+                    else if (chbGraphRealiz.Checked)
+                    {
+                        row["isRealEquals"] =
+                            (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                            && (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+                    }
+
+                    row["delta"] = 0;
+                }
+                else if (chkKsSql.Checked && (chkRealSql.Checked || chbMainKass.Checked || chbGraphRealiz.Checked))//Шахматка c реал SQL или главной кассой или графиком реализации
+                {
+                    if (chbMainKass.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["MainKass"] + (decimal)row["discount"];
+                    }
+                    else if (chbGraphRealiz.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["graphRealiz"];
+                    }
+                    else if (chkRealSql.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["RealSql"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["RealSql"];
+                    }
+                }
+                else if (chkRealSql.Checked && (chkKsSql.Checked || chbMainKass.Checked || chbGraphRealiz.Checked))
+                {
+                    if (chbMainKass.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
+                        row["delta"] = (decimal)row["RealSql"] - (decimal)row["MainKass"] + (decimal)row["discount"];
+                    }
+                    else if (chbGraphRealiz.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["graphRealiz"];
+                        row["delta"] = (decimal)row["RealSql"] - (decimal)row["graphRealiz"];
+                    }
+                    else if (chkRealSql.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["RealSql"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["RealSql"];
+                    }
+                }
+            }
+            #endregion
+        }
+
+        /// <summary>
+        /// Расчёт данных группировка по датам и на тип ВВО
+        /// </summary>
+        private void calDateAndVvoData()
+        {
+            //DataTable dtResult = new DataTable();
+            //dtResult.Columns.Add("date", typeof(DateTime));
+            //dtResult.Columns.Add("RealSql", typeof(decimal));
+            //dtResult.Columns.Add("KsSql", typeof(decimal));
+            //dtResult.Columns.Add("graphRealiz", typeof(decimal));
+            //dtResult.Columns.Add("MainKass", typeof(decimal));
+            //dtResult.Columns.Add("discount", typeof(decimal));
+            ////dtResult.Columns.Add("depName", typeof(string));
+            ////dtResult.Columns.Add("ean", typeof(string));
+            ////dtResult.Columns.Add("goodsName", typeof(string));
+            ////dtResult.Columns.Add("delta", typeof(decimal));
+            ////dtResult.Columns.Add("isRealEquals", typeof(bool));            
+            //dtResult.AcceptChanges();
+
+            //if (dtJRealiz != null && dtJournal != null)
+            //    dtJRealiz.Merge(dtJournal);
+            dtResult = null;
+            DataTable dtJRealiz = null, dtJournal = null, dtMainKass = null, dtGraphRealiz = null, dtDiscount = null, dtMainKassBuff = null;
+
+            Task<DataTable> task;
+
+            if (chkRealSql.Checked)
+            {
+                task = Parameters.hConnect.getRealizForDate(Parameters.dateStart, Parameters.dateEnd, false, false);
+                task.Wait();
+                dtJRealiz = task.Result.Copy();
+                task = Parameters.hConnectVVO.getRealizForDate(Parameters.dateStart, Parameters.dateEnd, true, false);
+                task.Wait();
+                if (task.Result != null) dtJRealiz.Merge(task.Result);
+
+                dtJRealiz = (from table in dtJRealiz.AsEnumerable()
+                             group table by new
+                             {
+                                 date = table["dreal"],
+                                 id_dep = table["id_dep"]
+                             }
+                               into g
+                             select new
+                             {
+                                 g.Key.date,
+                                 //id_dep = Convert.ToInt32(g.Key.id_dep.ToString()),
+                                 isVVO = Convert.ToInt32(g.Key.id_dep.ToString()) == 6,
+                                 RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
+                                 KsSql = (decimal)0,
+                                 graphRealiz = (decimal)0,
+                                 MainKass = (decimal)0,
+                                 discount = (decimal)0,
+                             }).CopyToDataTable();
+                if (dtResult == null) dtResult = dtJRealiz.Clone();
+                dtResult.Merge(dtJRealiz);
+                dtJRealiz = null;
+            }
+
+            if (chkKsSql.Checked)
+            {
+                task = Parameters.hConnectKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, false);
+                task.Wait();
+                dtJournal = task.Result.Copy();
+                task = Parameters.hConnectVVOKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, true);
+                task.Wait();
+                if (task.Result != null) dtJournal.Merge(task.Result);
+
+
+                dtJournal = (from table in dtJournal.AsEnumerable()
+                             group table by new
+                             {
+                                 date = table["conDate"],
+                                 id_dep = table["dpt_no"]
+                             }
+                               into g
+                             select new
+                             {
+                                 g.Key.date,
+                                 //id_dep = Convert.ToInt32(g.Key.id_dep.ToString()),
+                                 isVVO = Convert.ToInt32(g.Key.id_dep.ToString()) == 6,
+                                 RealSql = (decimal)0,
+                                 KsSql = g.Sum(table => Decimal.Parse(table["cash_val"].ToString())),
+                                 graphRealiz = (decimal)0,
+                                 MainKass = (decimal)0,
+                                 discount = (decimal)0,
+                             }).CopyToDataTable();
+
+                if (dtResult == null) dtResult = dtJournal.Clone();
+                dtResult.Merge(dtJournal);
+                dtJournal = null;
+            }
+
+            if (chbGraphRealiz.Checked)
+            {
+                task = Parameters.hConnectKass.getRealizHours(Parameters.dateStart, Parameters.dateEnd, !rbDate.Checked);
+                task.Wait();
+                dtGraphRealiz = task.Result;
+
+                dtGraphRealiz = (from table in dtGraphRealiz.AsEnumerable()
+                                 group table by new
+                                 {
+                                     date = table["DateCount"],
+                                     id_dep = table["id_Departments"]
+                                 }
+                             into g
+                                 select new
+                                 {
+                                     g.Key.date,
+                                     //id_dep = Convert.ToInt32(g.Key.id_dep.ToString()),
+                                     isVVO = Convert.ToInt32(g.Key.id_dep.ToString()) == 6,
+                                     RealSql = (decimal)0,
+                                     KsSql = (decimal)0,
+                                     graphRealiz = g.Sum(table => Decimal.Parse(table["Realiz"].ToString())),
+                                     MainKass = (decimal)0,
+                                     discount = (decimal)0,
+                                 }).CopyToDataTable();
+
+                if (dtResult == null) dtResult = dtGraphRealiz.Clone();
+
+                dtResult.Merge(dtGraphRealiz);
+                dtGraphRealiz = null;
+            }
+
+            if (chbMainKass.Checked)
+            {
+                task = Parameters.hConnect.getMainKassForListDate(Parameters.dateStart, Parameters.dateEnd);
+                task.Wait();
+                dtMainKass = task.Result;
+                dtMainKassBuff = dtMainKass.Copy();
+
+                dtMainKass = (from table in dtMainKass.AsEnumerable()
+                              group table by new
+                              {
+                                  date = table["Data"],
+                                  isVVO = table["isVVO"]
+                              }
+                           into g
+                              select new
+                              {
+                                  g.Key.date,
+                                  //id_dep = (bool)g.Key.isVVO ? 6 : 1,
+                                  isVVO = (bool)g.Key.isVVO,
+                                  RealSql = (decimal)0,
+                                  KsSql = (decimal)0,
+                                  graphRealiz = (decimal)0,
+                                  MainKass = g.Sum(table => Decimal.Parse(table["MainKass"].ToString())),
+                                  discount = (decimal)0,
+                              }).CopyToDataTable();
+
+                if (dtResult == null) dtResult = dtMainKass.Clone();
+                dtResult.Merge(dtMainKass);
+                dtMainKass = null;
+
+                task = Parameters.hConnectKass.getDiscount(Parameters.dateStart, Parameters.dateEnd, false);
+                task.Wait();
+                dtDiscount = task.Result;
+
+                task = Parameters.hConnectVVOKass.getDiscount(Parameters.dateStart, Parameters.dateEnd, true);
+                task.Wait();
+                if (task.Result != null)
+                    dtDiscount.Merge(task.Result);
+
+
+                dtDiscount = (from table in dtDiscount.AsEnumerable()
+                              group table by new
+                              {
+                                  date = table["conDate"],
+                                  isVVO = table["isVVO"]
+                              }
+                           into g
+                              select new
+                              {
+                                  g.Key.date,
+                                  //id_dep = (bool)g.Key.isVVO ? 6 : 1,
+                                  isVVO = (bool)g.Key.isVVO,
+                                  RealSql = (decimal)0,
+                                  KsSql = (decimal)0,
+                                  graphRealiz = (decimal)0,
+                                  MainKass = (decimal)0,
+                                  discount = g.Sum(table => Decimal.Parse(table["cash_val"].ToString())),
+                              }).CopyToDataTable();
+
+                if (dtResult == null) dtResult = dtDiscount.Clone();
+                dtResult.Merge(dtDiscount);
+                dtDiscount = null;
+            }
+
+            #region "группировка дат и расчёт сумм по колонкам"
+            dtResult = (from table in dtResult.AsEnumerable()
+                        group table by new
+                        {
+                            date = table["date"],
+                            isVVO = table["isVVO"]
+                        }
+                           into g
+                        select new
+                        {
+                            g.Key.date,
+                            g.Key.isVVO,
+                            depName = (bool)g.Key.isVVO? "Отдел ВВО" : "Все отделы, кроме ВВО",
+                            RealSql = g.Sum(table => Decimal.Parse(table["RealSql"].ToString())),
+                            KsSql = g.Sum(table => Decimal.Parse(table["KsSql"].ToString())),
+                            graphRealiz = g.Sum(table => Decimal.Parse(table["graphRealiz"].ToString())),
+                            MainKass = g.Sum(table => Decimal.Parse(table["MainKass"].ToString())),
+                            discount = g.Sum(table => Decimal.Parse(table["discount"].ToString())),
+                        }).CopyToDataTable();
+
+            #endregion
+
+            #region "Расчёт дельты и расхождения"
+            dtResult.Columns.Add("delta", typeof(decimal));
+            dtResult.Columns.Add("isRealEquals", typeof(bool));
+            dtResult.Columns.Add("ChessBoard", typeof(decimal));
+            dtResult.Columns.Add("RealSQL_vvo", typeof(decimal));
+            dtResult.Columns.Add("DateEdit", typeof(DateTime));
+            dtResult.Columns.Add("FIO", typeof(string));
+            dtResult.Columns.Add("id", typeof(int));
+
+            foreach (DataRow row in dtResult.Rows)
+            {
+                if (dtMainKassBuff != null)
+                {
+                    EnumerableRowCollection<DataRow> rowCollect = dtMainKassBuff.AsEnumerable()
+                        .Where(r => r.Field<DateTime>("Data").Date == ((DateTime)row["date"]).Date && r.Field<bool>("isVVO") == (bool)row["isVVO"]);
+                    if (rowCollect.Count() > 0)
+                    {
+                        row["ChessBoard"] = rowCollect.First()["ChessBoard"];
+                        row["RealSQL_vvo"] = rowCollect.First()["RealSQL"];
+                        row["DateEdit"] = rowCollect.First()["DateEdit"];
+                        row["FIO"] = rowCollect.First()["FIO"];
+                        row["id"] = rowCollect.First()["id"];
+                    }
+                    else
+                    {
+                        row["ChessBoard"] = DBNull.Value;
+                        row["RealSQL_vvo"] = DBNull.Value;
+                        row["DateEdit"] = DBNull.Value;
+                        row["FIO"] = DBNull.Value;
+                        row["id"] = DBNull.Value;
+                    }
+                }
+
+                if (chkKsSql.Checked && chkRealSql.Checked && chbMainKass.Checked && chbGraphRealiz.Checked)//Все флаги
+                {
+                    row["isRealEquals"] =
+                        (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                        && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                        && (decimal)row["graphRealiz"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+
+                        && (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                        && (decimal)row["KsSql"] == (decimal)row["graphRealiz"]
+
+                        && (decimal)row["KsSql"] == (decimal)row["RealSql"];
+                    row["delta"] = 0;
+                }
+                else
+                if (chkKsSql.Checked && chkRealSql.Checked && (chbMainKass.Checked || chbGraphRealiz.Checked))//Шахматка и реал SQL с главной кассой или графиком реализации
+                {
+                    if (chbMainKass.Checked)
+                    {
+                        row["isRealEquals"] =
+                            (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                            && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
+                    }
+                    else if (chbGraphRealiz.Checked)
+                    {
+                        row["isRealEquals"] =
+                            (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                            && (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+                    }
+
+                    row["delta"] = 0;
+                }
+                else if (chkKsSql.Checked && (chkRealSql.Checked || chbMainKass.Checked || chbGraphRealiz.Checked))//Шахматка c реал SQL или главной кассой или графиком реализации
+                {
+                    if (chbMainKass.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["MainKass"] + (decimal)row["discount"];
+                    }
+                    else if (chbGraphRealiz.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["graphRealiz"];
+                    }
+                    else if (chkRealSql.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["RealSql"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["RealSql"];
+                    }
+                }
+                else if (chkRealSql.Checked && (chkKsSql.Checked || chbMainKass.Checked || chbGraphRealiz.Checked))
+                {
+                    if (chbMainKass.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
+                        row["delta"] = (decimal)row["RealSql"] - (decimal)row["MainKass"] + (decimal)row["discount"];
+                    }
+                    else if (chbGraphRealiz.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["graphRealiz"];
+                        row["delta"] = (decimal)row["RealSql"] - (decimal)row["graphRealiz"];
+                    }
+                    else if (chkRealSql.Checked)
+                    {
+                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["RealSql"];
+                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["RealSql"];
+                    }
+                }
+            }
+            #endregion
+        }
+
+        #endregion
+
+
         /// <summary>
         /// Получение ТУ групп
         /// </summary>
@@ -1071,18 +2055,23 @@ namespace RealCompare
         private void bgwGetCompare_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
 
+
             if (rbDateAndDep.Checked)
-                bsGrdMain.Sort = "date, id_dep asc";
+                dtResult.DefaultView.Sort = "date asc,id_dep asc";
+            //bsGrdMain.Sort = "date, id_dep asc";
             else
             if (rbDate.Checked)
-                bsGrdMain.Sort = "date";
+                //bsGrdMain.Sort = "date";
+                dtResult.DefaultView.Sort = "date";
             else
-                bsGrdMain.Sort = "date";
+                //bsGrdMain.Sort = "date";
+                dtResult.DefaultView.Sort = "date";
 
             SetFilter();
             try
             {
-                dgvMain.DataSource = bsGrdMain;
+                //dgvMain.DataSource = bsGrdMain;
+                dgvMain.DataSource = dtResult;
                 reSumTotal();
             }
             catch (Exception ex)
@@ -1102,129 +2091,19 @@ namespace RealCompare
         }
 
         #endregion 
-
-        private void cbDeps_SelectedValueChanged(object sender, EventArgs e)
-        {
-            int curId;
-            if (int.TryParse(cbDeps.SelectedValue.ToString(), out curId))
-            {
-                GetTUGroups(curId);
-                SetFilter();
-            }
-        }
-
-        /// <summary>
-        /// Красим грид
-        /// </summary>
-        private void dgvMain_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
-        {
-            Color rColor = Color.White;
-
-
-            rColor = (dgvMain.Rows[e.RowIndex].Cells["isRealEquals"].Value is bool && (bool)dgvMain.Rows[e.RowIndex].Cells["isRealEquals"].Value) ? Color.White : panel1.BackColor;
-
-            dgvMain.Rows[e.RowIndex].DefaultCellStyle.SelectionForeColor = Color.Black;
-
-            dgvMain.Rows[e.RowIndex].DefaultCellStyle.BackColor =
-                dgvMain.Rows[e.RowIndex].DefaultCellStyle.SelectionBackColor = rColor;
-
-          
-
-
-            if (chbMainKass.Checked && rbDateAndVVO.Checked)
-            {
-                if ((bsGrdMain.DataSource as DataTable).DefaultView[e.RowIndex]["ChessBoard"] != DBNull.Value
-                    && (bsGrdMain.DataSource as DataTable).DefaultView[e.RowIndex]["RealSQL_vvo"] != DBNull.Value)
-                {
-                    dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.BackColor =
-                    dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.SelectionBackColor = panel3.BackColor;
-
-                    if ((decimal)(bsGrdMain.DataSource as DataTable).DefaultView[e.RowIndex]["RealSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[e.RowIndex]["RealSQL_vvo"]
-                        || (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[e.RowIndex]["KsSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[e.RowIndex]["ChessBoard"])
-                    {
-                        dgvMain.Rows[e.RowIndex].Cells["cMainKass"].Style.BackColor =
-                            dgvMain.Rows[e.RowIndex].Cells["cMainKass"].Style.SelectionBackColor = panel2.BackColor;
-                    }
-                }
-            }
-            else
-            {
-                dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.BackColor =
-                              dgvMain.Rows[e.RowIndex].Cells["DateReal"].Style.SelectionBackColor = Color.White;
-            }
-
-        }
-
-        ///// <summary>
-        ///// Проверяет, совпадает ли реализация в данной строке грида
-        ///// </summary>
-        ///// <param name="dgvRow">Строка грида</param>
-        ///// <returns></returns>
-        //private bool isRealEquals(DataGridViewRow dgvRow)
-        //{            
-        //    for (int i = dgvMain.Columns.Count - 5; i < dgvMain.Columns.Count; i++)
-        //    {
-        //        for (int j = i; j < dgvMain.Columns.Count; j++)
-        //        {
-        //            if (dgvMain.Columns[i].Visible && dgvMain.Columns[j].Visible)
-        //            {
-        //                if (!dgvMain[i, dgvMain.Rows.IndexOf(dgvRow)].Value.Equals(dgvMain[j, dgvMain.Rows.IndexOf(dgvRow)].Value))
-        //                {
-        //                    return false;
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    return true;
-        //}     
-
-        /// <summary>
-        /// Подсчет итоговых сумм
-        /// </summary>
-        private void CountTotal()
-        {
-            //double sum;
-            //for (int i = dgvMain.Columns.Count - 5; i < dgvMain.Columns.Count; i++)
-            //{
-            //    sum = 0.00;
-            //    if (dgvMain.Columns[i].Visible)
-            //    {
-            //        foreach (DataGridViewRow dr in dgvMain.Rows)
-            //        {
-            //            double dbl;
-            //            if(Double.TryParse(dr.Cells[i].Value.ToString(), out dbl))
-
-            //            sum += dbl;
-            //        }
-
-            //        foreach (Control con in this.Controls)
-            //        {
-            //            TextBox tb = con as TextBox;
-            //            if (tb != null)
-            //            {
-            //                if (con.Name == "tbTotal" + dgvMain.Columns[i].Name)
-            //                {                                
-            //                        tb.Text =  Math.Round(sum,2).ToString("0.00");
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
-
-            //if (chbMainKass.Checked) {
-            //    (bsGrdMain.DataSource as DataTable).DefaultView.ToTable();
-            //}
-
-            //if (chkKsSql.Checked) { }
-
-            //if (chkRealSql.Checked){ }
-
-        }
-
+             
+       
+              
         #region Фильтрация
         private void SetFilter()
         {
+
+            if (dtResult == null)
+            {
+                btPrint.Enabled = false;
+                return;
+            }
+
             string filter = "";
             int val;
 
@@ -1261,7 +2140,9 @@ namespace RealCompare
 
             try
             {
-                bsGrdMain.Filter = filter;
+                //bsGrdMain.Filter = filter;
+
+                dtResult.DefaultView.RowFilter = filter;
             }
             catch
             {
@@ -1274,41 +2155,42 @@ namespace RealCompare
 
         private void reSumTotal()
         {
-            if ((bsGrdMain.DataSource as DataTable) != null && (bsGrdMain.DataSource as DataTable).Rows.Count > 0 && dgvMain.Rows.Count>0)
+            //if ((bsGrdMain.DataSource as DataTable) != null && (bsGrdMain.DataSource as DataTable).Rows.Count > 0 && dgvMain.Rows.Count>0)
+            if(dtResult!=null && dtResult.Rows.Count>0 && dgvMain.Rows.Count>0)
             {
                 if (chbMainKass.Checked)
                 {
-                    decimal SumMainKass = (bsGrdMain.DataSource as DataTable).DefaultView.ToTable().AsEnumerable()
+                    decimal SumMainKass = dtResult.DefaultView.ToTable().AsEnumerable()
                          .Sum(r => r.Field<decimal?>("MainKass") ?? 0);
                     tbTotalcMainKass.Text = SumMainKass.ToString("0.00");
 
-                    SumMainKass = (bsGrdMain.DataSource as DataTable).DefaultView.ToTable().AsEnumerable()
-                       .Sum(r => r.Field<decimal?>("MainKass") ?? 0);
+                    SumMainKass = dtResult.DefaultView.ToTable().AsEnumerable()
+                       .Sum(r => r.Field<decimal?>("discount") ?? 0);
                     tbTotalcDiscount.Text = SumMainKass.ToString("0.00");
                 }
 
                 if (chkKsSql.Checked)
                 {
-                    decimal SumKsSql = (bsGrdMain.DataSource as DataTable).DefaultView.ToTable().AsEnumerable()
+                    decimal SumKsSql = dtResult.DefaultView.ToTable().AsEnumerable()
                             .Sum(r => r.Field<decimal?>("KsSql") ?? 0);
                     tbTotalKsSql.Text = SumKsSql.ToString("0.00");
                 }
 
                 if (chkRealSql.Checked)
                 {
-                    decimal SumRealSql = (bsGrdMain.DataSource as DataTable).DefaultView.ToTable().AsEnumerable()
+                    decimal SumRealSql = dtResult.DefaultView.ToTable().AsEnumerable()
                             .Sum(r => r.Field<decimal?>("RealSql") ?? 0);
                     tbTotalRealSql.Text = SumRealSql.ToString("0.00");
                 }
 
                 if (chbGraphRealiz.Checked)
                 {
-                    //decimal SumGraphRealiz = (bsGrdMain.DataSource as DataTable).DefaultView.ToTable().AsEnumerable()
-                    //     .Sum(r => r.Field<decimal?>("MainKass") ?? 0);
-                    //tbTotalcGraphRealiz.Text = SumGraphRealiz.ToString("0.00");
+                    decimal SumGraphRealiz = dtResult.DefaultView.ToTable().AsEnumerable()
+                         .Sum(r => r.Field<decimal?>("graphRealiz") ?? 0);
+                    tbTotalcGraphRealiz.Text = SumGraphRealiz.ToString("0.00");
                 }
 
-                decimal sumDelta = (bsGrdMain.DataSource as DataTable).DefaultView.ToTable().AsEnumerable()
+                decimal sumDelta = dtResult.DefaultView.ToTable().AsEnumerable()
                             .Sum(r => r.Field<decimal?>("delta") ?? 0);
                 tbTotalcDelta.Text = sumDelta.ToString("0.00");
             }
@@ -1502,193 +2384,7 @@ namespace RealCompare
 
             report.Show();
         }
-
-        /// <summary>
-        /// Выгрузка отчета
-        /// </summary>
-        private void Print()
-        {
-            Parameters.dates = Parameters.dateStart.ToShortDateString() + "-" + Parameters.dateEnd.ToShortDateString();
-            Parameters.deps = cbDeps.Text;
-            Parameters.grpBy = "Дата" + (Parameters.groupType == 2 ? ", отдел" : Parameters.groupType == 3 ? ", отдел, товар" : "");
-            Parameters.tuGrps = cbTUGroups.Text;
-
-            string srcs = "";
-            foreach (Control con in grpSources.Controls.Cast<Control>().OrderBy(c => c.TabIndex))
-            {
-                CheckBox box = con as CheckBox;
-                if (box != null)
-                {
-                    if (box.Checked)
-                    {
-                        srcs += (srcs.Length > 0 ? ", " : "") + box.Text;
-                    }
-                }
-            }
-
-            Parameters.srcs = srcs;
-
-            Parameters.Data = GetDataTableFromDGV(dgvMain);
-
-            //Добавляем строчку ИТОГО
-            DataRow total = Parameters.Data.NewRow();
-            total[0] = "Итого:";
-            foreach (DataColumn dataCol in Parameters.Data.Columns)
-            {
-                string s = "";
-                int index = 0;
-                foreach (DataGridViewColumn grdCol in dgvMain.Columns)
-                {
-                    if (dataCol.ColumnName == grdCol.HeaderText)
-                    {
-                        s = grdCol.Name;
-                        index = Parameters.Data.Columns.IndexOf(dataCol);
-                        break;
-                    }
-                }
-
-                if (index != 0)
-                {
-                    foreach (Control con in this.Controls)
-                    {
-                        if (con.Name.Contains(s))
-                        {
-                            TextBox tb = con as TextBox;
-                            if (tb != null)
-                            {
-                                total[index] = tb.Text;
-                            }
-                        }
-                    }
-                }
-            }
-            Parameters.Data.Rows.Add(total);
-
-            if (HandmadeReport.ExcelAvailable || HandmadeReport.OOAvailable)
-            {
-                HandmadeReport Rep = new HandmadeReport();
-                Rep.AddSingleValue("Сверка реализации", 2, 4);
-                Rep.SetFontBold(2, 4, 2, 4);
-                Rep.AddSingleValue("Период: " + Parameters.dates, 4, 1);
-                Rep.AddSingleValue("Отдел: " + Parameters.deps, 5, 1);
-                Rep.AddSingleValue("ТУ группа: " + Parameters.tuGrps, 6, 1);
-                Rep.AddSingleValue("Группировка: " + Parameters.grpBy, 7, 1);
-                Rep.AddSingleValue("Источники данных: " + Parameters.srcs, 8, 1);
-
-
-
-                Rep.AddMultiValue(Parameters.Data, 10, 1);
-                //foreach (DataColumn dc in Parameters.Data.Columns)
-                //{
-                //    int indx = Parameters.Data.Columns.IndexOf(dc) + 1;
-                //    switch (dc.ColumnName.Trim())
-                //    {
-                //        case "Дата реал.":
-                //            Rep.SetFormat(11, indx, dgvMain.Rows.Count + 10, indx, "ДД/ММ/ГГГГ");
-                //            Rep.SetColumnWidth(1, indx, 1, indx, 10);
-                //            break;
-                //        case "Отдел":
-                //            Rep.SetColumnWidth(1, indx, 1, indx, 15);
-                //            break;
-                //        case "EAN":
-                //            Rep.SetFormat(11, indx, dgvMain.Rows.Count + 10, indx, "#############");
-                //            Rep.SetColumnWidth(1, indx, 1, indx, 15);
-                //            break;
-                //        case "Наименование товара":
-                //            Rep.SetColumnWidth(1, indx, 1, indx, 30);
-                //            break;
-                //        default:
-                //            Rep.SetFormat(11, indx, dgvMain.Rows.Count + 10, indx, "0,00");
-                //            Rep.SetColumnWidth(1, indx, 1, indx, 15);
-                //            break;
-                //    }
-                //}
-
-                foreach (DataGridViewRow dgvRow in dgvMain.Rows)
-                {
-                    if (dgvRow.Cells["isRealEquals"].Value is bool
-                        && !(bool)dgvRow.Cells["isRealEquals"].Value)
-                    {
-                        Rep.SetCellColor(dgvRow.Index + 11, 1, dgvRow.Index + 11, Parameters.Data.Columns.Count, 22);
-                    }
-                }
-
-                //Rep.SetBorders(10, 1, Parameters.Data.Rows.Count + 9, Parameters.Data.Columns.Count);
-                //if (new List<string> { "БГЛ" }.Contains(UserSettings.User.StatusCode))
-                //    Rep.Print(false);
-                //else
-                //{
-                //    Rep.SaveToFile(Application.StartupPath + "\\Сверка реализации " + dtpStart.Value.ToString("ddMMyyyy") + "-" + dtpEnd.Value.ToString("ddMMyyyy") + " " + cbDeps.Text);
-                //    Rep.Show();
-                //}
-
-                Rep.SaveToFile(Application.StartupPath + "\\Сверка реализации " + dtpStart.Value.ToString("ddMMyyyy") + "-" + dtpEnd.Value.ToString("ddMMyyyy") + " " + cbDeps.Text);
-                Rep.Show();
-            }
-            //else
-            //{
-            //    Report crReport = new Report();
-            //    //Отмечаем строки, которые нужно покрасить в Crystal report
-            //    Parameters.Data.Columns.Add("isPrint");
-            //    foreach (DataGridViewRow dRow in dgvMain.Rows)
-            //    {
-            //        if (dRow.Cells["isRealEquals"].Value is bool
-            //            && (bool)dRow.Cells["isRealEquals"].Value)
-            //        {
-            //            Parameters.Data.Rows[dgvMain.Rows.IndexOf(dRow) + 1]["isPrint"] = "0";
-            //        }
-            //        else
-            //        {
-            //            Parameters.Data.Rows[dgvMain.Rows.IndexOf(dRow) + 1]["isPrint"] = "1";
-            //        }
-            //    }
-
-            //    crReport.ShowDialog();
-            //}
-        }
-
-        /// <summary>
-        /// Получение DataTable из грида
-        /// </summary>
-        /// <param name="dgv">Грид</param>
-        /// <returns></returns>
-        private DataTable GetDataTableFromDGV(DataGridView dgv)
-        {
-            DataTable dt = new DataTable();
-            // Колонки
-            foreach (DataGridViewColumn column in dgv.Columns)
-            {
-                if (column.Visible)
-                {
-                    DataColumn dc = new DataColumn(column.HeaderText.ToString());
-                    dt.Columns.Add(dc);
-                }
-            }
-
-            //Название колонок записываем в 1 строку
-            DataRow headRow = dt.NewRow();
-            foreach (DataColumn dc in dt.Columns)
-            {
-                headRow[dc.ColumnName] = dc.ColumnName;
-            }
-            dt.Rows.Add(headRow);
-
-            // Строки
-            foreach (DataGridViewRow dgvRow in dgv.Rows)
-            {
-                DataRow dr = dt.NewRow();
-                foreach (DataGridViewCell dgvCell in dgvRow.Cells)
-                {
-                    if (dt.Columns.Contains(dgv.Columns[dgvCell.ColumnIndex].HeaderText))
-                    {
-                        dr[dgv.Columns[dgvCell.ColumnIndex].HeaderText] = (dgvRow.Cells[dgv.Columns[dgvCell.ColumnIndex].Name].Value == null) ? "" : dgvRow.Cells[dgv.Columns[dgvCell.ColumnIndex].Name].Value.ToString();
-                    }
-                }
-                dt.Rows.Add(dr);
-            }
-            return dt;
-        }
-
+    
         private void btPrint_Click(object sender, EventArgs e)
         {
             newReport();
@@ -1756,33 +2452,6 @@ namespace RealCompare
 
             dgvMain_SelectionChanged(null, null);
             visibleColumnDelta();
-        }
-
-        private void dgvMain_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right && e.RowIndex != -1 && chbMainKass.Checked && rbDateAndVVO.Checked && !new List<string> { "ПР" }.Contains(UserSettings.User.StatusCode))
-            {
-                dgvMain.CurrentCell = dgvMain[e.ColumnIndex, e.RowIndex];
-                cmsMainGridContext.Show(MousePosition);
-            }
-        }
-
-        private void dgvMain_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
-        {
-            DataGridView dgv = sender as DataGridView;
-            //Рисуем рамку для выделеной строки
-            if (dgv.Rows[e.RowIndex].Selected)
-            {
-                int width = dgv.Width;
-                Rectangle r = dgv.GetRowDisplayRectangle(e.RowIndex, false);
-                Rectangle rect = new Rectangle(r.X, r.Y, width - 1, r.Height - 1);
-
-                ControlPaint.DrawBorder(e.Graphics, rect,
-                    SystemColors.Highlight, 2, ButtonBorderStyle.Solid,
-                    SystemColors.Highlight, 2, ButtonBorderStyle.Solid,
-                    SystemColors.Highlight, 2, ButtonBorderStyle.Solid,
-                    SystemColors.Highlight, 2, ButtonBorderStyle.Solid);
-            }
         }
 
         private void btAdd_Click(object sender, EventArgs e)
@@ -1911,7 +2580,6 @@ namespace RealCompare
 
             }
         }
-
 
         private void addDataToTable(frmAddRealizMainKass frmAddRK)
         {
@@ -2097,7 +2765,6 @@ namespace RealCompare
             }
         }
         
-
         private void btViewRepair_Click(object sender, EventArgs e)
         {
             if (dgvRepaireRequest.DataSource == null) return;
@@ -2284,59 +2951,7 @@ namespace RealCompare
             visibleColumnDelta();
         }
 
-        private void dgvMain_SelectionChanged(object sender, EventArgs e)
-        {
-            try
-            {
-
-                if ((bsGrdMain.DataSource as DataTable) == null || (bsGrdMain.DataSource as DataTable).Rows.Count == 0 || (bsGrdMain.DataSource as DataTable).DefaultView.Count == 0 || dgvMain.Rows.Count==0)
-                {
-                    tbDateAdd.Text = "";
-                    tbFio.Text = "";
-                    btDel.Enabled = btEdit.Enabled = false;
-                    dgvRepaireRequest.DataSource = null;
-                    btViewRepair.Enabled = false;
-                    return;
-                }
-
-                if (rbDateAndVVO.Checked && chbMainKass.Checked)
-                {
-                    tbFio.Text = (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["FIO"].ToString();
-                    tbDateAdd.Text = (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["DateEdit"].ToString();
-                    btDel.Enabled = btEdit.Enabled = ((bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"] == DBNull.Value
-                        && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSQL_vvo"] == DBNull.Value
-                        && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"] != DBNull.Value);
-
-                    if ((bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"] != DBNull.Value)
-                    {
-                        int id_MainKass = (int)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"];
-                        getListRepairRequestMainKass(id_MainKass);
-                    }
-                    else
-                    {
-                        btViewRepair.Enabled = false;
-                        dgvRepaireRequest.DataSource = null;
-                    }
-
-                    return;
-                }
-                else
-                {
-                    tbDateAdd.Text = "";
-                    tbFio.Text = "";
-                    btDel.Enabled = btEdit.Enabled = false;
-                    dgvRepaireRequest.DataSource = null;
-                    return;
-                }
-            }
-            catch
-            {
-                tbDateAdd.Text = "";
-                tbFio.Text = "";
-                btDel.Enabled = btEdit.Enabled = false;
-                dgvRepaireRequest.DataSource = null;
-            }
-        }
+      
 
         private void visibleColumnDelta()
         {
@@ -2384,8 +2999,8 @@ namespace RealCompare
             установитьСверкуToolStripMenuItem.Enabled = ((bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"] == DBNull.Value
                && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSQL_vvo"] == DBNull.Value
                && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"] != DBNull.Value
-               && (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSql"] == (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"]
-               && (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["KsSql"] == (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"]
+               && (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSql"] == (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"]+ (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["discount"]
+               && (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["KsSql"] == (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"] + (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["discount"]
                );
 
             снятьСверкуToolStripMenuItem.Enabled = ((bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"] != DBNull.Value
@@ -2397,8 +3012,8 @@ namespace RealCompare
                //(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"] == DBNull.Value
                //&& (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSQL_vvo"] == DBNull.Value
                    (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"] != DBNull.Value
-                && ((decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"]
-                || (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["KsSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"])
+                && ((decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"] + (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["discount"]
+                || (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["KsSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"] + (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["discount"])
               );
 
 
@@ -2418,8 +3033,16 @@ namespace RealCompare
             btDel.Enabled = dgvRepaireRequest.Rows.Count == 0;
         }
 
+        private void chbGraphRealiz_CheckedChanged(object sender, EventArgs e)
+        {
+            cGraphRealiz.Visible = chbGraphRealiz.Checked;
+            tbTotalcGraphRealiz.Visible = chbGraphRealiz.Checked;
+            rbDateAndDepAndGood.Enabled = !chbGraphRealiz.Checked;
+            visibleColumnDelta();
+        }
+
         #region "Объединение"
-       
+
         private void dgvMain_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             e.AdvancedBorderStyle.Bottom = DataGridViewAdvancedCellBorderStyle.None;
@@ -2478,19 +3101,11 @@ namespace RealCompare
 
             return cell1.Value.ToString() == cell2.Value.ToString() && column== DateReal.Index;// && id == id_pre;
         }
-        #endregion
-
-        private void chbGraphRealiz_CheckedChanged(object sender, EventArgs e)
-        {
-            cGraphRealiz.Visible = chbGraphRealiz.Checked;
-            tbTotalcGraphRealiz.Visible = chbGraphRealiz.Checked;
-            visibleColumnDelta();
-        }
+        #endregion      
     }
 
     class CustomComparer : IEqualityComparer<DataRow>
     {        
-
         public bool Equals(DataRow x, DataRow y)
         {
             return ((string)x["cname"]).Equals((string)y["cname"]);

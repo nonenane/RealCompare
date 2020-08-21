@@ -445,5 +445,49 @@ namespace RealCompare
                new DbType[3] { DbType.Date, DbType.Date, DbType.Boolean }, ap);
         }
         #endregion
+
+        #region "Новые процедуры для расчёта"
+        /// <summary>
+        /// Получение данных по реализации
+        /// </summary>
+        /// <param name="dateStart">Начальная дата выборки</param>
+        /// <param name="dateEnd">Конечная дата выборки</param>
+        /// <param name="isVVO">Признак ВВО</param>
+        /// <param name="withTovar">Признак выборки по товарам</param>
+        /// <returns></returns>
+        public async Task<DataTable> getRealizForDate(DateTime dateStart, DateTime dateEnd, bool isVVO,bool withTovar)
+        {
+            ap.Clear();
+            ap.Add(dateStart);
+            ap.Add(dateEnd);
+            ap.Add(isVVO);
+            ap.Add(withTovar);
+
+            return executeProcedure("[RealCompare].[sgp_getRealizForDate]",
+               new string[4] { "@dateStart", "@dateEnd", "@isVVO","@withTovar" },
+               new DbType[4] { DbType.Date, DbType.Date, DbType.Boolean, DbType.Boolean }, ap);
+        }
+
+
+        /// <summary>
+        /// Получение данных для сверки c журнала продаж
+        /// </summary>
+        /// <param name="dateStart">Начальная дата выборки</param>
+        /// <param name="dateEnd">Конечная дата выборки</param>
+        /// <param name="isVVO">Признак ВВО</param>        
+        /// <returns></returns>
+        public async Task<DataTable> getJournalForDate(DateTime dateStart, DateTime dateEnd, bool isVVO)
+        {
+            ap.Clear();
+            ap.Add(dateStart);
+            ap.Add(dateEnd);
+            ap.Add(isVVO);
+
+            return executeProcedure("[RealCompare].[sgp_getJournalForDate]",
+               new string[3] { "@dateStart", "@dateEnd", "@isVVO" },
+               new DbType[3] { DbType.Date, DbType.Date, DbType.Boolean}, ap);
+        }
+
+        #endregion
     }
 }
