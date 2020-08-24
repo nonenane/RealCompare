@@ -4,6 +4,7 @@ CREATE TABLE [RealCompare].[j_MainKass](
 	[MainKass]		numeric(16,2)	not null,
 	[ChessBoard]	numeric(16,2)	null,
 	[RealSQL]		numeric(16,2)	null,
+	[Discount]		numeric(16,2)	null,
 	[isVVO]			bit				not null default 0,
 	[id_Creator]	int				not	null,
 	[DateCreate]	datetime		null,

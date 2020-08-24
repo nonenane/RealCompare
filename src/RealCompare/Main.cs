@@ -32,9 +32,10 @@ namespace RealCompare
             tp.SetToolTip(btViewRepair, "Просмотр заявки на ремонт");
         }
 
-        private BindingSource bsGrdMain = new BindingSource();
-        private DataTable resultTable, dtResult, Departments;
-        ArrayList alDataColumns = new ArrayList();
+        //private BindingSource bsGrdMain = new BindingSource();
+        private DataTable //resultTable, 
+            dtResult, Departments;
+        //ArrayList alDataColumns = new ArrayList();
 
         private void Main_Load(object sender, EventArgs e)
         {                       
@@ -523,22 +524,22 @@ namespace RealCompare
             Parameters.groupType = rbDate.Checked ? 1 : rbDateAndDep.Checked ? 2 : 3;
 
             //Формируем список сравниваемых колонок
-            alDataColumns.Clear();
-
-            if (chkKsSql.Checked)
-            {
-                alDataColumns.Add("KsSql");
-            }
+            //alDataColumns.Clear();
 
             //if (chkKsSql.Checked)
             //{
             //    alDataColumns.Add("KsSql");
             //}
 
-            if (chkRealSql.Checked)
-            {
-                alDataColumns.Add("RealSql");
-            }
+            //if (chkKsSql.Checked)
+            //{
+            //    alDataColumns.Add("KsSql");
+            //}
+
+            //if (chkRealSql.Checked)
+            //{
+            //    alDataColumns.Add("RealSql");
+            //}
 
             //if (chkRealSql2.Checked)
             //{
@@ -559,8 +560,9 @@ namespace RealCompare
             dgvMain.DataSource = null;
             try
             {
-                if (bsGrdMain.DataSource != null)
-                    (bsGrdMain.DataSource as DataTable).Clear();
+                dtResult.Clear();
+                //if (bsGrdMain.DataSource != null)
+                 //   (bsGrdMain.DataSource as DataTable).Clear();
             }
             catch { }
             SetFilter();
@@ -599,18 +601,13 @@ namespace RealCompare
             RefreshGrid();
         }
 
-        private void tsRefresh_Click(object sender, EventArgs e)
-        {
-            RefreshGrid();
-        }
-
         private void bgwGetCompare_DoWork(object sender, DoWorkEventArgs e)
         {
             if (rbDate.Checked) calDateData();
             else if (rbDateAndDep.Checked) calDateAndDepsData();
-            else if (rbDateAndDepAndGood.Checked) { }
-            else if (rbDateAndVVO.Checked) calDateAndVvoData();
-
+            else if (rbDateAndDepAndGood.Checked) calDateDepsAndGoods();
+            else if (rbDateAndVVO.Checked) calDateAndVvoData();            
+            /*
             return;
 
 
@@ -1150,10 +1147,11 @@ namespace RealCompare
 
             // bsGrdMain.DataSource = dtRealData;
 
-            bsGrdMain.DataSource = resultTable;
+            //bsGrdMain.DataSource = resultTable;
 
 
             bgwGetCompare.ReportProgress(100);
+            */
         }
 
         #region "Новые расчёты по типам выборки"
@@ -2005,8 +2003,61 @@ namespace RealCompare
             #endregion
         }
 
-        #endregion
 
+        /// <summary>
+        /// Расчёт данных группировка по датам, отделам и товарам
+        /// </summary>
+        private void calDateDepsAndGoods()
+        {
+
+            DataTable dtGoodsUpdates = Parameters.hConnectKass.GetGoodsData(Parameters.dateStart, Parameters.dateEnd);
+            DataTable dtJRealiz = Parameters.hConnect.GetJRealizMain(Parameters.dateStart, Parameters.dateEnd);
+            DataTable dtJRealizVVO = Parameters.hConnectVVO.GetJRealizVVO(Parameters.dateStart, Parameters.dateEnd);
+            DataTable dtJournal = Parameters.hConnectKass.GetKassRealizJournal(Parameters.dateStart, Parameters.dateEnd);
+            DataTable dtJournalVVO = Parameters.hConnectVVOKass.GetKassRealizJournalVVO(Parameters.dateStart, Parameters.dateEnd);
+
+
+            dtJRealiz.Merge(dtJRealizVVO);
+            dtJournal.Merge(dtJournalVVO);
+
+            dtResult = (from g in dtGoodsUpdates.AsEnumerable()
+                        join jreal in dtJRealiz.AsEnumerable() on new { Q = g.Field<string>("ean"), W = g.Field<DateTime>("dreal") } equals new { Q = jreal.Field<string>("ean"), W = jreal.Field<DateTime>("dreal") } into t1
+                        join jour in dtJournal.AsEnumerable() on new { Q = g.Field<string>("ean"), W = g.Field<DateTime>("dreal") } equals new { Q = jour.Field<string>("ean"), W = jour.Field<DateTime>("dreal") } into t2
+                        //into tempJoin
+                        from leftjoin1 in t1.DefaultIfEmpty()
+                        from leftjoin2 in t2.DefaultIfEmpty()
+                        select new
+                        {
+                            date = g.Field<DateTime>("dreal"),
+                            id_dep = g.Field<int>("id_dep"),
+                            depName = leftjoin1 == null ? "" : leftjoin1.Field<string>("depName"),
+                            ean = g.Field<string>("ean"),
+                            goodsName = g.Field<string>("name"),
+                            KsSql = leftjoin2 == null ? 0 : leftjoin2.Field<decimal>("KsSql"),
+                            RealSql = leftjoin1 == null ? 0 : leftjoin1.Field<decimal>("RealSql"),
+                            idTU = g.Field<Int16>("idTU")
+                        }).Where(r => r.KsSql != 0 && r.RealSql != 0).CopyToDataTable();
+
+
+
+            dtResult.Columns.Add("isRealEquals", typeof(bool));
+            dtResult.Columns.Add("delta", typeof(decimal));
+
+            foreach (DataRow dr in dtResult.Rows)
+            {
+                dr["delta"] = decimal.Parse(dr["KsSql"].ToString()) - decimal.Parse(dr["RealSql"].ToString());
+            }
+
+            foreach (DataRow dr in dtResult.Rows)
+            {
+                if (dr["KsSql"].ToString() == dr["RealSql"].ToString())
+                    dr["isRealEquals"] = true;
+                else dr["isRealEquals"] = false;
+            }
+
+        }
+
+        #endregion
 
         /// <summary>
         /// Получение ТУ групп
@@ -2091,9 +2142,7 @@ namespace RealCompare
         }
 
         #endregion 
-             
-       
-              
+                                 
         #region Фильтрация
         private void SetFilter()
         {
@@ -2278,10 +2327,12 @@ namespace RealCompare
                     if (col.Name.Equals("Department")) setWidthColumn(indexRow, maxColumns, 8, report);
                     if (col.Name.Equals("EAN")) setWidthColumn(indexRow, maxColumns, 17, report);
                     if (col.Name.Equals("cName")) setWidthColumn(indexRow, maxColumns, 28, report);
-                    if (col.Name.Equals("cMainKass")) setWidthColumn(indexRow, maxColumns, 14, report);
-                    if (col.Name.Equals("KsSql")) setWidthColumn(indexRow, maxColumns, 12, report);
-                    if (col.Name.Equals("RealSql")) setWidthColumn(indexRow, maxColumns, 12, report);
-                    if (col.Name.Equals("cDelta")) setWidthColumn(indexRow, maxColumns, 10, report);
+                    if (col.Name.Equals("cMainKass")) setWidthColumn(indexRow, maxColumns, 15, report);
+                    if (col.Name.Equals("KsSql")) setWidthColumn(indexRow, maxColumns, 15, report);
+                    if (col.Name.Equals("RealSql")) setWidthColumn(indexRow, maxColumns, 15, report);
+                    if (col.Name.Equals("cDelta")) setWidthColumn(indexRow, maxColumns, 15, report);
+                    if (col.Name.Equals("cDiscount")) setWidthColumn(indexRow, maxColumns, 15, report);
+                    if (col.Name.Equals("cGraphRealiz")) setWidthColumn(indexRow, maxColumns, 15, report);
                 }
 
             #region "Head"
@@ -2353,6 +2404,7 @@ namespace RealCompare
             report.SetFontBold(indexRow, 1, indexRow, maxColumns);
             report.SetBorders(indexRow, 1, indexRow, maxColumns);
             report.SetCellAlignmentToCenter(indexRow, 1, indexRow, maxColumns);
+            report.SetWrapText(indexRow, 1, indexRow, maxColumns);
             indexRow++;
 
 
@@ -2370,6 +2422,11 @@ namespace RealCompare
                         indexCol++;
                         if (row.Cells[col.Index].Value is DateTime)
                             report.AddSingleValue(((DateTime)row.Cells[col.Index].Value).ToShortDateString(), indexRow, indexCol);
+                        if (row.Cells[col.Index].Value is decimal)
+                        {
+                            report.SetFormat(indexRow, indexCol, indexRow, indexCol, "0.00");
+                            report.AddSingleValueObject(row.Cells[col.Index].Value, indexRow, indexCol);
+                        }
                         else
                             report.AddSingleValue(row.Cells[col.Index].Value.ToString(), indexRow, indexCol);
                         report.SetWrapText(indexRow, indexCol, indexRow, indexCol);
@@ -2460,7 +2517,7 @@ namespace RealCompare
             DateTime? date = null;
 
             if (dgvMain.CurrentRow != null && dgvMain.CurrentRow.Index != -1)
-                date = (DateTime)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["date"];
+                date = (DateTime)dtResult.DefaultView[dgvMain.CurrentRow.Index]["date"];
 
             frmAddRealizMainKass frmAddRK = new frmAddRealizMainKass();
             frmAddRK.date = date;
@@ -2507,13 +2564,15 @@ namespace RealCompare
         {
             if (dgvMain.CurrentRow == null) return;
             if (dgvMain.CurrentRow.Index == -1) return;
-            if ((bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"] == DBNull.Value
-                && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSQL_vvo"] == DBNull.Value
-                && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"] != DBNull.Value
+            DataRowView row = dtResult.DefaultView[dgvMain.CurrentRow.Index];
+
+            if (row["ChessBoard"] == DBNull.Value
+                && row["RealSQL_vvo"] == DBNull.Value
+                && row["id"] != DBNull.Value
                 )
             {
-                DateTime date = (DateTime)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["date"];
-                bool isVVO = (bool)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["isVVO"];
+                DateTime date = (DateTime)row["date"];
+                bool isVVO = (bool)row["isVVO"];
                 frmAddRealizMainKass frmAddRK = new frmAddRealizMainKass() { date = date, isVVO = isVVO, isEdit = true };//.ShowDialog();
                 if (DialogResult.OK == frmAddRK.ShowDialog())
                 {
@@ -2526,15 +2585,17 @@ namespace RealCompare
         {
             if (dgvMain.CurrentRow == null) return;
             if (dgvMain.CurrentRow.Index == -1) return;
-            if ((bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"] == DBNull.Value
-                && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSQL_vvo"] == DBNull.Value
-                && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"] != DBNull.Value
+            DataRowView row = dtResult.DefaultView[dgvMain.CurrentRow.Index];
+
+            if (row["ChessBoard"] == DBNull.Value
+                && row["RealSQL_vvo"] == DBNull.Value
+                && row["id"] != DBNull.Value
                 )
             {
-                DateTime date = (DateTime)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["date"];
-                bool isVVO = (bool)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["isVVO"];
-                int id = (int)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"];
-                decimal MainKass = (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"];
+                DateTime date = (DateTime)row["date"];
+                bool isVVO = (bool)row["isVVO"];
+                int id = (int)row["id"];
+                decimal MainKass = (decimal)row["MainKass"];
 
                 Task<DataTable> task = Parameters.hConnect.setMainKass(id, date, MainKass, isVVO, true, 0);
                 task.Wait();
@@ -2585,10 +2646,10 @@ namespace RealCompare
         {
 
             if (!(dtpStart.Value <= frmAddRK.dateRealiz.Date && frmAddRK.dateRealiz.Date <= dtpEnd.Value.Date)) return;
-            if (bsGrdMain.DataSource == null) return;
-            if ((bsGrdMain.DataSource as DataTable).Rows.Count == 0) return;
+            if (dtResult == null) return;
+            if (dtResult.Rows.Count == 0) return;
             
-            EnumerableRowCollection<DataRow> rowCollect = (bsGrdMain.DataSource as DataTable)
+            EnumerableRowCollection<DataRow> rowCollect = dtResult
                             .AsEnumerable().Where(r => r.Field<DateTime>("date").Date == frmAddRK.dateRealiz.Date && r.Field<bool>("isVVO") == frmAddRK.isVVO);
 
             if (rowCollect.Count() > 0)
@@ -2620,7 +2681,7 @@ namespace RealCompare
             }
             else
             {
-                DataRow newRow = (bsGrdMain.DataSource as DataTable).NewRow();
+                DataRow newRow = dtResult.NewRow();
                 newRow["date"] = frmAddRK.dateRealiz;
                 newRow["KsSql"] = 0;
                 newRow["RealSql"] = 0;
@@ -2635,7 +2696,7 @@ namespace RealCompare
                 newRow["FIO"] = DBNull.Value;
                 newRow["id"] = frmAddRK.id;
                 newRow["depName"] = frmAddRK.isVVO ? "Отдел ВВО" : "Все отделы, кроме ВВО";
-                (bsGrdMain.DataSource as DataTable).Rows.Add(newRow);
+                dtResult.Rows.Add(newRow);
             }
             //(bsGrdMain.DataSource as DataTable).AcceptChanges();
             dgvMain_SelectionChanged(null, null);
@@ -2643,7 +2704,7 @@ namespace RealCompare
 
         private void delDataInTable(DateTime date,bool isVVO)
         {
-            EnumerableRowCollection<DataRow> rowCollect = (bsGrdMain.DataSource as DataTable)
+            EnumerableRowCollection<DataRow> rowCollect = dtResult
                                .AsEnumerable().Where(r => r.Field<DateTime>("date").Date == date.Date && r.Field<bool>("isVVO") == isVVO);
 
             if (rowCollect.Count() > 0)
@@ -2685,7 +2746,7 @@ namespace RealCompare
 
         private void addAndDropSverka(DateTime date, bool isVVO,bool isDel)
         {
-            EnumerableRowCollection<DataRow> rowCollect = (bsGrdMain.DataSource as DataTable)
+            EnumerableRowCollection<DataRow> rowCollect = dtResult
                                    .AsEnumerable().Where(r => r.Field<DateTime>("date").Date == date.Date && r.Field<bool>("isVVO") == isVVO);
 
             if (rowCollect.Count() > 0)
@@ -2735,9 +2796,9 @@ namespace RealCompare
 
         private void reCountDelta()
         {
-            if (bsGrdMain.DataSource == null || (bsGrdMain.DataSource as DataTable).Rows.Count == 0 || dgvMain.Rows.Count == 0) return;
+            if (dtResult == null || dtResult.Rows.Count == 0 || dgvMain.Rows.Count == 0) return;
 
-            foreach (DataRow row in (bsGrdMain.DataSource as DataTable).Rows)
+            foreach (DataRow row in dtResult.Rows)
             {
                 if (chbMainKass.Checked)
                 {
@@ -2779,12 +2840,16 @@ namespace RealCompare
         {
             if (DialogResult.Yes == MessageBox.Show("Установить сверку?", "Сверка", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
             {
-                int id = (int)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"];
-                decimal MainKass = (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"];
-                DateTime date = (DateTime)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["date"];
-                bool isVVO = (bool)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["isVVO"];
 
-                Task<DataTable> task = Parameters.hConnect.setValidateMainKass(id, MainKass, MainKass);
+                DataRowView row = dtResult.DefaultView[dgvMain.CurrentRow.Index];
+
+                int id = (int)row["id"];
+                decimal MainKass = (decimal)row["MainKass"];
+                decimal Discount = (decimal)row["discount"];
+                DateTime date = (DateTime)row["date"];
+                bool isVVO = (bool)row["isVVO"];
+
+                Task<DataTable> task = Parameters.hConnect.setValidateMainKass(id, MainKass, MainKass, Discount);
                 task.Wait();
 
                 if (task.Result == null)
@@ -2807,6 +2872,7 @@ namespace RealCompare
                 Logging.Comment($"Дата реализации: {date.ToShortDateString()}");
                 Logging.Comment($"Признак реализации: {(isVVO ? "отдел ВВО" : "все отделы, кроме ВВО")}");
                 Logging.Comment($"Сумма сверки : {MainKass.ToString("0.00")}");
+                Logging.Comment($"Сумма скидки : {Discount.ToString("0.00")}");
                 Logging.StopFirstLevel();
 
                 addAndDropSverka(date, isVVO, false);
@@ -2818,12 +2884,15 @@ namespace RealCompare
         {
             if (DialogResult.Yes == MessageBox.Show("Снять сверку?", "Сверка", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
             {
-                int id = (int)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"];
-                decimal MainKass = (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"];
-                DateTime date = (DateTime)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["date"];
-                bool isVVO = (bool)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["isVVO"];
+                DataRowView row = dtResult.DefaultView[dgvMain.CurrentRow.Index];
 
-                Task<DataTable> task = Parameters.hConnect.setValidateMainKass(id, null, null);
+                int id = (int)row["id"];
+                decimal MainKass = (decimal)row["MainKass"];
+                decimal Discount = (decimal)row["discount"];
+                DateTime date = (DateTime)row["date"];
+                bool isVVO = (bool)row["isVVO"];
+
+                Task<DataTable> task = Parameters.hConnect.setValidateMainKass(id, null, null, null);
                 task.Wait();
 
                 if (task.Result == null)
@@ -2847,6 +2916,7 @@ namespace RealCompare
                 Logging.Comment($"Дата реализации: {date.ToShortDateString()}");
                 Logging.Comment($"Признак реализации: {(isVVO ? "отдел ВВО" : "все отделы, кроме ВВО")}");
                 Logging.Comment($"Сумма сверки : {MainKass.ToString("0.00")}");
+                Logging.Comment($"Сумма скидки : {Discount.ToString("0.00")}");
                 Logging.StopFirstLevel();
 
                 RefreshGrid();
@@ -2856,21 +2926,23 @@ namespace RealCompare
 
         private void создатьЗаявкуНаРемонтToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int id = (int)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"];
-            bool isVVO = (bool)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["isVVO"];
-            decimal MainKass = (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"];
-            DateTime date = (DateTime)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["date"];
-            bool isRealEquals = (bool)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["isRealEquals"];
+            DataRowView row = dtResult.DefaultView[dgvMain.CurrentRow.Index];
+
+            int id = (int)row["id"];
+            bool isVVO = (bool)row["isVVO"];
+            decimal MainKass = (decimal)row["MainKass"];
+            DateTime date = (DateTime)row["date"];
+            bool isRealEquals = (bool)row["isRealEquals"];
 
             string stringComment = "";
             string nameShop = Nwuram.Framework.Settings.Connection.ConnectionSettings.GetServer().Contains("K21") ? "K21" : "X14";
             int sourceDifference = 0;
 
-            if ((bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"] != DBNull.Value
-                && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSQL_vvo"] != DBNull.Value)
+            if (row["ChessBoard"] != DBNull.Value
+                && row["RealSQL_vvo"] != DBNull.Value)
             {
-                if ((decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSQL_vvo"]
-                    || (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["KsSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"])
+                if ((decimal)row["RealSql"] != (decimal)row["RealSQL_vvo"]
+                    || (decimal)row["KsSql"] != (decimal)row["ChessBoard"])
                 {
                     stringComment += (stringComment.Trim().Length == 0 ? "" : Environment.NewLine) + "Расхождение в данных после СВЕРКИ!!!";
                 }
@@ -2878,7 +2950,7 @@ namespace RealCompare
 
 
 
-            if ((decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"])
+            if ((decimal)row["RealSql"] != (decimal)row["MainKass"] + (decimal)row["Discount"])
             {
                 //Расхождение в данных после СВЕРКИ!!!
                 if (isVVO)
@@ -2889,7 +2961,7 @@ namespace RealCompare
             }
 
 
-            if ((decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["KsSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"])
+            if ((decimal)row["KsSql"] != (decimal)row["MainKass"] + (decimal)row["Discount"])
             {
                 if (isVVO)
                     stringComment += (stringComment.Trim().Length == 0 ? "" : Environment.NewLine) + $"Имеются расхождения в данных шахматки по ВВО за {date.ToShortDateString()} по магазину {nameShop}";
@@ -2995,28 +3067,27 @@ namespace RealCompare
         {
             установитьСверкуToolStripMenuItem.Enabled = снятьСверкуToolStripMenuItem.Enabled = создатьЗаявкуНаРемонтToolStripMenuItem.Enabled = false;
 
+            DataRowView row = dtResult.DefaultView[dgvMain.CurrentRow.Index];
 
-            установитьСверкуToolStripMenuItem.Enabled = ((bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"] == DBNull.Value
-               && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSQL_vvo"] == DBNull.Value
-               && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"] != DBNull.Value
-               && (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSql"] == (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"]+ (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["discount"]
-               && (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["KsSql"] == (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"] + (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["discount"]
+            установитьСверкуToolStripMenuItem.Enabled = (row["ChessBoard"] == DBNull.Value
+               && row["RealSQL_vvo"] == DBNull.Value
+               && row["id"] != DBNull.Value
+               && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+               && (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
                );
 
-            снятьСверкуToolStripMenuItem.Enabled = ((bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"] != DBNull.Value
-               && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSQL_vvo"] != DBNull.Value
+            снятьСверкуToolStripMenuItem.Enabled = (row["ChessBoard"] != DBNull.Value
+               && row["RealSQL_vvo"] != DBNull.Value
             //   && (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"] != DBNull.Value
                );
 
             создатьЗаявкуНаРемонтToolStripMenuItem.Enabled = (
-               //(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"] == DBNull.Value
-               //&& (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSQL_vvo"] == DBNull.Value
-                   (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["id"] != DBNull.Value
-                && ((decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"] + (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["discount"]
-                || (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["KsSql"] != (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["MainKass"] + (decimal)(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["discount"])
+                   //(bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["ChessBoard"] == DBNull.Value
+                   //&& (bsGrdMain.DataSource as DataTable).DefaultView[dgvMain.CurrentRow.Index]["RealSQL_vvo"] == DBNull.Value
+                   row["id"] != DBNull.Value
+                && ((decimal)row["RealSql"] != (decimal)row["MainKass"] + (decimal)row["discount"]
+                || (decimal)row["KsSql"] != (decimal)row["MainKass"] + (decimal)row["discount"])
               );
-
-
         }
 
         private void getListRepairRequestMainKass(int id_mainKass)

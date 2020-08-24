@@ -355,17 +355,18 @@ namespace RealCompare
         /// </summary>
         /// <param name="date">Дата выборки </param>
         /// <returns></returns>
-        public async Task<DataTable> setValidateMainKass(int id, decimal? RealSQL,decimal? ChessBoard)
+        public async Task<DataTable> setValidateMainKass(int id, decimal? RealSQL,decimal? ChessBoard,decimal? Discount)
         {
             ap.Clear();
             ap.Add(id);
             ap.Add(RealSQL);
             ap.Add(ChessBoard);
+            ap.Add(Discount);
             ap.Add(UserSettings.User.Id);
 
             return executeProcedure("[RealCompare].[spg_setValidateMainKass]",
-                new string[4] { "@id", "@RealSQL", "@ChessBoard", "@id_user"},
-                new DbType[4] { DbType.Int32, DbType.Decimal, DbType.Decimal, DbType.Int32 }, ap);
+                new string[5] { "@id", "@RealSQL", "@ChessBoard","@Discount", "@id_user"},
+                new DbType[5] { DbType.Int32, DbType.Decimal, DbType.Decimal, DbType.Decimal, DbType.Int32 }, ap);
         }
 
         /// <summary>

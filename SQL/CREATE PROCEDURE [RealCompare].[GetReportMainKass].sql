@@ -31,7 +31,8 @@ BEGIN
 		rr.DateSubmission,
 		rr.Number,
 		cr.Comment,
-		rr.DateConfirm
+		rr.DateConfirm,
+		rr.Fault
 	from 
 		Repair.j_RequestRepair rr
 			inner join RealCompare.j_RequestOfDifference rd on rd.id_RequestRepair = rr.id
@@ -55,7 +56,7 @@ BEGIN
 	where @dateStart <= mk.Data and mk.Data <= @dateEnd and mk.RealSQL is null
 	UNION ALL
 	---Данные «Реал. SQL» отличаются от сохраненных» 
-	select mk.MainKass,mk.Data,mk.isVVO, 3 as type
+	select mk.MainKass + isnull(mk.Discount,0) as MainKass,mk.Data,mk.isVVO, 3 as type
 	from RealCompare.j_MainKass mk 
 	where @dateStart <= mk.Data and mk.Data <= @dateEnd and mk.RealSQL is not null 
 END

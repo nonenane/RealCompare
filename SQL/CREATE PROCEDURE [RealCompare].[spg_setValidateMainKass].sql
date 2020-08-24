@@ -11,6 +11,7 @@ ALTER PROCEDURE [RealCompare].[spg_setValidateMainKass]
 	@id int,
 	@RealSQL numeric(16,2) = null,
 	@ChessBoard numeric(16,2) = null,
+	@Discount  numeric(16,2) = null,
 	@id_user int
 
 AS
@@ -20,7 +21,7 @@ BEGIN
 BEGIN TRY 
 	
 		UPDATE RealCompare.j_MainKass 
-		set RealSQL = @RealSQL,ChessBoard = @ChessBoard,DateEdit = GETDATE(),id_Editor = @id_user 
+		set RealSQL = @RealSQL,ChessBoard = @ChessBoard,Discount = @Discount,DateEdit = GETDATE(),id_Editor = @id_user 
 		where id = @id
 
 		select 0 as id
