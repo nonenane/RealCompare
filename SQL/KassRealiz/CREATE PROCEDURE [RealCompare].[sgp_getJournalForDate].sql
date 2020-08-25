@@ -6,8 +6,10 @@ GO
 -- Author:		<S G Y>
 -- Create date: <2020-08-21>
 -- Description:	<ѕолучение данных дл€ сверки c журнала продаж>
+
+-- exec [RealCompare].[sgp_getJournalForDate] '2020-04-01','2020-04-20',0
 -- =============================================
-CREATE PROCEDURE [RealCompare].[sgp_getJournalForDate]
+ALTER PROCEDURE [RealCompare].[sgp_getJournalForDate]
 	@dateStart DateTime,
 	@dateEnd DateTime,
 	@isVVO bit	
@@ -31,11 +33,28 @@ DECLARE @strDepVVO nvarchar(150) = 'dpt_no <> 6'
 		SET @strDepVVO = 'dpt_no = 6'
 
 
+--set @nSQL = '
+--select t.conDate,sum(t.cash_val)  as cash_val,dpt_no
+--from(
+--select 	
+--	case when t.op_code = 507 then -1 else 1 end * cast(cash_val as numeric(16,2))/100 as cash_val,
+--	case when convert(varchar(100),t.time,108) <''04:00:00'' then dateadd(day,-1,cast(t.time as date)) else cast(t.time as date) end as conDate,
+--	t.dpt_no	
+--from 
+--	'+@base+' t
+--		inner join  (select terminal,doc_id from '+@base+' where op_code in ('+@operationClose+') and '''+convert(varchar(150),cast(@startTime as datetime),120)+'''<=time and time<='''+convert(varchar(150),cast(@endTime as datetime),120)+''') t2 on t2.doc_id = t.doc_id and t2.terminal = t.terminal
+--where 
+--	t.op_code in ('+@operationDiscount+') and t.cash_val <> 0 and '+@strDepVVO+') as t
+--GROUP BY	
+--	t.conDate,t.dpt_no'
+
+SET @operationDiscount = '509'
+
 set @nSQL = '
 select t.conDate,sum(t.cash_val)  as cash_val,dpt_no
 from(
 select 	
-	case when t.op_code = 507 then -1 else 1 end * cast(cash_val as numeric(16,2))/100 as cash_val,
+	cast(t.price as numeric(16,2))/100 as cash_val,
 	case when convert(varchar(100),t.time,108) <''04:00:00'' then dateadd(day,-1,cast(t.time as date)) else cast(t.time as date) end as conDate,
 	t.dpt_no	
 from 
@@ -45,6 +64,7 @@ where
 	t.op_code in ('+@operationDiscount+') and t.cash_val <> 0 and '+@strDepVVO+') as t
 GROUP BY	
 	t.conDate,t.dpt_no'
+
 
 EXEC (@nSQL)
 

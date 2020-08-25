@@ -560,7 +560,8 @@ namespace RealCompare
             dgvMain.DataSource = null;
             try
             {
-                dtResult.Clear();
+                if (dtResult != null)
+                    dtResult.Clear();
                 //if (bsGrdMain.DataSource != null)
                  //   (bsGrdMain.DataSource as DataTable).Clear();
             }
@@ -2016,9 +2017,12 @@ namespace RealCompare
             DataTable dtJournal = Parameters.hConnectKass.GetKassRealizJournal(Parameters.dateStart, Parameters.dateEnd);
             DataTable dtJournalVVO = Parameters.hConnectVVOKass.GetKassRealizJournalVVO(Parameters.dateStart, Parameters.dateEnd);
 
-
             dtJRealiz.Merge(dtJRealizVVO);
             dtJournal.Merge(dtJournalVVO);
+
+            //EnumerableRowCollection<DataRow> roqColl = dtGoodsUpdates.AsEnumerable().Where(r => r.Field<string>("ean").Equals("4601653025820"));
+            //EnumerableRowCollection<DataRow> roqCollKSQ = dtJRealizVVO.AsEnumerable().Where(r => r.Field<string>("ean").Equals("4601653025820"));
+            //EnumerableRowCollection<DataRow> roqCollReal = dtJournalVVO.AsEnumerable().Where(r => r.Field<string>("ean").Equals("4601653025820"));
 
             dtResult = (from g in dtGoodsUpdates.AsEnumerable()
                         join jreal in dtJRealiz.AsEnumerable() on new { Q = g.Field<string>("ean"), W = g.Field<DateTime>("dreal") } equals new { Q = jreal.Field<string>("ean"), W = jreal.Field<DateTime>("dreal") } into t1
@@ -2036,7 +2040,7 @@ namespace RealCompare
                             KsSql = leftjoin2 == null ? 0 : leftjoin2.Field<decimal>("KsSql"),
                             RealSql = leftjoin1 == null ? 0 : leftjoin1.Field<decimal>("RealSql"),
                             idTU = g.Field<Int16>("idTU")
-                        }).Where(r => r.KsSql != 0 && r.RealSql != 0).CopyToDataTable();
+                        }).Where(r => r.KsSql != 0 || r.RealSql != 0).CopyToDataTable();
 
 
 
