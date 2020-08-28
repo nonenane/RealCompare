@@ -1160,23 +1160,7 @@ namespace RealCompare
         /// Расчёт данных группировка по датам
         /// </summary>
         private void calDateData()
-        {
-            //DataTable dtResult = new DataTable();
-            //dtResult.Columns.Add("date", typeof(DateTime));
-            //dtResult.Columns.Add("RealSql", typeof(decimal));
-            //dtResult.Columns.Add("KsSql", typeof(decimal));
-            //dtResult.Columns.Add("graphRealiz", typeof(decimal));
-            //dtResult.Columns.Add("MainKass", typeof(decimal));
-            //dtResult.Columns.Add("discount", typeof(decimal));
-            ////dtResult.Columns.Add("depName", typeof(string));
-            ////dtResult.Columns.Add("ean", typeof(string));
-            ////dtResult.Columns.Add("goodsName", typeof(string));
-            ////dtResult.Columns.Add("delta", typeof(decimal));
-            ////dtResult.Columns.Add("isRealEquals", typeof(bool));            
-            //dtResult.AcceptChanges();
-
-            //if (dtJRealiz != null && dtJournal != null)
-            //    dtJRealiz.Merge(dtJournal);
+        {         
             dtResult = null;
             DataTable dtJRealiz = null, dtJournal = null, dtMainKass = null, dtGraphRealiz = null, dtDiscount = null;
 
@@ -1212,10 +1196,10 @@ namespace RealCompare
 
             if (chkKsSql.Checked)
             {
-                task = Parameters.hConnectKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, false);
+                task = Parameters.hConnectKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, false, true);
                 task.Wait();
                 dtJournal = task.Result.Copy();
-                task = Parameters.hConnectVVOKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, true);
+                task = Parameters.hConnectVVOKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, true, false);
                 task.Wait();
                 if (task.Result != null) dtJournal.Merge(task.Result);
 
@@ -1423,23 +1407,7 @@ namespace RealCompare
         /// Расчёт данных группировка по датам и отделу
         /// </summary>
         private void calDateAndDepsData()
-        {
-            //DataTable dtResult = new DataTable();
-            //dtResult.Columns.Add("date", typeof(DateTime));
-            //dtResult.Columns.Add("RealSql", typeof(decimal));
-            //dtResult.Columns.Add("KsSql", typeof(decimal));
-            //dtResult.Columns.Add("graphRealiz", typeof(decimal));
-            //dtResult.Columns.Add("MainKass", typeof(decimal));
-            //dtResult.Columns.Add("discount", typeof(decimal));
-            ////dtResult.Columns.Add("depName", typeof(string));
-            ////dtResult.Columns.Add("ean", typeof(string));
-            ////dtResult.Columns.Add("goodsName", typeof(string));
-            ////dtResult.Columns.Add("delta", typeof(decimal));
-            ////dtResult.Columns.Add("isRealEquals", typeof(bool));            
-            //dtResult.AcceptChanges();
-
-            //if (dtJRealiz != null && dtJournal != null)
-            //    dtJRealiz.Merge(dtJournal);
+        {            
             dtResult = null;
             DataTable dtJRealiz = null, dtJournal = null, dtMainKass = null, dtGraphRealiz = null, dtDiscount = null;
 
@@ -1477,10 +1445,10 @@ namespace RealCompare
 
             if (chkKsSql.Checked)
             {
-                task = Parameters.hConnectKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, false);
+                task = Parameters.hConnectKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, false,true);
                 task.Wait();
                 dtJournal = task.Result.Copy();
-                task = Parameters.hConnectVVOKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, true);
+                task = Parameters.hConnectVVOKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, true, false);
                 task.Wait();
                 if (task.Result != null) dtJournal.Merge(task.Result);
 
@@ -1696,22 +1664,7 @@ namespace RealCompare
         /// </summary>
         private void calDateAndVvoData()
         {
-            //DataTable dtResult = new DataTable();
-            //dtResult.Columns.Add("date", typeof(DateTime));
-            //dtResult.Columns.Add("RealSql", typeof(decimal));
-            //dtResult.Columns.Add("KsSql", typeof(decimal));
-            //dtResult.Columns.Add("graphRealiz", typeof(decimal));
-            //dtResult.Columns.Add("MainKass", typeof(decimal));
-            //dtResult.Columns.Add("discount", typeof(decimal));
-            ////dtResult.Columns.Add("depName", typeof(string));
-            ////dtResult.Columns.Add("ean", typeof(string));
-            ////dtResult.Columns.Add("goodsName", typeof(string));
-            ////dtResult.Columns.Add("delta", typeof(decimal));
-            ////dtResult.Columns.Add("isRealEquals", typeof(bool));            
-            //dtResult.AcceptChanges();
-
-            //if (dtJRealiz != null && dtJournal != null)
-            //    dtJRealiz.Merge(dtJournal);
+          
             dtResult = null;
             DataTable dtJRealiz = null, dtJournal = null, dtMainKass = null, dtGraphRealiz = null, dtDiscount = null, dtMainKassBuff = null;
 
@@ -1751,10 +1704,10 @@ namespace RealCompare
 
             if (chkKsSql.Checked)
             {
-                task = Parameters.hConnectKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, false);
+                task = Parameters.hConnectKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, false, true);
                 task.Wait();
                 dtJournal = task.Result.Copy();
-                task = Parameters.hConnectVVOKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, true);
+                task = Parameters.hConnectVVOKass.getJournalForDate(Parameters.dateStart, Parameters.dateEnd, true, false);
                 task.Wait();
                 if (task.Result != null) dtJournal.Merge(task.Result);
 
@@ -2004,7 +1957,6 @@ namespace RealCompare
             #endregion
         }
 
-
         /// <summary>
         /// Расчёт данных группировка по датам, отделам и товарам
         /// </summary>
@@ -2019,10 +1971,6 @@ namespace RealCompare
 
             dtJRealiz.Merge(dtJRealizVVO);
             dtJournal.Merge(dtJournalVVO);
-
-            //EnumerableRowCollection<DataRow> roqColl = dtGoodsUpdates.AsEnumerable().Where(r => r.Field<string>("ean").Equals("4601653025820"));
-            //EnumerableRowCollection<DataRow> roqCollKSQ = dtJRealizVVO.AsEnumerable().Where(r => r.Field<string>("ean").Equals("4601653025820"));
-            //EnumerableRowCollection<DataRow> roqCollReal = dtJournalVVO.AsEnumerable().Where(r => r.Field<string>("ean").Equals("4601653025820"));
 
             dtResult = (from g in dtGoodsUpdates.AsEnumerable()
                         join jreal in dtJRealiz.AsEnumerable() on new { Q = g.Field<string>("ean"), W = g.Field<DateTime>("dreal") } equals new { Q = jreal.Field<string>("ean"), W = jreal.Field<DateTime>("dreal") } into t1
@@ -2848,12 +2796,13 @@ namespace RealCompare
                 DataRowView row = dtResult.DefaultView[dgvMain.CurrentRow.Index];
 
                 int id = (int)row["id"];
-                decimal MainKass = (decimal)row["MainKass"];
+                decimal KsSql = (decimal)row["KsSql"];
+                decimal RealSql = (decimal)row["RealSql"];
                 decimal Discount = (decimal)row["discount"];
                 DateTime date = (DateTime)row["date"];
                 bool isVVO = (bool)row["isVVO"];
 
-                Task<DataTable> task = Parameters.hConnect.setValidateMainKass(id, MainKass, MainKass, Discount);
+                Task<DataTable> task = Parameters.hConnect.setValidateMainKass(id, RealSql, KsSql, Discount);
                 task.Wait();
 
                 if (task.Result == null)
@@ -2875,7 +2824,8 @@ namespace RealCompare
                 Logging.Comment($"ID: {id}");
                 Logging.Comment($"Дата реализации: {date.ToShortDateString()}");
                 Logging.Comment($"Признак реализации: {(isVVO ? "отдел ВВО" : "все отделы, кроме ВВО")}");
-                Logging.Comment($"Сумма сверки : {MainKass.ToString("0.00")}");
+                Logging.Comment($"Сумма сверки Шахматка: {KsSql.ToString("0.00")}");
+                Logging.Comment($"Сумма сверки Реал.SQL.: {RealSql.ToString("0.00")}");
                 Logging.Comment($"Сумма скидки : {Discount.ToString("0.00")}");
                 Logging.StopFirstLevel();
 

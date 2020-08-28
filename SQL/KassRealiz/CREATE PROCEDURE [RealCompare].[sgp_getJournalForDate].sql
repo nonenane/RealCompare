@@ -12,7 +12,9 @@ GO
 ALTER PROCEDURE [RealCompare].[sgp_getJournalForDate]
 	@dateStart DateTime,
 	@dateEnd DateTime,
-	@isVVO bit	
+	@isVVO bit,
+	@isDeps bit
+	
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -27,44 +29,50 @@ DECLARE @startTime datetime = @dateStart,@endTime datetime = @dateEnd
 SET  @startTime = DATEADD(HOUR,6,@startTime)
 SET  @endTime = DATEADD(HOUR,27,@endTime)
 
-DECLARE @operationClose varchar(5) = '509',@operationDiscount varchar(5) = '505,507,520'
+DECLARE @operationClose varchar(150) = '509',@operationDiscount varchar(150) = '505,507,520'
 DECLARE @strDepVVO nvarchar(150) = 'dpt_no <> 6'
 	IF @isVVO = 1
 		SET @strDepVVO = 'dpt_no = 6'
 
 
---set @nSQL = '
---select t.conDate,sum(t.cash_val)  as cash_val,dpt_no
---from(
---select 	
---	case when t.op_code = 507 then -1 else 1 end * cast(cash_val as numeric(16,2))/100 as cash_val,
---	case when convert(varchar(100),t.time,108) <''04:00:00'' then dateadd(day,-1,cast(t.time as date)) else cast(t.time as date) end as conDate,
---	t.dpt_no	
---from 
---	'+@base+' t
---		inner join  (select terminal,doc_id from '+@base+' where op_code in ('+@operationClose+') and '''+convert(varchar(150),cast(@startTime as datetime),120)+'''<=time and time<='''+convert(varchar(150),cast(@endTime as datetime),120)+''') t2 on t2.doc_id = t.doc_id and t2.terminal = t.terminal
---where 
---	t.op_code in ('+@operationDiscount+') and t.cash_val <> 0 and '+@strDepVVO+') as t
---GROUP BY	
---	t.conDate,t.dpt_no'
+IF @isDeps = 1
+	BEGIN
+		set @nSQL = '
+		select t.conDate,sum(t.cash_val)  as cash_val,dpt_no
+		from(
+		select 	
+			case when t.op_code = 507 then -1 else 1 end * cast(cash_val as numeric(16,2))/100 as cash_val,
+			case when convert(varchar(100),t.time,108) <''04:00:00'' then dateadd(day,-1,cast(t.time as date)) else cast(t.time as date) end as conDate,
+			t.dpt_no	
+		from 
+			'+@base+' t
+				inner join  (select terminal,doc_id from '+@base+' where op_code in ('+@operationClose+') and '''+convert(varchar(150),cast(@startTime as datetime),120)+'''<=time and time<='''+convert(varchar(150),cast(@endTime as datetime),120)+''') t2 on t2.doc_id = t.doc_id and t2.terminal = t.terminal
+		where 
+			t.op_code in ('+@operationDiscount+') and t.cash_val <> 0 and '+@strDepVVO+') as t
+		GROUP BY	
+			t.conDate,t.dpt_no'
+	END
+ELSE
+	BEGIN
+		SET @operationDiscount = '509'
+		IF @isVVO = 1
+			SET @strDepVVO = 'dpt_no = 0'
 
-SET @operationDiscount = '509'
-
-set @nSQL = '
-select t.conDate,sum(t.cash_val)  as cash_val,dpt_no
-from(
-select 	
-	cast(t.price as numeric(16,2))/100 as cash_val,
-	case when convert(varchar(100),t.time,108) <''04:00:00'' then dateadd(day,-1,cast(t.time as date)) else cast(t.time as date) end as conDate,
-	t.dpt_no	
-from 
-	'+@base+' t
-		inner join  (select terminal,doc_id from '+@base+' where op_code in ('+@operationClose+') and '''+convert(varchar(150),cast(@startTime as datetime),120)+'''<=time and time<='''+convert(varchar(150),cast(@endTime as datetime),120)+''') t2 on t2.doc_id = t.doc_id and t2.terminal = t.terminal
-where 
-	t.op_code in ('+@operationDiscount+') and t.cash_val <> 0 and '+@strDepVVO+') as t
-GROUP BY	
-	t.conDate,t.dpt_no'
-
+		set @nSQL = '
+		select t.conDate,sum(t.cash_val)  as cash_val,case when dpt_no = 0 then cast(6 as tinyint) else dpt_no end as dpt_no
+		from(
+		select 	
+			cast(t.price as numeric(16,2))/100 as cash_val,
+			case when convert(varchar(100),t.time,108) <''04:00:00'' then dateadd(day,-1,cast(t.time as date)) else cast(t.time as date) end as conDate,
+			t.dpt_no	
+		from 
+			'+@base+' t
+				inner join  (select terminal,doc_id from '+@base+' where op_code in ('+@operationClose+') and '''+convert(varchar(150),cast(@startTime as datetime),120)+'''<=time and time<='''+convert(varchar(150),cast(@endTime as datetime),120)+''') t2 on t2.doc_id = t.doc_id and t2.terminal = t.terminal
+		where 
+			t.op_code in ('+@operationDiscount+') and t.cash_val <> 0 and '+@strDepVVO+') as t
+		GROUP BY	
+			t.conDate,t.dpt_no'
+	END
 
 EXEC (@nSQL)
 

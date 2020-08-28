@@ -315,11 +315,14 @@ namespace RealCompare
                                 }
                             }
 
-                            report.Merge(headerStart, 1, indexRow - 1, 1);
-                            report.AddSingleValue($"Нет сверки с «Реал. SQL»", headerStart, 1);
-                            report.SetBorders(headerStart, 1, indexRow - 1, 3);
-                            report.SetCellAlignmentToCenter(headerStart, 1, indexRow - 1, 1);
-                            report.SetCellAlignmentToJustify(headerStart, 1, indexRow - 1, 1);
+                            if (indexRow > headerStart)
+                            {
+                                report.Merge(headerStart, 1, indexRow - 1, 1);
+                                report.AddSingleValue($"Нет сверки с «Реал. SQL»", headerStart, 1);
+                                report.SetBorders(headerStart, 1, indexRow - 1, 3);
+                                report.SetCellAlignmentToCenter(headerStart, 1, indexRow - 1, 1);
+                                report.SetCellAlignmentToJustify(headerStart, 1, indexRow - 1, 1);
+                            }
                         }
                     }
                     #endregion
@@ -388,13 +391,15 @@ namespace RealCompare
                                 }
                             }
 
-                            report.Merge(headerStart, 1, indexRow - 1, 1);
-                            report.SetBorders(headerStart, 1, indexRow - 1, 3);
-                            report.SetCellAlignmentToCenter(headerStart, 1, indexRow - 1, 1);
-                            report.SetCellAlignmentToJustify(headerStart, 1, indexRow - 1, 1);
-                            report.SetWrapText(headerStart, 1, indexRow - 1, 1);
-                            report.AddSingleValue($"Данные «Реал. SQL» отличаются от сохраненных", headerStart, 1);
-
+                            if (indexRow > headerStart)
+                            {
+                                report.Merge(headerStart, 1, indexRow - 1, 1);
+                                report.SetBorders(headerStart, 1, indexRow - 1, 3);
+                                report.SetCellAlignmentToCenter(headerStart, 1, indexRow - 1, 1);
+                                report.SetCellAlignmentToJustify(headerStart, 1, indexRow - 1, 1);
+                                report.SetWrapText(headerStart, 1, indexRow - 1, 1);
+                                report.AddSingleValue($"Данные «Реал. SQL» отличаются от сохраненных", headerStart, 1);
+                            }
                         }
                     }
                     #endregion

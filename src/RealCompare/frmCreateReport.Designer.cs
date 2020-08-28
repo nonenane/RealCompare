@@ -45,7 +45,7 @@
             this.btClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btClose.BackgroundImage = global::RealCompare.Properties.Resources.exit_8633;
             this.btClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btClose.Location = new System.Drawing.Point(298, 122);
+            this.btClose.Location = new System.Drawing.Point(311, 122);
             this.btClose.Name = "btClose";
             this.btClose.Size = new System.Drawing.Size(32, 32);
             this.btClose.TabIndex = 5;
@@ -57,7 +57,7 @@
             this.btPrint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btPrint.BackgroundImage = global::RealCompare.Properties.Resources.printer;
             this.btPrint.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btPrint.Location = new System.Drawing.Point(260, 122);
+            this.btPrint.Location = new System.Drawing.Point(273, 122);
             this.btPrint.Name = "btPrint";
             this.btPrint.Size = new System.Drawing.Size(32, 32);
             this.btPrint.TabIndex = 5;
@@ -138,7 +138,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(334, 158);
+            this.ClientSize = new System.Drawing.Size(355, 166);
             this.ControlBox = false;
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label2);
