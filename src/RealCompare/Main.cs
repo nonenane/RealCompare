@@ -430,48 +430,13 @@ namespace RealCompare
         }
 
         private void chkKsSql_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkKsSql.Checked)
-            {
-                KsSql.Visible = true;
-                tbTotalKsSql.Visible = true;
-                dgvMain.DataSource = null;
-            }
-            else
-            {
-                KsSql.Visible = false;
-                tbTotalKsSql.Visible = false;
-                reCountDelta();
-                dgvMain.Invalidate();
-            }
-
-            dgvMain_SelectionChanged(null, null);
-            visibleColumnDelta();
-
-            //cDelta.Visible = tbTotalcDelta.Visible = tbTotalcDelta.Visible =  chkRealSql.Checked && !chkKsSql.Checked;
-            //if (cDelta.Visible) cDelta.Width = 65;
+        {            
+            enableRbVsChk(sender);
         }
 
         private void chkRealSql_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkRealSql.Checked)
-            {
-                RealSql.Visible = true;
-                tbTotalRealSql.Visible = true;
-                dgvMain.DataSource = null;
-            }
-            else
-            {
-                RealSql.Visible = false;
-                tbTotalRealSql.Visible = false;
-                reCountDelta();
-                dgvMain.Invalidate();
-                dgvMain.Refresh();
-            }
-            //cDelta.Visible = tbTotalcDelta.Visible = chkRealSql.Checked && !chkKsSql.Checked;
-            //if (cDelta.Visible) cDelta.Width = 65;
-            dgvMain_SelectionChanged(null, null);
-            visibleColumnDelta();
+        {            
+            enableRbVsChk(sender);
         }
 
         #region Получение реализаций
@@ -1368,7 +1333,7 @@ namespace RealCompare
                     if (chbMainKass.Checked)
                     {
                         row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
-                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["MainKass"] + (decimal)row["discount"];
+                        row["delta"] = (decimal)row["KsSql"] - ((decimal)row["MainKass"] + (decimal)row["discount"]);
                     }
                     else if (chbGraphRealiz.Checked)
                     {
@@ -1386,7 +1351,7 @@ namespace RealCompare
                     if (chbMainKass.Checked)
                     {
                         row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
-                        row["delta"] = (decimal)row["RealSql"] - (decimal)row["MainKass"] + (decimal)row["discount"];
+                        row["delta"] = (decimal)row["RealSql"] - ((decimal)row["MainKass"] + (decimal)row["discount"]);
                     }
                     else if (chbGraphRealiz.Checked)
                     {
@@ -1624,7 +1589,7 @@ namespace RealCompare
                     if (chbMainKass.Checked)
                     {
                         row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
-                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["MainKass"] + (decimal)row["discount"];
+                        row["delta"] = (decimal)row["KsSql"] - ((decimal)row["MainKass"] + (decimal)row["discount"]);
                     }
                     else if (chbGraphRealiz.Checked)
                     {
@@ -1642,7 +1607,7 @@ namespace RealCompare
                     if (chbMainKass.Checked)
                     {
                         row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
-                        row["delta"] = (decimal)row["RealSql"] - (decimal)row["MainKass"] + (decimal)row["discount"];
+                        row["delta"] = (decimal)row["RealSql"] - ((decimal)row["MainKass"] + (decimal)row["discount"]);
                     }
                     else if (chbGraphRealiz.Checked)
                     {
@@ -1922,7 +1887,7 @@ namespace RealCompare
                     if (chbMainKass.Checked)
                     {
                         row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
-                        row["delta"] = (decimal)row["KsSql"] - (decimal)row["MainKass"] + (decimal)row["discount"];
+                        row["delta"] = (decimal)row["KsSql"] - ((decimal)row["MainKass"] + (decimal)row["discount"]);
                     }
                     else if (chbGraphRealiz.Checked)
                     {
@@ -1940,7 +1905,7 @@ namespace RealCompare
                     if (chbMainKass.Checked)
                     {
                         row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
-                        row["delta"] = (decimal)row["RealSql"] - (decimal)row["MainKass"] + (decimal)row["discount"];
+                        row["delta"] = (decimal)row["RealSql"] - ((decimal)row["MainKass"] + (decimal)row["discount"]);
                     }
                     else if (chbGraphRealiz.Checked)
                     {
@@ -2425,42 +2390,8 @@ namespace RealCompare
         }
 
         private void chbMainKass_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chbMainKass.Checked)
-            {
-                rbDateAndVVO.Enabled = true;
-                rbDate.Enabled = true;
-                rbDateAndDep.Enabled = false;
-                rbDateAndDepAndGood.Enabled = false;
-                if (rbDateAndDep.Checked || rbDateAndDepAndGood.Checked) rbDate.Checked = true;
-                cMainKass.Visible = true;
-                cDiscount.Visible = true;
-                tbTotalcMainKass.Visible = true;
-                tbTotalcDiscount.Visible = true;
-                //label3.Visible = tbFio.Visible = label4.Visible = tbDateAdd.Visible = rbDateAndVVO.Checked;
-                //btViewRepair.Visible = dgvRepaireRequest.Visible = btAdd.Visible = btEdit.Visible = btDel.Visible = rbDateAndVVO.Checked;
-                groupBox1.Visible = rbDateAndVVO.Checked;
-                dgvMain.DataSource = null;
-            }
-            else
-            {
-                //rbDateAndVVO.Enabled = false;
-                rbDateAndDep.Enabled = true;
-                rbDateAndDepAndGood.Enabled = true;
-                cMainKass.Visible = false;
-                cDiscount.Visible = false;
-                tbTotalcMainKass.Visible = false;
-                tbTotalcDiscount.Visible = false;
-                //label3.Visible = tbFio.Visible = label4.Visible = tbDateAdd.Visible = false;
-                //btViewRepair.Visible = dgvRepaireRequest.Visible = btAdd.Visible = btEdit.Visible = btDel.Visible = false;
-                groupBox1.Visible = false;
-                if (rbDateAndVVO.Checked) rbDate.Checked = true;
-                reCountDelta();
-                dgvMain.Invalidate();
-            }
-
-            dgvMain_SelectionChanged(null, null);
-            visibleColumnDelta();
+        {           
+            enableRbVsChk(sender);
         }
 
         private void btAdd_Click(object sender, EventArgs e)
@@ -3060,10 +2991,46 @@ namespace RealCompare
 
         private void chbGraphRealiz_CheckedChanged(object sender, EventArgs e)
         {
+            enableRbVsChk(sender);
+        }
+
+        private void enableRbVsChk(object sender)
+        {
+            //График
             cGraphRealiz.Visible = chbGraphRealiz.Checked;
             tbTotalcGraphRealiz.Visible = chbGraphRealiz.Checked;
-            rbDateAndDepAndGood.Enabled = !chbGraphRealiz.Checked;
+            //ВВО
+            cMainKass.Visible = chbMainKass.Checked;
+            cDiscount.Visible = chbMainKass.Checked;
+            tbTotalcMainKass.Visible = chbMainKass.Checked;
+            tbTotalcDiscount.Visible = chbMainKass.Checked;
+            groupBox1.Visible = rbDateAndVVO.Checked;
+            //RealSQL
+            RealSql.Visible = chkRealSql.Checked;
+            tbTotalRealSql.Visible = chkRealSql.Checked;
+            //Шахматка
+            KsSql.Visible = chkKsSql.Checked;
+            tbTotalKsSql.Visible = chkKsSql.Checked;
+
+
+            if ((sender as CheckBox).Checked)
+            {
+                dgvMain.DataSource = null;
+            }
+            else
+            {
+                dgvMain.Invalidate();
+                dgvMain.Refresh();
+            }
+
+
+            rbDateAndDepAndGood.Enabled = !chbGraphRealiz.Checked && !chbMainKass.Checked;
+            rbDateAndDep.Enabled = !chbMainKass.Checked;
+            rbDate.Checked = ((!rbDateAndDepAndGood.Enabled && rbDateAndDepAndGood.Checked) || (!rbDateAndDep.Enabled && rbDateAndDep.Checked));
+
+            reCountDelta();
             visibleColumnDelta();
+            dgvMain_SelectionChanged(null, null);
         }
 
         #region "Объединение"
