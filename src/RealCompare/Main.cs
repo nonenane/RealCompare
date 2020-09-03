@@ -181,7 +181,24 @@ namespace RealCompare
         private void dgvMain_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
         {
             Color rColor = Color.White;
-            rColor = (dgvMain.Rows[e.RowIndex].Cells["isRealEquals"].Value is bool && (bool)dgvMain.Rows[e.RowIndex].Cells["isRealEquals"].Value) ? Color.White : panel1.BackColor;
+            bool _isRealEquals = (dgvMain.Rows[e.RowIndex].Cells["isRealEquals"].Value is bool && (bool)dgvMain.Rows[e.RowIndex].Cells["isRealEquals"].Value);
+            rColor = _isRealEquals ? Color.White : panel1.BackColor;
+
+            if (cGraphRealiz.Visible && _isRealEquals)
+            {
+                DataRowView row = dtResult.DefaultView[e.RowIndex];
+
+                if(!(bool)row["isGraphEquals"]) rColor = panel4.BackColor;
+
+                //if (cMainKass.Visible && (decimal)row["graphRealiz"] != (decimal)row["MainKass"] + (decimal)row["discount"])
+                //    rColor = panel4.BackColor;
+
+                //if (RealSql.Visible && (decimal)row["graphRealiz"] != (decimal)row["RealSql"])
+                //    rColor = panel4.BackColor;
+
+                //if (KsSql.Visible && (decimal)row["graphRealiz"] != (decimal)row["KsSql"])
+                //    rColor = panel4.BackColor;
+            }
 
             dgvMain.Rows[e.RowIndex].DefaultCellStyle.SelectionForeColor = Color.Black;
 
@@ -1293,6 +1310,8 @@ namespace RealCompare
             #region "Расчёт дельты и расхождения"
             dtResult.Columns.Add("delta", typeof(decimal));
             dtResult.Columns.Add("isRealEquals", typeof(bool));
+            dtResult.Columns.Add("isGraphEquals", typeof(bool));
+
 
             foreach (DataRow row in dtResult.Rows)
             {
@@ -1302,12 +1321,18 @@ namespace RealCompare
                     row["isRealEquals"] =
                         (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
                         && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
-                        && (decimal)row["graphRealiz"] == (decimal)row["MainKass"] + (decimal)row["discount"]
 
-                        && (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
-                        && (decimal)row["KsSql"] == (decimal)row["graphRealiz"]
+                        //&& (decimal)row["graphRealiz"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                        //&& (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                        //&& (decimal)row["KsSql"] == (decimal)row["graphRealiz"]
 
                         && (decimal)row["KsSql"] == (decimal)row["RealSql"];
+
+
+                    row["isGraphEquals"] = (decimal)row["graphRealiz"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                        && (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                        && (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+
                     row["delta"] = 0;
                 }
                 else
@@ -1317,11 +1342,17 @@ namespace RealCompare
                     {
                         row["isRealEquals"] =
                             (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
-                            && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
+                            && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                            && (decimal)row["KsSql"] == (decimal)row["RealSql"];
                     }
                     else if (chbGraphRealiz.Checked)
                     {
                         row["isRealEquals"] =
+                            //(decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                            //&& (decimal)row["KsSql"] == (decimal)row["graphRealiz"]
+                            (decimal)row["KsSql"] == (decimal)row["RealSql"];
+
+                        row["isGraphEquals"] =
                             (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
                             && (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
                     }
@@ -1337,7 +1368,8 @@ namespace RealCompare
                     }
                     else if (chbGraphRealiz.Checked)
                     {
-                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+                        row["isRealEquals"] = true;
+                        row["isGraphEquals"] = (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
                         row["delta"] = (decimal)row["KsSql"] - (decimal)row["graphRealiz"];
                     }
                     else if (chkRealSql.Checked)
@@ -1355,7 +1387,8 @@ namespace RealCompare
                     }
                     else if (chbGraphRealiz.Checked)
                     {
-                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["graphRealiz"];
+                        row["isRealEquals"] = true;
+                        row["isGraphEquals"] = (decimal)row["RealSql"] == (decimal)row["graphRealiz"];
                         row["delta"] = (decimal)row["RealSql"] - (decimal)row["graphRealiz"];
                     }
                     else if (chkRealSql.Checked)
@@ -1549,6 +1582,8 @@ namespace RealCompare
             #region "Расчёт дельты и расхождения"
             dtResult.Columns.Add("delta", typeof(decimal));
             dtResult.Columns.Add("isRealEquals", typeof(bool));
+            dtResult.Columns.Add("isGraphEquals", typeof(bool));
+
 
             foreach (DataRow row in dtResult.Rows)
             {
@@ -1558,12 +1593,18 @@ namespace RealCompare
                     row["isRealEquals"] =
                         (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
                         && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
-                        && (decimal)row["graphRealiz"] == (decimal)row["MainKass"] + (decimal)row["discount"]
 
-                        && (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
-                        && (decimal)row["KsSql"] == (decimal)row["graphRealiz"]
+                        //&& (decimal)row["graphRealiz"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                        //&& (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                        //&& (decimal)row["KsSql"] == (decimal)row["graphRealiz"]
 
                         && (decimal)row["KsSql"] == (decimal)row["RealSql"];
+
+
+                    row["isGraphEquals"] = (decimal)row["graphRealiz"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                        && (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                        && (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+
                     row["delta"] = 0;
                 }
                 else
@@ -1573,11 +1614,17 @@ namespace RealCompare
                     {
                         row["isRealEquals"] =
                             (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
-                            && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
+                            && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                            && (decimal)row["KsSql"] == (decimal)row["RealSql"];
                     }
                     else if (chbGraphRealiz.Checked)
                     {
                         row["isRealEquals"] =
+                            //(decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                            //&& (decimal)row["KsSql"] == (decimal)row["graphRealiz"]
+                            (decimal)row["KsSql"] == (decimal)row["RealSql"];
+
+                        row["isGraphEquals"] =
                             (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
                             && (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
                     }
@@ -1593,7 +1640,8 @@ namespace RealCompare
                     }
                     else if (chbGraphRealiz.Checked)
                     {
-                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+                        row["isRealEquals"] = true;
+                        row["isGraphEquals"] = (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
                         row["delta"] = (decimal)row["KsSql"] - (decimal)row["graphRealiz"];
                     }
                     else if (chkRealSql.Checked)
@@ -1611,7 +1659,8 @@ namespace RealCompare
                     }
                     else if (chbGraphRealiz.Checked)
                     {
-                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["graphRealiz"];
+                        row["isRealEquals"] = true;
+                        row["isGraphEquals"] = (decimal)row["RealSql"] == (decimal)row["graphRealiz"];
                         row["delta"] = (decimal)row["RealSql"] - (decimal)row["graphRealiz"];
                     }
                     else if (chkRealSql.Checked)
@@ -1826,6 +1875,7 @@ namespace RealCompare
             dtResult.Columns.Add("DateEdit", typeof(DateTime));
             dtResult.Columns.Add("FIO", typeof(string));
             dtResult.Columns.Add("id", typeof(int));
+            dtResult.Columns.Add("isGraphEquals", typeof(bool));
 
             foreach (DataRow row in dtResult.Rows)
             {
@@ -1856,12 +1906,17 @@ namespace RealCompare
                     row["isRealEquals"] =
                         (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
                         && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
-                        && (decimal)row["graphRealiz"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                        //&& (decimal)row["graphRealiz"] == (decimal)row["MainKass"] + (decimal)row["discount"]
 
-                        && (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
-                        && (decimal)row["KsSql"] == (decimal)row["graphRealiz"]
+                        //&& (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                        //&& (decimal)row["KsSql"] == (decimal)row["graphRealiz"]
 
                         && (decimal)row["KsSql"] == (decimal)row["RealSql"];
+
+                    row["isGraphEquals"] = (decimal)row["graphRealiz"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                        && (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                        && (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+
                     row["delta"] = 0;
                 }
                 else
@@ -1871,13 +1926,15 @@ namespace RealCompare
                     {
                         row["isRealEquals"] =
                             (decimal)row["KsSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
-                            && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"];
+                            && (decimal)row["RealSql"] == (decimal)row["MainKass"] + (decimal)row["discount"]
+                            && (decimal)row["KsSql"] == (decimal)row["RealSql"];
                     }
                     else if (chbGraphRealiz.Checked)
                     {
-                        row["isRealEquals"] =
-                            (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
-                            && (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["RealSql"];
+                        row["isGraphEquals"] =
+                             (decimal)row["RealSql"] == (decimal)row["graphRealiz"]
+                             && (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
                     }
 
                     row["delta"] = 0;
@@ -1891,7 +1948,8 @@ namespace RealCompare
                     }
                     else if (chbGraphRealiz.Checked)
                     {
-                        row["isRealEquals"] = (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
+                        row["isRealEquals"] = true;
+                        row["isGraphEquals"] = (decimal)row["KsSql"] == (decimal)row["graphRealiz"];
                         row["delta"] = (decimal)row["KsSql"] - (decimal)row["graphRealiz"];
                     }
                     else if (chkRealSql.Checked)
@@ -1909,7 +1967,8 @@ namespace RealCompare
                     }
                     else if (chbGraphRealiz.Checked)
                     {
-                        row["isRealEquals"] = (decimal)row["RealSql"] == (decimal)row["graphRealiz"];
+                        row["isRealEquals"] = true;
+                        row["isGraphEquals"] = (decimal)row["RealSql"] == (decimal)row["graphRealiz"];
                         row["delta"] = (decimal)row["RealSql"] - (decimal)row["graphRealiz"];
                     }
                     else if (chkRealSql.Checked)
@@ -2708,7 +2767,7 @@ namespace RealCompare
                 }
             }
         }
-        
+
         private void btViewRepair_Click(object sender, EventArgs e)
         {
             if (dgvRepaireRequest.DataSource == null) return;
@@ -2716,7 +2775,10 @@ namespace RealCompare
 
             int id_repair = (int)(dgvRepaireRequest.DataSource as DataTable).Rows[dgvRepaireRequest.CurrentRow.Index]["id_RequestRepair"];
 
-            new RepairRequestMN.ViewRequestInWork(id_repair) { Text = "Просмотр заявки на ремонт" }.ShowDialog();
+            RepairRequestMN.ViewRequestInWork vriw = new RepairRequestMN.ViewRequestInWork(id_repair) { Text = "Просмотр заявки на ремонт" };
+            if (ConnectionSettings.GetServer("5").Trim().Length > 0)
+                vriw.setNextConnect(5);
+            vriw.ShowDialog();
         }
 
         private void установитьСверкуToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2854,7 +2916,14 @@ namespace RealCompare
                     stringComment += (stringComment.Trim().Length == 0 ? "" : Environment.NewLine) + $"Имеются расхождения в данных шахматки за {date.ToShortDateString()} по магазину {nameShop}";
                 sourceDifference += 2;
             }
-
+            if (cMainKass.Visible)
+                stringComment += (stringComment.Trim().Length == 0 ? "" : Environment.NewLine) + $"Главная касса: {(decimal)row["MainKass"] }, Скидка: { (decimal)row["Discount"]}";
+            if (KsSql.Visible)
+                stringComment += (stringComment.Trim().Length == 0 ? "" : Environment.NewLine) + $"Шахматка: {(decimal)row["KsSql"] }";
+            if (RealSql.Visible)
+                stringComment += (stringComment.Trim().Length == 0 ? "" : Environment.NewLine) + $"Real SQL: {(decimal)row["RealSql"]}";
+            if (cGraphRealiz.Visible)
+                stringComment += (stringComment.Trim().Length == 0 ? "" : Environment.NewLine) + $"График реализации: {(decimal)row["graphRealiz"]}";
 
 
 

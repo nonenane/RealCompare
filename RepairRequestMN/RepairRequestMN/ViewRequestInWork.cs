@@ -12,7 +12,7 @@ namespace RepairRequestMN
 {
     public partial class ViewRequestInWork : Form
     {
-        private readonly Sql _sql = new Sql(ConnectionSettings.GetServer(), ConnectionSettings.GetDatabase(),
+        private Sql _sql = new Sql(ConnectionSettings.GetServer(), ConnectionSettings.GetDatabase(),
             ConnectionSettings.GetUsername(), ConnectionSettings.GetPassword(), ConnectionSettings.ProgramName);
 
         private int _id;
@@ -21,13 +21,21 @@ namespace RepairRequestMN
         public ViewRequestInWork(int id)
         {
             InitializeComponent();
+            this._id = id;
+            
+        }
 
-            DataTable dt = _sql.getSingleRepairRequest(id);
-            _resultDt = dt;
+        public void setNextConnect(int indexConnect)
+        {
+            _sql = new Sql(ConnectionSettings.GetServer(indexConnect.ToString()), ConnectionSettings.GetDatabase(indexConnect.ToString()),
+                ConnectionSettings.GetUsername(), ConnectionSettings.GetPassword(), ConnectionSettings.ProgramName);
         }
 
         private void ConfirmForm_Load(object sender, EventArgs e)
         {
+            DataTable dt = _sql.getSingleRepairRequest(_id);
+            _resultDt = dt;
+
             InitToolTips();
 
             Init();
@@ -75,7 +83,7 @@ namespace RepairRequestMN
         private void FillForm()
         {
             //_resultDt = _sql.GetDoneRequests(UserSettings.User.Id);
-            if (_resultDt != null)
+            if (_resultDt != null && _resultDt.Rows.Count>0)
             {
                 DataRow row = _resultDt.Rows[0];
                 _id = int.Parse(row["id"].ToString());
